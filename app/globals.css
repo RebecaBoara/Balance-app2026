@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+/* ── Dark mode via .dark class ── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens ── */
+@theme {
+  /* Sage palette */
+  --color-sage-50:  #E8F0EC;
+  --color-sage-100: #C8DACE;
+  --color-sage-200: #A8C4B0;
+  --color-sage-300: #8FAF9F;
+  --color-sage-400: #7A9A8A;
+  --color-sage-500: #5C7A6A;
+  --color-sage-600: #4A6557;
+  --color-sage-700: #3D5248;
+  --color-sage-800: #2E3E37;
+  --color-sage-900: #1E2822;
+
+  /* Teal palette */
+  --color-teal-300: #6BAED6;
+  --color-teal-400: #4ECBA3;
+  --color-teal-500: #2EAF88;
+  --color-teal-600: #0F6E56;
+
+  /* Warm palette */
+  --color-warm-50:  #FDFAF5;
+  --color-warm-100: #F5F0E8;
+  --color-warm-200: #EDE6D6;
+  --color-warm-300: #E0D5C0;
+
+  /* Amber & coral */
+  --color-amber-app:  #D4924A;
+  --color-amber-pale: #F7E8D4;
+  --color-coral-app:  #C5614A;
+  --color-coral-pale: #F5E0D8;
+
+  /* Ocean (dark mode surfaces) */
+  --color-ocean-900: #0F1419;
+  --color-ocean-800: #161E26;
+  --color-ocean-700: #1E2A35;
+  --color-ocean-600: #263545;
+
+  /* Typography */
+  --text-2xs: 0.625rem; /* 10px */
+
+  /* Fonts */
+  --font-script: 'Dancing Script', cursive;
+  --font-serif:  'DM Serif Display', Georgia, serif;
+  --font-sans:   'DM Sans', system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-xs:  6px;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-2xl: 24px;
+
+  /* Shadows */
+  --shadow-card:   0 2px 8px rgba(30,40,34,0.06);
+  --shadow-raised: 0 4px 24px rgba(30,40,34,0.08);
+  --shadow-lifted: 0 8px 32px rgba(30,40,34,0.12);
+
+  /* Animations */
+  --animate-fade-in:    fadeIn 0.25s ease;
+  --animate-slide-up:   slideUp 0.3s ease;
+  --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
+}
+
+/* Semantic colours — inline so utilities reference the CSS vars directly,
+   which means they automatically follow the :root / .dark overrides below */
+@theme inline {
+  --color-ink:   var(--ink);
+  --color-muted: var(--muted);
+  --color-bg:    var(--bg);
+  --color-card:  var(--card);
+}
+
+/* ── CSS Variables ── */
+:root {
+  --bg:     #F5F0E8;
+  --bg-2:   #EDE6D6;
+  --card:   #FFFFFF;
+  --ink:    #1E2822;
+  --muted:  #6B7D74;
+  --border: rgba(92, 122, 106, 0.15);
+  --sage:   #5C7A6A;
+  --sage-d: #3D5248;
+  --sage-l: #8FAF9F;
+  --sage-p: #E8F0EC;
+  --amber:  #D4924A;
+  --coral:  #C5614A;
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(30,40,34,0.08);
+
+  /* Landing page tokens — light */
+  --lp-bg-1:      #FDFAF5;
+  --lp-bg-2:      #F5F0E8;
+  --lp-card:      #FFFFFF;
+  --lp-card-2:    #E8F0EC;
+  --lp-text:      #1E2822;
+  --lp-text-80:   rgba(30,40,34,0.82);
+  --lp-text-60:   rgba(30,40,34,0.62);
+  --lp-text-50:   rgba(30,40,34,0.52);
+  --lp-text-40:   rgba(30,40,34,0.42);
+  --lp-text-30:   rgba(30,40,34,0.32);
+  --lp-border:    rgba(92,122,106,0.15);
+  --lp-accent:    #4c7762;
+  --lp-cta-bg:    #5C7A6A;
+  --lp-cta-text:  #FFFFFF;
+  --lp-ghost-b:   rgba(92,122,106,0.40);
+  --lp-ghost-t:   rgba(30,40,34,0.75);
+  --lp-badge-bg:  rgba(92,122,106,0.08);
+  --lp-badge-b:   rgba(92,122,106,0.22);
+  --lp-pill-b:    rgba(92,122,106,0.35);
+  --lp-pill-bg:   rgba(92,122,106,0.06);
+  --lp-pill-t:    rgba(30,40,34,0.65);
+
+  /* Navbar tokens — light */
+  --lp-nav-bg:      #FDFAF5;
+  --lp-nav-border:  rgba(92,122,106,0.12);
+  --lp-nav-text:    #3D5248;
+  --lp-nav-muted:   rgba(61,82,72,0.70);
+  --lp-nav-cta-bg:  #5C7A6A;
+  --lp-nav-cta-t:   #FFFFFF;
+}
+
+.dark {
+  color-scheme: dark;
+  --bg:     #0F1419;
+  --bg-2:   #161E26;
+  --card:   #1E2A35;
+  --ink:    #E8EFF5;
+  --muted:  #7A9BB5;
+  --border: rgba(78, 203, 163, 0.12);
+  --sage:   #4ECBA3;
+  --sage-d: #6BAED6;
+  --sage-l: #0F6E56;
+  --sage-p: #1A2E2A;
+  --amber:  #F0B96B;
+  --coral:  #E07868;
+
+  /* Landing page tokens — dark (ocean palette, matches app) */
+  --lp-bg-1:      #0F1419;
+  --lp-bg-2:      #161E26;
+  --lp-card:      #1E2A35;
+  --lp-card-2:    #161E26;
+  --lp-text:      #FFFFFF;
+  --lp-text-80:   rgba(255,255,255,0.80);
+  --lp-text-60:   rgba(255,255,255,0.60);
+  --lp-text-50:   rgba(255,255,255,0.50);
+  --lp-text-40:   rgba(255,255,255,0.40);
+  --lp-text-30:   rgba(255,255,255,0.30);
+  --lp-border:    rgba(255,255,255,0.08);
+  --lp-accent:    #4ECBA3;
+  --lp-cta-bg:    #4ECBA3;
+  --lp-cta-text:  #0F1419;
+  --lp-ghost-b:   rgba(255,255,255,0.25);
+  --lp-ghost-t:   rgba(255,255,255,0.80);
+  --lp-badge-bg:  rgba(78,203,163,0.12);
+  --lp-badge-b:   rgba(78,203,163,0.25);
+  --lp-pill-b:    rgba(255,255,255,0.20);
+  --lp-pill-bg:   rgba(255,255,255,0.05);
+  --lp-pill-t:    rgba(255,255,255,0.70);
+
+  /* Navbar tokens — dark */
+  --lp-nav-bg:      #161E26;
+  --lp-nav-border:  rgba(255,255,255,0.06);
+  --lp-nav-text:    #FFFFFF;
+  --lp-nav-muted:   rgba(255,255,255,0.75);
+  --lp-nav-cta-bg:  #4ECBA3;
+  --lp-nav-cta-t:   #0F1419;
+}
+
+/* ── Landing page utilities ── */
+@layer utilities {
+  .lp-bg-1    { background-color: var(--lp-bg-1); }
+  .lp-bg-2    { background-color: var(--lp-bg-2); }
+  .lp-card    { background-color: var(--lp-card); }
+  .lp-card-2  { background-color: var(--lp-card-2); }
+  .lp-text    { color: var(--lp-text); }
+  .lp-text-80 { color: var(--lp-text-80); }
+  .lp-text-60 { color: var(--lp-text-60); }
+  .lp-text-50 { color: var(--lp-text-50); }
+  .lp-text-40 { color: var(--lp-text-40); }
+  .lp-text-30 { color: var(--lp-text-30); }
+  .lp-border  { border-color: var(--lp-border); }
+  .lp-accent  { color: var(--lp-accent); }
+
+  .lp-cta {
+    background-color: var(--lp-cta-bg);
+    color: var(--lp-cta-text);
+  }
+  .lp-cta:hover { opacity: 0.9; }
+
+  .lp-ghost {
+    border-color: var(--lp-ghost-b);
+    color: var(--lp-ghost-t);
+  }
+  .lp-ghost:hover {
+    border-color: var(--lp-text-60);
+    color: var(--lp-text);
+  }
+
+  .lp-pill-idle {
+    border-color: var(--lp-pill-b);
+    background-color: var(--lp-pill-bg);
+    color: var(--lp-pill-t);
+  }
+  .lp-pill-idle:hover {
+    border-color: var(--lp-text-40);
+    color: var(--lp-text);
+  }
+
+  .lp-link { color: var(--lp-text-60); }
+  .lp-link:hover { color: var(--lp-text); }
+
+  .lp-nav-cta {
+    background-color: var(--lp-nav-cta-bg);
+    color: var(--lp-nav-cta-t);
+  }
+  .lp-nav-cta:hover { opacity: 0.88; }
+
+  .lp-shadow {
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  .lp-card-shadow {
+    border-radius: 10px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* ── Keyframes ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .7; }
+}
+
+/* ── Base ── */
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Component utilities ── */
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 rounded-md bg-sage-500 text-white font-medium text-sm
+           transition-all duration-200 hover:bg-sage-700 hover:-translate-y-0.5
+           focus-visible:outline-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply px-6 py-3 rounded-md border border-sage-500/15 text-sage-500 font-medium text-sm
+           dark:border-ocean-600 dark:text-white/80 dark:hover:bg-ocean-700
+           transition-all duration-200 hover:bg-sage-50 focus-visible:outline-2;
+  }
+
+  .card {
+    @apply bg-white dark:bg-ocean-700 rounded-lg border border-sage-500/15
+           dark:border-ocean-600 shadow-card;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 rounded-md border border-sage-500/15 dark:border-ocean-600
+           bg-white dark:bg-ocean-800 text-ink dark:text-white text-sm
+           placeholder-gray-300 dark:placeholder-gray-600
+           focus:outline-none focus:border-sage-500 transition-colors;
+  }
+
+  .label {
+    @apply block text-xs font-medium text-muted dark:text-white/50 uppercase tracking-wider mb-1.5;
+  }
+
+  .section-title {
+    @apply font-serif text-2xl md:text-3xl text-ink dark:text-white leading-tight;
+  }
+
+  .mood-pill {
+    @apply flex flex-col items-center gap-1 px-1.5 py-2.5 rounded-xl
+           bg-white dark:bg-ocean-700 shadow-card
+           cursor-pointer transition-all duration-200 hover:-translate-y-0.5;
+  }
+
+  .mood-pill.selected-exhausted { @apply border-purple-300 bg-purple-50 dark:bg-purple-900/20; }
+  .mood-pill.selected-stressed  { @apply border-coral-app bg-coral-pale dark:bg-red-900/20; }
+  .mood-pill.selected-neutral   { @apply border-amber-app bg-amber-pale dark:bg-amber-900/20; }
+  .mood-pill.selected-good      { @apply border-sage-500 bg-sage-50 dark:bg-sage-900/20; }
+  .mood-pill.selected-energised { @apply border-sky-400 bg-sky-50 dark:bg-sky-900/20; }
+}
