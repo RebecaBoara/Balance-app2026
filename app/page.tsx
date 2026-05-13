@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import Link from 'next/link'
 import {
   Menu, X, Moon, Sun, Monitor, ChevronDown,
-  Target, BarChart3, Sparkles, Coffee, Lock, Flower2, ArrowRight, Check, 
+  Target, BarChart3, Sparkles, Coffee, Lock, ArrowRight, Check, 
 } from 'lucide-react'
 import { useTheme } from '@/components/layout/ThemeProvider'
 import { useAuth  } from '@/hooks/useAuth'
+import Logo from '@/components/ui/Logo'
 import { MOOD_CONFIG } from '@/lib/mood'
 import type { MoodType } from '@/types'
 
@@ -40,9 +40,7 @@ function Navbar() {
                        border-b border-sage-100 dark:border-ocean-700 shadow-sm">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
-        <Link href="/" className="flex items-center gap-1.5 font-script text-2xl text-sage-700 dark:text-white">
-          Balance
-        </Link>
+        <Logo size="sm" />
 
         <div className="flex items-center gap-3">
           <nav className="hidden md:flex items-center gap-6 mr-2" aria-label="Main navigation">
@@ -59,7 +57,7 @@ function Navbar() {
           </button>
           {user ? (
             <Link href="/app/mood"
-              className="px-4 py-2 rounded-md text-sm font-medium bg-sage-700 text-white
+              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white
                          hover:bg-sage-800 transition-colors">
               Go to app →
             </Link>
@@ -70,7 +68,7 @@ function Navbar() {
                 Log in
               </Link>
               <Link href="/auth/signup"
-                className="px-4 py-2 rounded-md text-sm font-medium bg-sage-700 text-white
+                className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white
                            hover:bg-sage-800 transition-colors">
                 Get started free
               </Link>
@@ -97,19 +95,19 @@ function Navbar() {
           ))}
           {user ? (
             <Link href="/app/mood" onClick={() => setOpen(false)}
-              className="block text-center px-4 py-3 rounded-md text-sm font-medium
+              className="block text-center px-4 py-3 rounded-sm text-sm font-medium
                          bg-sage-700 text-white hover:bg-sage-800 transition-colors">
               Go to app →
             </Link>
           ) : (
             <>
               <Link href="/auth/login" onClick={() => setOpen(false)}
-                className="block text-center px-4 py-3 rounded-md border border-sage-200
+                className="block text-center px-4 py-3 rounded-sm border border-sage-200
                            dark:border-white/30 text-sm font-medium text-sage-600 dark:text-white/80">
                 Log in
               </Link>
               <Link href="/auth/signup" onClick={() => setOpen(false)}
-                className="block text-center px-4 py-3 rounded-md text-sm font-medium
+                className="block text-center px-4 py-3 rounded-sm text-sm font-medium
                            bg-sage-700 text-white hover:bg-sage-800 transition-colors">
                 Get started free
               </Link>
@@ -163,15 +161,10 @@ const MOOD_PILL_SELECTED: Record<MoodType, string> = {
 //Page 
 
 export default function LandingPage() {
-  const router                           = useRouter()
   const { user }                         = useAuth()
   const [selectedMood, setSelectedMood]  = useState<MoodType | null>(null)
   const [openFaq,      setOpenFaq]       = useState<number | null>(null)
   const moods = Object.values(MOOD_CONFIG) as (typeof MOOD_CONFIG)[MoodType][]
-
-  useEffect(() => {
-    if (user) router.replace('/app/mood')
-  }, [user, router])
 
   return (
     <>
@@ -190,7 +183,7 @@ export default function LandingPage() {
             </span>
 
             <h1 className="font-serif text-5xl md:text-6xl lp-text leading-tight mb-6">
-              Productivity, in tune with<br />
+              Your tasks, in tune with<br />
               <em className="font-script not-italic" style={{ color: 'var(--lp-accent)' }}>
                 how you feel
               </em>
@@ -237,11 +230,11 @@ export default function LandingPage() {
               <div>
 
                 <h1 className="font-serif text-4xl lg:text-5xl text-sage-900 dark:text-white leading-tight mb-4">
-                  Productivity, in tune with{' '}
+                  Your tasks, in tune with{' '}
                   <em className="text-sage-500 dark:text-teal-400 not-italic">how you feel</em>
                 </h1>
 
-                <p className="text-base text-sage-500 dark:text-white/90 leading-relaxed mb-6 max-w-lg">
+                <p className="text-base text-sage-700 dark:text-white/90 leading-relaxed mb-6 max-w-lg">
                   Balance recommends the right tasks at the right time — based on your mood, not just your to-do list.
                 </p>
 
@@ -259,7 +252,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Trust signals */}
-                <div className="flex flex-wrap gap-4 text-xs text-sage-400 dark:text-white/90">
+                <div className="flex flex-wrap gap-4 text-xs text-sage-700 dark:text-white/90">
                   {['Free forever', 'GDPR compliant', 'No credit card needed', 'Works on all devices'].map(t => (
                     <span key={t} className="flex items-center gap-1">
                       <Check className="w-3 h-3 text-sage-500" aria-hidden="true" />
@@ -271,7 +264,7 @@ export default function LandingPage() {
 
               {/* Right: interactive mood demo */}
               <div className="hidden md:block">
-                <div className="rounded-md overflow-hidden shadow-raised" style={{ background: SAGE_GRADIENT }}>
+                <div className="rounded-sm overflow-hidden shadow-raised" style={{ background: SAGE_GRADIENT }}>
                   <div className="p-6">
                     <p className="text-xs text-white/80 uppercase tracking-wider mb-3">
                       Try it — select your mood
@@ -282,7 +275,7 @@ export default function LandingPage() {
                         <button key={mood}
                           onClick={() => setSelectedMood(mood === selectedMood ? null : mood)}
                           aria-pressed={selectedMood === mood}
-                          className={`flex flex-col items-center gap-1 px-1 py-2 rounded-xl border text-[11px] font-medium
+                          className={`flex flex-col items-center gap-1 px-1 py-2 rounded-2xl border text-[11px] font-medium
                                       transition-all duration-200
                                       ${selectedMood === mood
                                         ? MOOD_PILL_SELECTED[mood] + ' scale-105'
@@ -296,7 +289,7 @@ export default function LandingPage() {
 
                     {selectedMood ? (
                       <div className="bg-sage-900/60 border border-white/10 p-4 rounded-sm animate-[fadeIn_0.25s_ease]">
-                        <p className="text-xs text-white/70 uppercase tracking-widest mb-2">
+                        <p className="text-xs text-white/80 uppercase tracking-widest mb-2">
                           Balance suggests:
                         </p>
                         <p className="font-serif text-white text-lg mb-2">
@@ -305,17 +298,17 @@ export default function LandingPage() {
                         <p className="text-white/70 text-xs leading-relaxed mb-3">
                           {MOOD_CONFIG[selectedMood].suggestion}
                         </p>
-                        <p className="text-xs text-white/70 italic">
+                        <p className="text-xs text-white/80 italic">
                           {MOOD_CONFIG[selectedMood].breakSuggestion}
                         </p>
                       </div>
                     ) : (
                       <div className="bg-white/10 border border-white/10 p-4 rounded-sm">
-                        <p className="text-xs text-white/50 uppercase tracking-wider mb-1">✦ Daily spark</p>
+                        <p className="text-xs text-white/70 uppercase tracking-wider mb-1">✦ Daily spark</p>
                         <p className="font-serif italic text-white text-sm leading-relaxed">
                           "Great days like this are when the best work happens."
                         </p>
-                        <p className="text-xs text-white/40 mt-3">← Pick a mood to see your plan</p>
+                        <p className="text-xs text-white/60 mt-3">← Pick a mood to see your plan</p>
                       </div>
                     )}
                   </div>
@@ -332,7 +325,7 @@ export default function LandingPage() {
               ].map(({ num, label }) => (
                 <div key={label} className="text-center">
                   <div className="font-serif text-2xl md:text-3xl text-sage-800 dark:text-white">{num}</div>
-                  <div className="text-xs text-sage-400 dark:text-white/90 mt-0.5">{label}</div>
+                  <div className="text-xs text-sage-600 dark:text-white/90 mt-0.5">{label}</div>
                 </div>
               ))}
             </div>
@@ -342,7 +335,7 @@ export default function LandingPage() {
 
 
         {/*How it works*/}
-        <section id="how-it-works" className="lp-bg-2 py-14 px-6">
+        <section id="how-it-works" className="lp-bg-2 py-14 px-6 scroll-mt-16">
           <div className="max-w-5xl mx-auto text-center">
             <p className="text-xs font-semibold lp-accent uppercase tracking-widest mb-3">
               How it works
@@ -386,7 +379,7 @@ export default function LandingPage() {
         </section>
 
         {/*Features */}
-        <section id="features" className="lp-bg-1 py-14 px-6">
+        <section id="features" className="lp-bg-1 py-14 px-6 scroll-mt-16">
           <div className="max-w-5xl mx-auto text-center">
             <p className="text-xs font-semibold lp-accent uppercase tracking-widest mb-3">
               Features
@@ -441,7 +434,7 @@ export default function LandingPage() {
         </section>
 
         {/*FAQ  */}
-        <section id="faq" className="lp-bg-1 py-14 px-6">
+        <section id="faq" className="lp-bg-1 py-14 px-6 scroll-mt-16">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-xs font-semibold lp-accent uppercase tracking-widest mb-3">
               FAQ
@@ -491,7 +484,7 @@ export default function LandingPage() {
             <div className="col-span-2 md:col-span-1">
               <span className="font-script text-2xl text-white">Balance</span>
               <p className="text-sm text-white/75 mt-2 leading-relaxed">
-                Productivity, in tune with how you feel.
+                Your tasks, in tune with how you feel.
               </p>
             </div>
 
@@ -512,6 +505,16 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-white/75 uppercase tracking-widest mb-4">
+                Contact
+              </p>
+              <a href="mailto:balancedtasks.mood@gmail.com"
+                className="text-sm text-white/75 hover:text-white transition-colors break-all">
+                balancedtasks.mood@gmail.com
+              </a>
             </div>
 
             <div>
@@ -538,7 +541,7 @@ export default function LandingPage() {
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row
                           items-center justify-between gap-4">
             <p className="text-xs text-white/75">
-              © 2026 Balance — Rebeca Boara. All rights reserved.
+              © 2026 Balance. All rights reserved.
             </p>
             <div className="flex gap-6">
               <Link href="/privacy" className="text-xs text-white/75 hover:text-white transition-colors">

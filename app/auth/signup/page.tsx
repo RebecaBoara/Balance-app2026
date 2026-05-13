@@ -11,7 +11,7 @@ import {
 import { auth, googleProvider } from '@/lib/firebase'
 import { createUserProfile } from '@/lib/db'
 import Spinner from '@/components/ui/Spinner'
-import Logo from '@/components/ui/Logo'
+import AuthLayout from '@/components/layout/AuthLayout'
 import { Eye, EyeOff } from 'lucide-react'
 export default function SignupPage() {
   const router = useRouter()
@@ -58,7 +58,7 @@ export default function SignupPage() {
       const cred = await createUserWithEmailAndPassword(auth, email, password)
       await updateProfile(cred.user, { displayName: name })
       await createUserProfile(cred.user.uid, cred.user.email!, name)
-      router.push('/app/mood')
+      router.push('/onboarding')
     } catch (err: any) {
       setError(getFriendlyError(err.code))
     } finally {
@@ -74,7 +74,7 @@ export default function SignupPage() {
     try {
       const cred = await signInWithPopup(auth, googleProvider)
       await createUserProfile(cred.user.uid, cred.user.email!, cred.user.displayName || undefined)
-      router.push('/app/mood')
+      router.push('/onboarding')
     } catch (err: any) {
       setError(getFriendlyError(err.code))
     } finally {
@@ -93,16 +93,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-70 dark:bg-ocean-900 flex flex-col">
-
-      {/* Top bar */}
-      <div className="p-6">
-        <Logo size="md" />
-      </div>
-
-      {/* Card */}
-      <div className="flex-1 flex items-center justify-center px-6 pb-12">
-        <div className="w-full max-w-sm">
+    <AuthLayout>
 
           {/* Heading */}
           <div className="mb-8">
@@ -116,7 +107,7 @@ export default function SignupPage() {
 
           {/* Error banner */}
           {error && (
-            <div className="mb-4 px-4 py-3 rounded-lg bg-coral-pale dark:bg-coral-app/20
+            <div className="mb-4 px-4 py-3 rounded-sm bg-coral-pale dark:bg-coral-app/20
                             border border-coral-app/30 text-red-800 dark:text-coral-pale
                             text-sm animate-fade-in">
               {error}
@@ -274,7 +265,7 @@ export default function SignupPage() {
           <button
             onClick={handleGoogleSignup}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-sm
                        border border-sage-500/15 dark:border-ocean-600
                        bg-white dark:bg-ocean-700
                        text-sage-800 dark:text-white text-sm font-medium
@@ -301,8 +292,6 @@ export default function SignupPage() {
             </Link>
           </p>
 
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   )
 }

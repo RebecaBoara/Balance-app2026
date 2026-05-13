@@ -43,7 +43,11 @@ export default function MoodPage() {
     async function checkToday() {
       if (!user) return
       try {
-        const entry = await getTodaysMood(user.uid)
+        const [entry, profile] = await Promise.all([
+          getTodaysMood(user.uid),
+          import('@/lib/db').then(m => m.getUserProfile(user.uid)),
+        ])
+        if (profile?.hasOnboarded === false) { router.push('/onboarding'); return }
         if (entry) {
           setSelected(entry.mood)
           setAlreadyCheckedIn(true)
@@ -86,7 +90,7 @@ export default function MoodPage() {
       <div className="px-6 md:px-0 pt-4 pb-4 flex justify-between items-start">
         <div>
           <h1 className="font-serif text-2xl text-sage-900 dark:text-white leading-tight">
-            {greeting}, <span className="text-sage-900 dark:text-teal-400">{firstName}</span> 🌿
+            {greeting}, <span className="text-sage-900 dark:text-white">{firstName}</span> 🌿
           </h1>
           <p className="text-sm text-sage-600 dark:text-white/70 mt-1">{dateStr}</p>
         </div>
@@ -100,8 +104,8 @@ export default function MoodPage() {
       {alreadyCheckedIn && (
         <div className="mx-6 md:mx-0 mb-4 px-4 py-3 rounded-sm
                         bg-sage-50 dark:bg-sage-900/20
-                        border border-sage-200 dark:border-sage-700
-                        text-sage-700 dark:text-sage-300 text-sm  animate-fade-in">
+                        border border-sage-200 dark:border-white/30
+                        text-sage-700 dark:text-white/70 text-sm  animate-fade-in">
           ✓ You already checked in today — you can update your mood below.
         </div>
       )}
@@ -146,10 +150,10 @@ export default function MoodPage() {
         {/* Suggestion banner */}
         {selected && (
           <div className="mb-5 px-4 py-3 rounded-sm
-                          bg-white dark:bg-ocean-700
+                          bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80
                           border border-sage-500/15 dark:border-ocean-600
                           animate-fade-in shadow-raised lp-border">
-            <p className="text-sm font-semibold text-sage-700 dark:text-teal-400
+            <p className="text-sm font-semibold text-sage-700 dark:text-white/80
                           uppercase tracking-wider mb-1">
               ✦ Balance suggests
             </p>
@@ -175,7 +179,7 @@ export default function MoodPage() {
             className="input resize-none"
             maxLength={300}
           />
-          <p className="text-sm text-sage-300 dark:text-white/50 text-right mt-1">
+          <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
             {note.length}/300
           </p>
         </div>

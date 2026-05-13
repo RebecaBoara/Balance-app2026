@@ -16,13 +16,13 @@ import ThemeToggle   from '@/components/ui/Themetoggle'
 import Spinner       from '@/components/ui/Spinner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import {
-  Coffee, Shield, LogOut, Trash2, ChevronRight, Check, X, Info, Pencil,
+  Coffee, Shield, LogOut, Trash2, ChevronRight, Check, X, Info, Pencil, Mail,
 } from 'lucide-react'
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-xs font-semibold text-sage-500 dark:text-white/40
-                  uppercase tracking-widest px-1 mb-2 mt-5 first:mt-0">
+                  uppercase tracking-widest px-1 mb-2 mt-4 first:mt-0">
       {children}
     </p>
   )
@@ -30,8 +30,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white dark:bg-ocean-700 rounded-xl
-                    border border-sage-100 dark:border-ocean-600
+    <div className="bg-white dark:bg-ocean-700 rounded-sm shadow-raised
+                    border border-sage-500/15 dark:border-ocean-600
                     divide-y divide-sage-50 dark:divide-ocean-600 overflow-hidden">
       {children}
     </div>
@@ -46,19 +46,19 @@ function ToggleRow({ label, description, icon: Icon, value, onChange }: {
   onChange:     (v: boolean) => void
 }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3.5">
+    <div className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center gap-3 flex-1 min-w-0 pr-4">
         <div className="w-8 h-8 rounded-lg bg-sage-50 dark:bg-ocean-600
                         flex items-center justify-center flex-shrink-0">
           <Icon className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-sm font-medium text-sage-800 dark:text-white">{label}</p>
-          {description && (
-            <p className="text-xs text-sage-400 dark:text-white/40 mt-0.5 leading-relaxed">
-              {description}
-            </p>
-          )}
+          <p className="text-sm leading-relaxed">
+            <span className="font-medium text-sage-800 dark:text-white">{label}</span>
+            {description && (
+              <span className="text-sage-400 dark:text-white/40"> — {description}</span>
+            )}
+          </p>
         </div>
       </div>
       <button
@@ -77,15 +77,16 @@ function ToggleRow({ label, description, icon: Icon, value, onChange }: {
   )
 }
 
-function LinkRow({ label, icon: Icon, href, danger = false }: {
+function LinkRow({ label, description, icon: Icon, href, danger = false }: {
   label:   string
+  description?: string
   icon:    React.ElementType
   href:    string
   danger?: boolean
 }) {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer"
-      className="flex items-center gap-3 px-4 py-3.5
+      className="flex items-center gap-3 px-4 py-3
                  hover:bg-sage-50 dark:hover:bg-ocean-600
                  transition-colors duration-150 group">
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
@@ -96,11 +97,16 @@ function LinkRow({ label, icon: Icon, href, danger = false }: {
         <Icon className={`w-4 h-4 ${danger ? 'text-red-400' : 'text-sage-500 dark:text-teal-400'}`}
           aria-hidden="true" />
       </div>
-      <span className={`text-sm flex-1 ${danger
-        ? 'text-red-500 dark:text-red-400'
-        : 'text-sage-700 dark:text-white/80'}`}>
-        {label}
-      </span>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm leading-relaxed ${danger
+          ? 'text-red-500 dark:text-red-400'
+          : 'text-sage-700 dark:text-white/80'}`}>
+          <span className="font-medium">{label}</span>
+          {description && (
+            <span className="text-sage-400 dark:text-white/40"> — {description}</span>
+          )}
+        </p>
+      </div>
       <ChevronRight className="w-4 h-4 text-sage-300 dark:text-white/20
                                group-hover:text-sage-500 transition-colors" aria-hidden="true" />
     </a>
@@ -242,7 +248,7 @@ export default function SettingsPage() {
 
         {/* Profile */}
         <Card>
-          <div className="flex items-center gap-4 px-4 py-4">
+          <div className="flex items-center gap-4 px-4 py-3.5">
             <div className="w-12 h-12 rounded-full bg-sage-500 dark:bg-teal-600
                             flex items-center justify-center
                             text-white text-lg font-semibold flex-shrink-0">
@@ -282,8 +288,8 @@ export default function SettingsPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <div className="min-w-0">
+                <div className="flex items-center justify-between gap-2 w-full">
+                  <div className="min-w-0 flex-1 pr-2">
                     <p className="text-sm font-semibold text-sage-900 dark:text-white truncate">
                       {displayName}
                     </p>
@@ -295,9 +301,13 @@ export default function SettingsPage() {
                   <button
                     onClick={startEditName}
                     aria-label="Edit name"
-                    className="p-1.5 rounded-lg text-sage-300 dark:text-white/40 hover:text-sage-500 dark:hover:text-white/70
-                               hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors flex-shrink-0">
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md
+                               text-sage-500 dark:text-white/60 text-xs font-medium
+                               hover:text-sage-700 dark:hover:text-white/80
+                               hover:bg-sage-50 dark:hover:bg-ocean-600
+                               transition-colors flex-shrink-0">
                     <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                    Edit
                   </button>
                 </div>
               )}
@@ -315,15 +325,24 @@ export default function SettingsPage() {
             value={breakSuggestions}
             onChange={setBreakSuggestions}
           />
-          <div className="px-4 py-3.5">
-            <div className="flex items-center gap-3 mb-3">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0 pr-4">
               <div className="w-8 h-8 rounded-lg bg-sage-50 dark:bg-ocean-600
                               flex items-center justify-center flex-shrink-0">
                 <span className="text-sm" aria-hidden="true">☀️</span>
               </div>
-              <p className="text-sm font-medium text-sage-800 dark:text-white">Theme</p>
+              <div className="min-w-0">
+                <p className="text-sm leading-relaxed">
+                  <span className="font-medium text-sage-800 dark:text-white">Theme</span>
+                  <span className="text-sage-400 dark:text-white/40"> — Choose how Balance looks across your app experience</span>
+                </p>
+              </div>
+              </div>
+              <div className="flex-shrink-0">
+                <ThemeToggle />
+              </div>
             </div>
-            <ThemeToggle />
           </div>
         </Card>
 
@@ -331,7 +350,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full flex items-center justify-center gap-2 mt-4
+          className="w-full flex items-center justify-center gap-2 mt-3
                      py-3 rounded-xl bg-sage-500 dark:bg-teal-600
                      text-white font-medium text-sm
                      hover:bg-sage-700 dark:hover:bg-teal-700
@@ -349,31 +368,62 @@ export default function SettingsPage() {
         {/* Privacy & Data */}
         <SectionLabel>Privacy & Data</SectionLabel>
         <Card>
-          <LinkRow label="Privacy Policy"   icon={Shield} href="/privacy" />
-          <LinkRow label="Terms of Service" icon={Shield} href="/terms"   />
+          <LinkRow
+            label="Privacy Policy"
+            description="See how your data is stored, used, and protected."
+            icon={Shield}
+            href="/privacy"
+          />
+          <LinkRow
+            label="Terms of Service"
+            description="Review app rules, account responsibilities, and usage terms."
+            icon={Shield}
+            href="/terms"
+          />
           <button
             onClick={() => setShowDelete(true)}
-            className="w-full flex items-center gap-3 px-4 py-3.5
+            className="w-full flex items-center gap-3 px-4 py-3
                        hover:bg-red-50 dark:hover:bg-red-900/20
                        transition-colors duration-150 group text-left">
             <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20
                             flex items-center justify-center flex-shrink-0">
               <Trash2 className="w-4 h-4 text-red-400" aria-hidden="true" />
             </div>
-            <span className="text-sm text-red-500 dark:text-red-400">Delete account</span>
+            <div className="min-w-0">
+              <p className="text-sm text-red-500 dark:text-red-400 leading-relaxed">
+                <span className="font-medium">Delete account</span>
+                <span className="text-red-400/90 dark:text-red-300/80"> — Permanently remove your account and all saved data.</span>
+              </p>
+            </div>
           </button>
+        </Card>
+
+        {/* Support */}
+        <SectionLabel>Support</SectionLabel>
+        <Card>
+          <LinkRow
+            label="Contact support"
+            description="Get help or send feedback"
+            icon={Mail}
+            href="mailto:balancedtasks.mood@gmail.com"
+          />
         </Card>
 
         {/* About */}
         <SectionLabel>About</SectionLabel>
         <Card>
-          <div className="flex items-center gap-3 px-4 py-3.5">
+          <div className="flex items-center gap-3 px-4 py-3">
             <div className="w-8 h-8 rounded-lg bg-sage-50 dark:bg-ocean-600
                             flex items-center justify-center flex-shrink-0">
               <Info className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
             </div>
-            <span className="text-sm text-sage-700 dark:text-white/80 flex-1">App version</span>
-            <span className="text-sm text-sage-400 dark:text-white/40">1.0.0</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm leading-relaxed">
+                <span className="font-medium text-sage-700 dark:text-white/80">App version</span>
+                <span className="text-sage-400 dark:text-white/40"> — Current installed release used for this research build.</span>
+              </p>
+            </div>
+            <span className="text-sm text-sage-400 dark:text-white/40 flex-shrink-0">1.0.0</span>
           </div>
           <div className="px-4 py-3 text-center">
             <p className="font-script text-lg text-sage-400 dark:text-white/30">Balance</p>
@@ -386,7 +436,7 @@ export default function SettingsPage() {
         {/* Sign out */}
         <button
           onClick={() => setShowSignOut(true)}
-          className="w-full flex items-center justify-center gap-2 mt-6
+          className="w-full flex items-center justify-center gap-2 mt-5
                      py-3 rounded-xl border border-coral-app dark:border-red-500/60
                      text-coral-app dark:text-red-400 text-sm font-medium
                      hover:bg-red-50 dark:hover:bg-red-900/10
@@ -395,6 +445,9 @@ export default function SettingsPage() {
           <LogOut className="w-4 h-4" aria-hidden="true" />
           Sign out
         </button>
+        <p className="text-xs text-sage-400 dark:text-white/40 mt-2 px-1">
+          Ends your current session on this device.
+        </p>
 
       </div>
 

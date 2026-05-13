@@ -22,7 +22,7 @@ function Navbar() {
             Home
           </Link>
           <Link href="/auth/signup"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white text-sm font-medium transition-all duration-200">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-sm bg-white/20 hover:bg-white/30 text-white text-sm font-medium transition-all duration-200">
             Get started <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </Link>
         </div>
@@ -77,7 +77,7 @@ export default function TermsPage() {
 
         {/* Header */}
         <div className="flex items-start gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-sm bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center flex-shrink-0">
             <FileText className="w-6 h-6 text-sage-500 dark:text-teal-400" aria-hidden="true" />
           </div>
           <div>
@@ -87,7 +87,7 @@ export default function TermsPage() {
         </div>
 
         {/* Intro banner */}
-        <div className="p-4 rounded-xl bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
+        <div className="p-4 rounded-sm bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
           <p className="text-sm text-sage-700 dark:text-sage-300 leading-relaxed">
             Please read these terms carefully before using Balance. By creating an account you agree to these terms. Balance is an academic research prototype — these terms reflect its nature as a university dissertation project.
           </p>
@@ -151,7 +151,7 @@ export default function TermsPage() {
           {/* 5 — Disclaimer in amber box */}
           <section>
             <h2 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">5. Disclaimer of warranties</h2>
-            <div className="p-4 rounded-xl bg-amber-pale dark:bg-amber-900/20 border border-amber-app/40 mb-3">
+            <div className="p-4 rounded-sm bg-amber-pale dark:bg-amber-900/20 border border-amber-app/40 mb-3">
               <p className="text-amber-700 dark:text-amber-300 text-sm leading-relaxed">
                 Balance is provided <strong>"as is"</strong> without any warranties, express or implied. As an academic prototype, we do not guarantee uninterrupted availability, data accuracy, or any particular purpose beyond the scope of the dissertation research.
               </p>
@@ -187,7 +187,7 @@ export default function TermsPage() {
           {/* 10 */}
           <section>
             <h2 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">10. Contact</h2>
-            <div className="p-5 rounded-xl bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
+            <div className="p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
               <p className="mb-3">If you have questions about these terms, please contact:</p>
               <div className="space-y-1">
                 
@@ -200,12 +200,12 @@ export default function TermsPage() {
         </div>
 
         {/* Also see privacy */}
-        <div className="mt-10 p-5 rounded-xl bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-10 p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-sage-700 dark:text-white">Also read our Privacy Policy</p>
             <p className="text-xs text-sage-500 dark:text-ocean-300 mt-0.5">Learn how we handle your data and your GDPR rights</p>
           </div>
-          <Link href="/privacy" className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-sage-200 dark:border-ocean-600 text-sage-600 dark:text-ocean-200 text-sm font-medium hover:bg-sage-50 dark:hover:bg-ocean-700 transition-colors flex-shrink-0">
+          <Link href="/privacy" className="flex items-center gap-2 px-5 py-2.5 rounded-sm border border-sage-200 dark:border-ocean-600 text-sage-600 dark:text-ocean-200 text-sm font-medium hover:bg-sage-50 dark:hover:bg-ocean-700 transition-colors flex-shrink-0">
             Privacy Policy <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>

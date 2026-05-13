@@ -3,7 +3,7 @@
 // Fields: title, difficulty, estimated time, due date, notes
 
 import { useState, useRef, useEffect } from 'react'
-import { DifficultyType } from '@/types'
+import { DifficultyType, RepeatType } from '@/types'
 import Spinner from '@/components/ui/Spinner'
 import { Plus, Minus, X, Clock, Calendar, Pencil } from 'lucide-react'
 
@@ -12,6 +12,7 @@ export interface NewTask {
   title:        string
   difficulty:   DifficultyType
   estimatedMin: number
+  repeat:       RepeatType
   dueDate:      string
   dueTime:      string
   notes:        string
@@ -21,6 +22,7 @@ const EMPTY_TASK: NewTask = {
   title:        '',
   difficulty:   'medium',
   estimatedMin: 30,
+  repeat:       'none',
   dueDate:      '',
   dueTime:      '',
   notes:        '',
@@ -94,7 +96,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
       <div
         className="relative w-full md:max-w-3xl
                    bg-white dark:bg-ocean-800
-                   rounded-t-2xl md:rounded-2xl
+                   rounded-t-md md:rounded-2xl
                    border border-sage-500/15 dark:border-ocean-600
                    shadow-lifted animate-slide-up
                    max-h-[85vh] md:max-h-[90vh] overflow-y-auto
@@ -114,7 +116,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="p-2 rounded-lg text-sage-400 dark:text-white/60
+            className="p-2 rounded-md text-sage-400 dark:text-white/60
                        hover:text-sage-600 dark:hover:text-white
                        hover:bg-sage-50 dark:hover:bg-ocean-700
                        transition-all duration-200"
@@ -153,7 +155,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                 </p>
               </div>
 
-              {/* Est. time + Due date + Time — 3-col row */}
+              {/* Est. time + Due date + Time */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <div>
                   <label htmlFor="task-time" className="label text-sage-500 dark:text-white/70">
@@ -223,6 +225,25 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                   />
                 </div>
               </div>
+
+              {!isEditing && (
+                <div>
+                  <label htmlFor="task-repeat" className="label text-sage-500 dark:text-white/70">
+                    Repeat
+                  </label>
+                  <select
+                    id="task-repeat"
+                    value={newTask.repeat}
+                    onChange={e => setNewTask(p => ({ ...p, repeat: e.target.value as RepeatType }))}
+                    className="input"
+                  >
+                    <option value="none">None</option>
+                    <option value="daily">Every day</option>
+                    <option value="weekly">Every week</option>
+                    <option value="monthly">Every month</option>
+                  </select>
+                </div>
+              )}
 
               {/* Notes */}
               <div>

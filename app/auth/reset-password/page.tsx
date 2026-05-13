@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
-import Logo from '@/components/ui/Logo'
+import AuthLayout from '@/components/layout/AuthLayout'
 import Spinner from '@/components/ui/Spinner'
 import { ArrowLeft } from 'lucide-react'
 
@@ -33,14 +33,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 flex flex-col">
-
-      <div className="p-6">
-        <Logo size="md" />
-      </div>
-
-      <div className="flex-1 flex items-center justify-center px-6 pb-12">
-        <div className="w-full max-w-sm">
+    <AuthLayout>
 
           <Link href="/auth/login"
             className="inline-flex items-center gap-1.5 text-sm text-sage-500
@@ -76,7 +69,7 @@ export default function ResetPasswordPage() {
               </div>
 
               {error && (
-                <div className="mb-4 px-4 py-3 rounded-lg bg-coral-pale dark:bg-coral-app/20
+                <div className="mb-4 px-4 py-3 rounded-sm bg-coral-pale dark:bg-coral-app/20
                                 border border-coral-app/30 text-red-800 dark:text-coral-pale
                                 text-sm animate-fade-in">
                   {error}
@@ -116,8 +109,6 @@ export default function ResetPasswordPage() {
             </>
           )}
 
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   )
 }

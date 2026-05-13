@@ -180,7 +180,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
                      hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+            <Activity className="w-4 h-4 text-sage-500 dark:text-white" aria-hidden="true" />
             <span className="text-sm font-medium text-sage-800 dark:text-white">
               {activities.label}
             </span>
@@ -196,7 +196,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
           <div className="px-4 pb-3 border-t border-sage-50 dark:border-ocean-600 animate-fade-in">
             <ul className="space-y-2 pt-2">
               {activities.items.map((item, i) => (
-                <li key={i} className="text-sm text-sage-600 dark:text-ocean-200 leading-relaxed">
+                <li key={i} className="text-sm text-sage-600 dark:text-white/70 leading-relaxed">
                   {item}
                 </li>
               ))}
@@ -214,7 +214,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
                      hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <Music className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+            <Music className="w-4 h-4 text-sage-500 dark:text-white" aria-hidden="true" />
             <span className="text-sm font-medium text-sage-800 dark:text-white">
               {music.label}
             </span>
@@ -228,7 +228,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
 
         {openSection === 'music' && (
           <div className="px-4 pb-3 border-t border-sage-50 dark:border-ocean-600 animate-fade-in">
-            <p className="text-xs text-sage-400 dark:text-ocean-300 pt-2 mb-2">
+            <p className="text-xs text-sage-400 dark:text-white/70 pt-2 mb-2">
               {music.description}
             </p>
             <div className="space-y-2">
@@ -243,16 +243,16 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
                              hover:bg-sage-100 dark:hover:bg-ocean-700
                              transition-colors group"
                 >
-                  <span className="text-sm text-sage-700 dark:text-ocean-200 font-medium">
+                  <span className="text-sm text-sage-700 dark:text-white/60 font-medium">
                     {name}
                   </span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-sage-400 dark:text-ocean-400">
+                    <span className="text-[10px] text-sage-400 dark:text-white/70">
                       {source}
                     </span>
                     <ExternalLink
-                      className="w-3 h-3 text-sage-300 group-hover:text-sage-500
-                                 dark:text-ocean-500 dark:group-hover:text-teal-400
+                      className="w-3 h-3 text-sage-300 group-hover:text-white/70
+                                 dark:text-white/70 dark:group-hover:text-teal-400
                                  transition-colors"
                       aria-hidden="true"
                     />
@@ -274,13 +274,13 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
                        hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+              <Heart className="w-4 h-4 text-sage-500 dark:text-white" aria-hidden="true" />
               <span className="text-sm font-medium text-sage-800 dark:text-white">
                 Need some support?
               </span>
             </div>
             <ChevronDown
-              className={`w-4 h-4 text-sage-400 dark:text-white/40 transition-transform duration-200
+              className={`w-4 h-4 text-sage-400 dark:text-white/60 transition-transform duration-200
                           ${openSection === 'support' ? 'rotate-180' : ''}`}
               aria-hidden="true"
             />
@@ -288,7 +288,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
 
           {openSection === 'support' && (
             <div className="px-4 pb-4 border-t border-sage-50 dark:border-ocean-600 animate-fade-in">
-              <p className="text-xs text-sage-500 dark:text-ocean-300 pt-3 pb-3 leading-relaxed">
+              <p className="text-xs text-sage-500 dark:text-white/70 pt-3 pb-3 leading-relaxed">
                 It's okay to not be okay. If you're struggling, these free UK resources are here to help.
               </p>
               <div className="space-y-2">
@@ -307,7 +307,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
                       <p className="text-sm font-semibold text-sage-800 dark:text-white mb-0.5">
                         {name}
                       </p>
-                      <p className="text-xs text-sage-500 dark:text-ocean-300 leading-relaxed">
+                      <p className="text-xs text-sage-500 dark:text-white/70 leading-relaxed">
                         {description}
                       </p>
                       {phone && (
@@ -325,7 +325,7 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
                   </a>
                 ))}
               </div>
-              <p className="text-[10px] text-sage-300 dark:text-ocean-500 mt-3 leading-relaxed text-center">
+              <p className="text-[12px] text-sage-300 dark:text-white/70 mt-3 leading-relaxed text-center">
                 Balance is not a mental health tool. If you are in crisis, please contact Samaritans on 116 123 (free, 24/7).
               </p>
             </div>

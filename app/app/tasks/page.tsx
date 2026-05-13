@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { getTasks, addTask, updateTask, toggleTask, deleteTask, getTodaysMood, getUserProfile } from '@/lib/db'
 import { getRecommendedTasks } from '@/lib/mood'
-import { Task, MoodType } from '@/types'
+import { Task, MoodType, RepeatType } from '@/types'
 import TaskCard     from '@/components/tasks/TaskCard'
 import CalendarView  from '@/components/tasks/CalendarView'
 import AddTaskModal, { NewTask } from '@/components/tasks/AddTaskModal'
@@ -32,6 +32,33 @@ function isOverdue(dateStr?: string): boolean {
   return dateStr < new Date().toISOString().split('T')[0]
 }
 
+function addDays(dateStr: string, days: number): string {
+  const d = new Date(dateStr + 'T00:00:00')
+  d.setDate(d.getDate() + days)
+  return d.toISOString().split('T')[0]
+}
+
+function addWeeks(dateStr: string, weeks: number): string {
+  return addDays(dateStr, weeks * 7)
+}
+
+function addMonths(dateStr: string, months: number): string {
+  const d = new Date(dateStr + 'T00:00:00')
+  const day = d.getDate()
+  d.setDate(1)
+  d.setMonth(d.getMonth() + months)
+  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+  d.setDate(Math.min(day, lastDay))
+  return d.toISOString().split('T')[0]
+}
+
+function nextDateForRepeat(baseDate: string, repeat: Task['repeat']): string {
+  if (repeat === 'daily') return addDays(baseDate, 1)
+  if (repeat === 'weekly') return addWeeks(baseDate, 1)
+  if (repeat === 'monthly') return addMonths(baseDate, 1)
+  return baseDate
+}
+
 const COMPLETED_DAYS = 20
 
 function isCompletedRecently(task: Task): boolean {
@@ -47,7 +74,7 @@ export default function TasksPage() {
   const [todaysMood, setTodaysMood]  = useState<MoodType | null>(null)
   const [loading,    setLoading]     = useState(true)
   const [loadError,  setLoadError]   = useState(false)
-  const [filter,     setFilter]      = useState<FilterType>('all')
+  const [filter,     setFilter]      = useState<FilterType>('today')
   const [view,       setView]        = useState<ViewType>('list')
   const [showModal,   setShowModal]   = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
@@ -102,6 +129,7 @@ async function handleAddTask(data: NewTask) {
       data.title.trim(),
       data.difficulty,
       data.estimatedMin,
+      data.repeat,
       data.dueDate || undefined,
       data.dueTime || undefined,
       data.notes   || undefined,
@@ -112,6 +140,7 @@ async function handleAddTask(data: NewTask) {
       title:        data.title.trim(),
       difficulty:   data.difficulty,
       estimatedMin: data.estimatedMin,
+      repeat:       data.repeat,
       completed:    false,
       dueDate:      data.dueDate || undefined,
       dueTime:      data.dueTime || undefined,
@@ -137,6 +166,47 @@ async function handleAddTask(data: NewTask) {
     }
     try {
       await toggleTask(task.id, nowCompleted)
+
+      // Recurring tasks create the next instance when completed.
+      if (nowCompleted && task.repeat && task.repeat !== 'none' && user) {
+        const baseDate = task.dueDate || new Date().toISOString().split('T')[0]
+        const nextDate = nextDateForRepeat(baseDate, task.repeat)
+        const duplicateExists = tasks.some(t =>
+          !t.completed &&
+          t.repeat === task.repeat &&
+          t.title.trim().toLowerCase() === task.title.trim().toLowerCase() &&
+          t.dueDate === nextDate
+        )
+
+        if (!duplicateExists) {
+          const nextId = await addTask(
+            user.uid,
+            task.title,
+            task.difficulty,
+            task.estimatedMin,
+            task.repeat,
+            nextDate,
+            task.dueTime,
+            task.notes,
+          )
+
+          const nextTask: Task = {
+            id: nextId,
+            userId: user.uid,
+            title: task.title,
+            difficulty: task.difficulty,
+            estimatedMin: task.estimatedMin,
+            repeat: task.repeat,
+            completed: false,
+            dueDate: nextDate,
+            dueTime: task.dueTime,
+            notes: task.notes,
+            createdAt: Date.now(),
+          }
+
+          setTasks(prev => [nextTask, ...prev])
+        }
+      }
     } catch {
       setTasks(prev => prev.map(t => t.id === task.id ? task : t))
     }
@@ -151,6 +221,25 @@ async function handleAddTask(data: NewTask) {
       await updateTask(editingTask.id, data)
     } catch {
       setTasks(prev => prev.map(t => t.id === editingTask.id ? editingTask : t))
+    }
+  }
+
+  async function handleSetRepeat(task: Task, repeat: RepeatType) {
+    const optimistic = { ...task, repeat }
+    setTasks(prev => prev.map(t => (t.id === task.id ? optimistic : t)))
+
+    try {
+      await updateTask(task.id, {
+        title: task.title,
+        difficulty: task.difficulty,
+        estimatedMin: task.estimatedMin,
+        repeat,
+        dueDate: task.dueDate || '',
+        dueTime: task.dueTime || '',
+        notes: task.notes || '',
+      })
+    } catch {
+      setTasks(prev => prev.map(t => (t.id === task.id ? task : t)))
     }
   }
 
@@ -236,14 +325,14 @@ async function handleAddTask(data: NewTask) {
           <div role="tablist" aria-label="Task filter"
             className="flex gap-1 p-1 rounded-sm bg-sage-500/10 dark:bg-ocean-800
                        border border-sage-500/15 dark:border-ocean-600 w-fit">
-            {(['all', 'today', 'upcoming'] as FilterType[]).map(f => (
+            {(['today', 'upcoming', 'all'] as FilterType[]).map(f => (
               <button key={f} role="tab" aria-selected={filter === f}
                 onClick={() => { setFilter(f); setView('list') }}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium
+                className={`px-4 py-1.5 rounded-sm text-sm font-medium
                             transition-all duration-200 capitalize
                             ${filter === f && view === 'list'
                               ? 'bg-sage-500 dark:bg-teal-600 text-white shadow-sm'
-                              : 'text-sage-600 dark:text-white/60 hover:text-sage-900 dark:hover:text-white'
+                              : 'text-sage-700 dark:text-white/70 hover:text-sage-700 dark:hover:text-white'
                             }`}>
                 {f}
               </button>
@@ -254,7 +343,7 @@ async function handleAddTask(data: NewTask) {
             <button
               onClick={() => setShowModal(true)}
               aria-label="Add new task"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg
+              className="flex items-center gap-1.5 px-3 py-2 rounded-sm
                          bg-sage-500 dark:bg-teal-600 text-white text-sm font-medium
                          hover:bg-sage-700 dark:hover:bg-teal-700 transition-colors"
             >
@@ -264,10 +353,10 @@ async function handleAddTask(data: NewTask) {
             <button
               onClick={() => setView(v => v === 'calendar' ? 'list' : 'calendar')}
               aria-label={view === 'calendar' ? 'Switch to list view' : 'Switch to calendar view'}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-all duration-200
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-sm border text-sm font-medium transition-all duration-200
                           ${view === 'calendar'
                             ? 'bg-sage-500 border-sage-500 text-white dark:bg-teal-600 dark:border-teal-600 shadow-sm'
-                            : 'bg-white dark:bg-ocean-700 border-sage-300 dark:border-ocean-500 text-sage-600 dark:text-white/80 hover:border-sage-400 hover:bg-sage-50 dark:hover:bg-ocean-600'
+                            : 'bg-white dark:bg-ocean-700 border-sage-300 dark:border-ocean-500 text-sage-700 dark:text-white/80 hover:border-sage-400 hover:bg-sage-50 dark:hover:bg-ocean-600'
                           }`}
             >
               {view === 'calendar'
@@ -311,17 +400,18 @@ async function handleAddTask(data: NewTask) {
             {recommended.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-3 h-3 text-sage-500 dark:text-teal-400" aria-hidden="true" />
-                  <p className="text-xs font-semibold text-sage-700 dark:text-teal-400 uppercase tracking-wider">
+                  <Sparkles className="w-3 h-3 text-sage-700 dark:text-white/70" aria-hidden="true" />
+                  <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                 Recommended first
                   </p>
-                  <span className="text-xs text-sage-600 dark:text-white/50">({recommended.length})</span>
+                  <span className="text-xs text-sage-700 dark:text-white/50">({recommended.length})</span>
                 </div>
                 <div className="space-y-2">
                   {recommended.map(task => (
                     <TaskCard key={task.id} task={task}
                       celebrated={celebrated.has(task.id)}
                       deleting={deleting === task.id}
+                      onSetRepeat={handleSetRepeat}
                       onToggle={handleToggle} onDelete={handleDelete} onEdit={setEditingTask} />
                   ))}
                 </div>
@@ -335,13 +425,14 @@ async function handleAddTask(data: NewTask) {
                   <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                 Saved for later
                   </p>
-                  <span className="text-xs text-sage-600 dark:text-white/50">({deferred.length})</span>
+                  <span className="text-xs text-sage-700 dark:text-white/50">({deferred.length})</span>
                 </div>
                 <div className="space-y-2 opacity-60">
                   {deferred.map(task => (
                     <TaskCard key={task.id} task={task}
                       celebrated={false}
                       deleting={deleting === task.id}
+                      onSetRepeat={handleSetRepeat}
                       onToggle={handleToggle} onDelete={handleDelete} onEdit={setEditingTask} deferred />
                   ))}
                 </div>
@@ -352,17 +443,18 @@ async function handleAddTask(data: NewTask) {
             {completedToday.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-sage-400 dark:text-white/70" aria-hidden="true" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-sage-600 dark:text-white/70" aria-hidden="true" />
                   <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                 Completed recently
                   </p>
-                  <span className="text-xs text-sage-600 dark:text-white/50">({completedToday.length})</span>
+                  <span className="text-xs text-sage-700 dark:text-white/50">({completedToday.length})</span>
                 </div>
                 <div className="space-y-2">
                   {completedToday.map(task => (
                     <TaskCard key={task.id} task={task}
                       celebrated={false}
                       deleting={deleting === task.id}
+                      onSetRepeat={handleSetRepeat}
                       onToggle={handleToggle} onDelete={handleDelete} completed />
                   ))}
                 </div>
@@ -404,6 +496,7 @@ async function handleAddTask(data: NewTask) {
             title:        editingTask.title,
             difficulty:   editingTask.difficulty,
             estimatedMin: editingTask.estimatedMin,
+            repeat:       editingTask.repeat || 'none',
             dueDate:      editingTask.dueDate  || '',
             dueTime:      editingTask.dueTime  || '',
             notes:        editingTask.notes    || '',

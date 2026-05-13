@@ -22,7 +22,7 @@ function Navbar() {
             Home
           </Link>
           <Link href="/auth/signup"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white text-sm font-medium transition-all duration-200">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-sm bg-white/20 hover:bg-white/30 text-white text-sm font-medium transition-all duration-200">
             Get started <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </Link>
         </div>
@@ -38,7 +38,7 @@ function Navbar() {
         <div className="md:hidden border-t border-white/10 px-6 py-3 space-y-1"
           style={{ background: SAGE_GRADIENT }}>
           <Link href="/" className="block text-sm text-white/80 py-2" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link href="/auth/signup" className="block text-center px-5 py-2.5 rounded-lg bg-white/20 text-white text-sm font-medium mt-1" onClick={() => setMenuOpen(false)}>Get started free</Link>
+          <Link href="/auth/signup" className="block text-center px-5 py-2.5 rounded-sm bg-white/20 text-white text-sm font-medium mt-1" onClick={() => setMenuOpen(false)}>Get started free</Link>
         </div>
       )}
     </nav>
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
 
         {/* Header */}
         <div className="flex items-start gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-sm bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center flex-shrink-0">
             <Shield className="w-6 h-6 text-sage-500 dark:text-teal-400" aria-hidden="true" />
           </div>
           <div>
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
         </div>
 
         {/* Intro banner */}
-        <div className="p-4 rounded-xl bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
+        <div className="p-4 rounded-sm bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
           <p className="text-sm text-sage-700 dark:text-sage-300 leading-relaxed">
             Balance is an academic research prototype developed as part of a dissertation project at Southampton Solent University. This policy explains what data we collect, how we use it, and your rights under the General Data Protection Regulation (GDPR).
           </p>
@@ -148,7 +148,7 @@ export default function PrivacyPage() {
               { right: 'Right to withdraw',        desc: 'Stop using Balance and delete your account at any time.' },
               { right: 'Right to object',          desc: 'Object to how your data is processed by contacting us.' },
             ].map(({ right, desc }) => (
-              <div key={right} className="p-4 rounded-xl bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
+              <div key={right} className="p-4 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
                 <h3 className="text-xs font-semibold text-sage-600 dark:text-teal-400 uppercase tracking-wider mb-1">{right}</h3>
                 <p className="text-xs text-sage-500 dark:text-ocean-300 leading-relaxed">{desc}</p>
               </div>
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
               {cards && (
                 <div className="space-y-3">
                   {cards.map(({ title: ct, text }) => (
-                    <div key={ct} className="p-4 rounded-xl bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
+                    <div key={ct} className="p-4 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
                       <h3 className="text-sm font-semibold text-sage-800 dark:text-white mb-1">{ct}</h3>
                       <p className="text-sm text-sage-500 dark:text-ocean-300 leading-relaxed">{text}</p>
                     </div>
@@ -189,13 +189,17 @@ export default function PrivacyPage() {
               )}
 
               {contact && (
-                <div className="p-5 rounded-xl bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
+                <div className="p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
                   <p className="text-sm text-sage-600 dark:text-ocean-300 leading-relaxed mb-3">
                     If you have any questions about this privacy policy or how your data is handled, please contact:
                   </p>
                   <div className="space-y-1 text-sm">
                     
-                    <p><span className="font-semibold text-sage-800 dark:text-white">Email:</span> <span className="text-sage-600 dark:text-ocean-300">rebeca.boara@gmail.com</span></p>
+                    <p><span className="font-semibold text-sage-800 dark:text-white">Email:</span>{' '}
+                      <a href="mailto:balancedtasks.mood@gmail.com" className="text-sage-600 dark:text-ocean-300 hover:underline">
+                        balancedtasks.mood@gmail.com
+                      </a>
+                    </p>
                     
                   </div>
                 </div>

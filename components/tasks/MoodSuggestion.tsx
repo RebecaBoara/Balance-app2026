@@ -46,7 +46,7 @@ export default function MoodSuggestionBanner({ mood, showBreaks = true }: MoodSu
                     border border-sage-500/15 dark:border-ocean-600
                     shadow-raised animate-fade-in">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-semibold text-sage-900 dark:text-teal-400
+        <p className="text-sm font-semibold text-sage-700 dark:text-teal-400
                       uppercase tracking-wider flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
           Balance suggests

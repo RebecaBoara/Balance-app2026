@@ -67,7 +67,7 @@ export default function Sidebar() {
               <p className={`text-sm font-medium transition-colors
                              ${isActive
                                ? 'text-sage-700 dark:text-teal-400'
-                               : 'text-sage-600 dark:text-white/80 group-hover:text-sage-800'
+                               : 'text-sage-600 dark:text-white/80 group-hover:text-sage-700'
                              }`}>
                 {label}
               </p>

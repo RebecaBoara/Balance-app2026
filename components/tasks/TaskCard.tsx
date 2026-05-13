@@ -5,10 +5,11 @@
 // recommended, deferred, and completed today
 
 import { useState } from 'react'
-import { Task } from '@/types'
+import { Task, RepeatType } from '@/types'
 import DifficultyBadge from '@/components/ui/DifficultyBadge'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
-import { CheckCircle2, Clock, Calendar, Trash2, Pencil } from 'lucide-react'
+import Card from '@/components/ui/Card'
+import { CheckCircle2, Clock, Calendar, Trash2, Pencil, Repeat } from 'lucide-react'
 
 // Helpers
 function isToday(dateStr?: string): boolean {
@@ -34,6 +35,15 @@ function formatTime(time: string): string {
   return `${hour}:${m.toString().padStart(2, '0')} ${ampm}`
 }
 
+function repeatLabel(repeat?: Task['repeat']): string {
+  switch (repeat) {
+    case 'daily': return 'Repeats: Daily'
+    case 'weekly': return 'Repeats: Weekly'
+    case 'monthly': return 'Repeats: Monthly'
+    default: return 'Repeats: None'
+  }
+}
+
 // Props
 interface TaskCardProps {
   task:       Task
@@ -41,6 +51,7 @@ interface TaskCardProps {
   deleting:   boolean
   onToggle:   (task: Task) => void
   onDelete:   (id: string) => void
+  onSetRepeat?: (task: Task, repeat: RepeatType) => void
   onEdit?:    (task: Task) => void
   deferred?:  boolean
   completed?: boolean
@@ -52,29 +63,30 @@ export default function TaskCard({
   deleting,
   onToggle,
   onDelete,
+  onSetRepeat,
   onEdit,
   deferred  = false,
   completed = false,
 }: TaskCardProps) {
   const [showNotes, setShowNotes] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [showRepeatMenu, setShowRepeatMenu] = useState(false)
 
   return (
-    <div
-      className={`group relative bg-white dark:bg-ocean-700
-                  rounded-xl border transition-all duration-300 shadow-raised animate-fade-in
-                  ${celebrated
-                    ? 'border-sage-400 bg-sage-50 dark:bg-sage-900/20 scale-[1.01]'
-                    : 'border-sage-500/15 dark:border-ocean-600'
-                  }
-                  ${completed
-                    ? 'opacity-60'
-                    : 'hover:border-sage-300 dark:hover:border-ocean-400 hover:shadow-card'
-                  }`}
+    <Card
+      className={`group relative transition-all duration-300 animate-fade-in
+                 ${celebrated
+                   ? 'border-sage-400 bg-sage-50 dark:bg-sage-900/20 scale-[1.01]'
+                   : ''
+                 }
+                 ${completed
+                   ? 'opacity-60'
+                   : 'hover:border-sage-300 dark:hover:border-ocean-400 hover:shadow-card'
+                 }`}
     >
       {/* Celebration flash overlay */}
       {celebrated && (
-        <div className="absolute inset-0 rounded-xl bg-sage-500/5
+        <div className="absolute inset-0 rounded-md bg-sage-500/5
                         animate-pulse-soft pointer-events-none" />
       )}
 
@@ -102,8 +114,8 @@ export default function TaskCard({
           {/* Title */}
           <p className={`text-sm font-semibold leading-snug mb-1.5
                          ${task.completed
-                           ? 'line-through text-sage-700 dark:text-white/50'
-                           : 'text-sage-900 dark:text-white'
+                           ? 'line-through text-sage-600 dark:text-white/50'
+                           : 'text-sage-700 dark:text-white'
                          }`}>
             {task.title}
           </p>
@@ -140,7 +152,6 @@ export default function TaskCard({
   </span>
 )}
 
-
             {deferred && (
               <span className="text-xs text-sage-700 dark:text-white/50 italic">
                 Saved for better energy
@@ -173,12 +184,58 @@ export default function TaskCard({
 
         {/* Actions */}
         <div className="flex-shrink-0 flex gap-1 transition-all duration-200">
+          {onSetRepeat && !completed && (
+            <div className="relative">
+              <span className="mr-1 text-xs text-sage-500 dark:text-white/60 align-middle">
+                {repeatLabel(task.repeat)}
+              </span>
+              <button
+                onClick={() => setShowRepeatMenu(v => !v)}
+                aria-label={`Change repeat for: ${task.title}. Current: ${repeatLabel(task.repeat) || 'No repeat'}`}
+                title={repeatLabel(task.repeat)}
+                className={`p-1.5 rounded-xs transition-all duration-200
+                           ${task.repeat && task.repeat !== 'none'
+                             ? 'text-sage-700 bg-sage-50 dark:text-teal-300 dark:bg-teal-900/20'
+                             : 'text-sage-600 dark:text-white/50'
+                           }
+                           hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600`}
+              >
+                <Repeat className="w-4 h-4" aria-hidden="true" />
+              </button>
+              {showRepeatMenu && (
+                <div className="absolute right-0 top-8 z-20 min-w-[170px] rounded-lg border border-sage-500/15 dark:border-ocean-600 bg-white dark:bg-ocean-700 shadow-card p-1">
+                  {[
+                    { value: 'none', label: 'No repeat' },
+                    { value: 'daily', label: 'Every day' },
+                    { value: 'weekly', label: 'Every week' },
+                    { value: 'monthly', label: 'Every month' },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => {
+                        onSetRepeat(task, opt.value as RepeatType)
+                        setShowRepeatMenu(false)
+                      }}
+                      className={`w-full text-left px-2.5 py-1.5 rounded-md text-sm transition-colors
+                                 ${task.repeat === opt.value
+                                   ? 'bg-sage-50 text-sage-700 dark:bg-teal-900/20 dark:text-teal-300'
+                                   : 'text-sage-600 dark:text-white/80 hover:bg-sage-50 dark:hover:bg-ocean-600'
+                                 }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           {onEdit && !completed && (
             <button
               onClick={() => onEdit(task)}
               aria-label={`Edit task: ${task.title}`}
               className="p-1.5 rounded-xs text-sage-600 dark:text-white/50
-                         hover:text-sage-600 hover:bg-sage-50 dark:hover:bg-ocean-600
+                         hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600
                          transition-all duration-200"
             >
               <Pencil className="w-4 h-4" aria-hidden="true" />
@@ -205,6 +262,6 @@ export default function TaskCard({
         )}
 
       </div>
-    </div>
+    </Card>
   )
 }

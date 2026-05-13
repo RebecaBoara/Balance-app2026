@@ -8,9 +8,11 @@ import { MoodType, Task } from '@/types'
 import PageHeader from '@/components/ui/PageHeader'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import StatCard from '@/components/dashboard/StatCard'
+import InsightCard from '@/components/dashboard/InsightCard'
 import Link from 'next/link'
 import {
-  CheckCircle2,Smile, Flame, Lightbulb, ArrowRight, AlertCircle, X
+  CheckCircle2,Smile, Flame, ArrowRight, AlertCircle, X
 } from 'lucide-react'
 
 // types
@@ -68,44 +70,6 @@ function getInsight(stats: Stats): string {
   if (stats.topMood === 'energised' || stats.topMood === 'good') return `Your mood has been mostly ${getMoodLabel(stats.topMood!).toLowerCase()} this week — great conditions for tackling harder tasks.`
   if (stats.topMood === 'exhausted' || stats.topMood === 'stressed') return "You've been running low on energy this week. Balance has been surfacing easier tasks — don't forget to rest."
   return `You've completed ${stats.tasksCompleted} tasks this week. Keep checking in daily to get more personalised recommendations.`
-}
-
-//Stat card 
-function StatCard({
-  
-  label,
-  value,
-  accent = false,
-  sub,
-}: {
- 
-  label:   string
-  value:   string | number
-  accent?: boolean
-  sub?:    string
-}) {
-  return (
-    <div className={`rounded-sm p-4 border transition-all duration-200 hover:shadow-card
-                     ${accent
-                       ? 'bg-sage-500 dark:bg-teal-600 border-sage-500 dark:border-teal-600 shadow-raised animate-fade-in'
-                       : 'bg-white dark:bg-ocean-700 border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in'
-                     }`}>
-      <p className={`text-md font-medium mb-3
-                     ${accent ? 'text-white/85' : 'text-sage-700 dark:text-ocean-300'}`}>
-        {label}
-      </p>
-      <p className={`font-serif text-3xl leading-none
-                     ${accent ? 'text-white' : 'text-sage-900 dark:text-white'}`}>
-        {value}
-      </p>
-      
-      {sub && (
-        <p className={`text-[13px] mt-1.5 ${accent ? 'text-white/80' : 'text-sage-700 dark:text-ocean-400'}`}>
-          {sub}
-        </p>
-      )}
-    </div>
-  )
 }
 
 const TODAY_STR = new Date().toISOString().split('T')[0]
@@ -251,7 +215,7 @@ export default function DashboardPage() {
 
         <div className="grid md:grid-cols-2 gap-4">
           {/* Mood chart */}
-          <div className="bg-white dark:bg-ocean-700 rounded-xl p-6 border border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in">
+          <div className="bg-white dark:bg-ocean-700 rounded-sm p-6 border border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in">
             <h3 className="text-[0.95rem] font-semibold text-sage-800 dark:text-white mb-5">Weekly mood overview</h3>
 
             <div className="flex items-end gap-2 h-32 mb-4">
@@ -267,7 +231,7 @@ export default function DashboardPage() {
                       className={`w-full rounded-t-sm transition-all duration-500 ${today ? 'ring-2 ring-sage-400 ring-offset-1' : ''}`}
                       style={{ height: `${height}px`, backgroundColor: colour }}
                     />
-                    <span className={`text-[10px] ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-500 dark:text-ocean-300'}`}>
+                    <span className={`text-[14px] ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-500 dark:text-white/70'}`}>
                       {getDayLabel(date)}
                     </span>
                   </div>
@@ -286,9 +250,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Streak */}
-          <div className="bg-white dark:bg-ocean-700 rounded-xl p-5
+          <div className="bg-white dark:bg-ocean-700 rounded-sm p-6
                           border border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-5">
               <Flame className="w-4 h-4 text-amber-app" aria-hidden="true" />
               <h3 className="text-[0.95rem] font-semibold text-sage-800 dark:text-white">
                 Check-in streak
@@ -296,11 +260,12 @@ export default function DashboardPage() {
               <span className="ml-auto font-serif text-2xl text-sage-900 dark:text-white">
                 {stats.streak}
               </span>
-              <span className="text-xs text-sage-400 dark:text-ocean-300">days</span>
+              <span className="text-xs text-sage-400 dark:text-white">days</span>
             </div>
 
             {/* Streak dots */}
-            <div className="flex gap-1.5 mb-4">
+            <div className="h-32 flex items-center">
+            <div className="flex gap-1.5 w-full mb-1">
               {last7Days.map(date => {
                 const hasMood = !!moodMap[date]
                 const today   = isToday(date)
@@ -313,64 +278,47 @@ export default function DashboardPage() {
                                   ${hasMood
                                     ? 'bg-sage-500 dark:bg-teal-600 text-white'
                                     : today
-                                    ? 'bg-sage-50 dark:bg-sage-900/20 border-2 border-sage-300 dark:border-sage-600 text-sage-700 dark:text-sage-400'
-                                    : 'bg-warm-200 dark:bg-ocean-800 text-sage-300 dark:text-ocean-500'
+                                    ? 'bg-sage-50 dark:bg-sage-900/20 border-2 border-sage-300 dark:border-sage-600 text-sage-700 dark:text-white/70'
+                                    : 'bg-warm-200 dark:bg-ocean-800 text-sage-300 dark:text-white/70'
                                   }`}
                     >
                       {hasMood ? '\u2713' : ''}
                     </div>
-                    <span className={`text-xs ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-500 dark:text-ocean-300'}`}>
+                    <span className={`text-xs ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-500 dark:text-white/70'}`}>
                       {getDayLabel(date)}
                     </span>
                   </div>
                 )
               })}
             </div>
+            </div>
 
             {stats.streak === 0 && (
-              <p className="text-xs text-sage-700 dark:text-ocean-300">
+              <p className="text-xs text-sage-700 dark:text-white/70">
                 Check in today to start your streak!
               </p>
             )}
             {stats.streak >= 3 && (
-              <p className="text-xs text-sage-700 dark:text-teal-400 font-medium">
+              <p className="text-xs text-sage-700 dark:text-white/70 font-medium">
                 {stats.streak} day streak — keep it going!
               </p>
             )}
             {stats.streak === 1 && (
-              <p className="text-xs text-sage-700 dark:text-ocean-300">
+              <p className="text-xs text-sage-700 dark:text-white/70">
                 Great start! Come back tomorrow to build your streak.
               </p>
             )}
           </div>
         </div>
 
-        {/*Insight card */}
-        <div className="bg-sage-50 dark:bg-sage-900/20 rounded-xl p-5
-                        border border-sage-200 dark:border-sage-600 shadow-raised animate-fade-in">
-          <div className="flex items-start gap-3">
-            <Lightbulb
-              className="w-4 h-4 text-sage-500 dark:text-teal-400 flex-shrink-0 mt-0.5"
-              aria-hidden="true"
-            />
-            <div>
-              <p className="text-[0.875rem] font-semibold text-sage-700 dark:text-teal-400
-                            uppercase tracking-wider mb-1.5">
-                Weekly insight
-              </p>
-              <p className="text-sm text-sage-700 dark:text-sage-200 leading-relaxed">
-                {insight}
-              </p>
-            </div>
-          </div>
-        </div>
+        <InsightCard insight={insight} />
 
         {/* Mood breakdown + Recent reflections */}
         {stats.moodHistory.length > 0 && (
           <div className="grid md:grid-cols-2 gap-4">
 
             {/* Mood breakdown */}
-            <div className="bg-white dark:bg-ocean-700 rounded-xl p-5
+            <div className="bg-white dark:bg-ocean-700 rounded-sm p-5
                             border border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in">
               <h3 className="text-[0.95rem] font-semibold text-sage-800 dark:text-white mb-4">
                 Mood breakdown
@@ -392,11 +340,11 @@ export default function DashboardPage() {
                             <span className="text-sm" aria-hidden="true">
                               {getMoodEmoji(mood as MoodType)}
                             </span>
-                            <span className="text-xs text-sage-600 dark:text-ocean-200">
+                            <span className="text-xs text-sage-600 dark:text-white/70">
                               {getMoodLabel(mood as MoodType)}
                             </span>
                           </div>
-                          <span className="text-xs text-sage-400 dark:text-ocean-300">
+                          <span className="text-xs text-sage-400 dark:text-white/70">
                             {count}× ({pct}%)
                           </span>
                         </div>
@@ -416,10 +364,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent reflections */}
-            <div className="bg-white dark:bg-ocean-700 rounded-xl
+            <div className="bg-white dark:bg-ocean-700 rounded-sm
                             border border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in">
               <div className="px-5 pt-5 pb-3 flex items-center gap-2">
-                <Smile className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+                <Smile className="w-4 h-4 text-sage-500 dark:text-white" aria-hidden="true" />
                 <h3 className="text-[0.95rem] font-semibold text-sage-800 dark:text-white">
                   Recent reflections
                 </h3>
@@ -461,11 +409,11 @@ export default function DashboardPage() {
 
         {/* Today's focus */}
         {focusTasks.length > 0 && (
-          <div className="bg-white dark:bg-ocean-700 rounded-xl
+          <div className="bg-white dark:bg-ocean-700 rounded-sm
                           border border-sage-500/15 dark:border-ocean-600 shadow-raised animate-fade-in">
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+                <CheckCircle2 className="w-4 h-4 text-sage-500 dark:text-white" aria-hidden="true" />
                 <h3 className="text-[0.95rem] font-semibold text-sage-800 dark:text-white">
                   Today's focus
                 </h3>
@@ -537,4 +485,3 @@ export default function DashboardPage() {
     </div>
   )
 }
-

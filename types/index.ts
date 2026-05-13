@@ -2,6 +2,7 @@
 
 export type MoodType = 'exhausted' | 'stressed' | 'neutral' | 'good' | 'energised'
 export type DifficultyType = 'easy' | 'medium' | 'hard'
+export type RepeatType = 'none' | 'daily' | 'weekly' | 'monthly'
 
 export interface MoodEntry {
   id:        string
@@ -18,6 +19,7 @@ export interface Task {
   title:       string
   difficulty:  DifficultyType
   estimatedMin: number
+  repeat?:     RepeatType
   completed:   boolean
   dueDate?:    string  // optional ISO date YYYY-MM-DD
   dueTime?:    string  // optional ISO time HH:mm
@@ -57,4 +59,5 @@ export interface UserProfile {
   theme:            'light' | 'dark' | 'system'
   createdAt:        number
   isAdmin?:         boolean
+  hasOnboarded?:    boolean
 }

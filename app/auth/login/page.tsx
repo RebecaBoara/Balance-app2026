@@ -10,7 +10,7 @@ import {
 import { auth, googleProvider } from '@/lib/firebase'
 import { createUserProfile } from '@/lib/db'
 import Spinner from '@/components/ui/Spinner'
-import Logo from '@/components/ui/Logo'
+import AuthLayout from '@/components/layout/AuthLayout'
 import { Eye, EyeOff } from 'lucide-react'
 
 export default function LoginPage() {
@@ -68,16 +68,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 flex flex-col">
-
-      {/* ── Top bar ── */}
-      <div className="p-6">
-        <Logo size="md" />
-      </div>
-
-      {/* ── Card ── */}
-      <div className="flex-1 flex items-center justify-center px-6 pb-12">
-        <div className="w-full max-w-sm">
+    <AuthLayout>
 
           {/* Heading */}
           <div className="mb-8">
@@ -180,7 +171,7 @@ export default function LoginPage() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-sm
                        border border-sage-500/15 dark:border-ocean-600
                        bg-white dark:bg-ocean-700
                        text-sage-800 dark:text-white text-sm font-medium
@@ -208,8 +199,6 @@ export default function LoginPage() {
             </Link>
           </p>
 
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   )
 }
