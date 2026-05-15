@@ -18,7 +18,7 @@ export default function PageHeader({
           {title}
         </h1>
         {subtitle && (
-          <p className="text-sm text-sage-600 dark:text-white/70 mt-1">
+          <p className="text-sm text-sage-700 dark:text-white/70 mt-1">
             {subtitle}
           </p>
         )}

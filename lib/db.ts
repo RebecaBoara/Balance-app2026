@@ -113,11 +113,12 @@ export async function deleteTask(taskId: string): Promise<void> {
 export async function saveMoodEntry(
   userId: string,
   mood: MoodType,
-  note?: string
+  note?: string,
+  aiSpark?: string,
+  aiSuggestion?: string,
 ): Promise<string> {
   const today = new Date().toISOString().split('T')[0]
 
-  // Check if entry already exists for today
   const q = query(
     collection(db, 'moods'),
     where('userId', '==', userId),
@@ -126,19 +127,24 @@ export async function saveMoodEntry(
   const existing = await getDocs(q)
 
   if (!existing.empty) {
-    // Update existing entry
     const docId = existing.docs[0].id
-    await updateDoc(doc(db, 'moods', docId), { mood, note: note || '' })
+    await updateDoc(doc(db, 'moods', docId), {
+      mood,
+      note: note || '',
+      ...(aiSpark       && { aiSpark }),
+      ...(aiSuggestion  && { aiSuggestion }),
+    })
     return docId
   }
 
-  // Create new entry
   const ref = await addDoc(collection(db, 'moods'), {
     userId,
     mood,
     note:      note || '',
     date:      today,
     createdAt: Date.now(),
+    ...(aiSpark       && { aiSpark }),
+    ...(aiSuggestion  && { aiSuggestion }),
   })
   return ref.id
 }

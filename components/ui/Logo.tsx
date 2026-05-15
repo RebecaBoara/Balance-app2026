@@ -21,11 +21,12 @@ export default function Logo({ size = 'md', href = '/', className = '' }: LogoPr
       className={`inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity ${className}`}>
       <Image
         src="/lotus.PNG"
-        height={h}
-        width={h}
+        height={0}
+        width={0}
+        sizes="10vw"
         alt=""
         style={{ height: h, width: 'auto' }}
-        className="[mix-blend-mode:multiply] [filter:saturate(1.8)_brightness(0.75)] dark:[mix-blend-mode:screen] dark:[filter:invert(1)_hue-rotate(180deg)_saturate(1.8)_brightness(1.3)]"
+        className="[mix-blend-mode:multiply] [filter:sepia(0.4)_hue-rotate(90deg)_saturate(2)_brightness(0.6)] dark:[mix-blend-mode:screen] dark:[filter:invert(1)_hue-rotate(180deg)_saturate(1.8)_brightness(1.3)]"
       />
       <span className={`font-script ${text} text-sage-500 dark:text-white`}>
         Balance

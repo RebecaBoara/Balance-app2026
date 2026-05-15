@@ -5,12 +5,14 @@ export type DifficultyType = 'easy' | 'medium' | 'hard'
 export type RepeatType = 'none' | 'daily' | 'weekly' | 'monthly'
 
 export interface MoodEntry {
-  id:        string
-  userId:    string
-  mood:      MoodType
-  note?:     string
-  date:      string   // ISO date string YYYY-MM-DD
-  createdAt: number  // timestamp
+  id:           string
+  userId:       string
+  mood:         MoodType
+  note?:        string
+  date:         string   // ISO date string YYYY-MM-DD
+  createdAt:    number   // timestamp
+  aiSpark?:     string   // AI-generated daily spark quote
+  aiSuggestion?: string  // AI-generated balance suggests message
 }
 
 export interface Task {
@@ -60,4 +62,9 @@ export interface UserProfile {
   createdAt:        number
   isAdmin?:         boolean
   hasOnboarded?:    boolean
+}
+
+export interface DailyAIMessage {
+  spark:      string
+  suggestion: string
 }

@@ -13,6 +13,7 @@ import { MOOD_CONFIG } from '@/lib/mood'
 import type { MoodType } from '@/types'
 
 const SAGE_GRADIENT = 'linear-gradient(135deg, #3D5248 0%, #4C6659 50%, #536E60 100%)'
+const LP_CONTAINER = 'w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8'
 
 // Navbar
 
@@ -38,9 +39,9 @@ function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-[#FDFAF5] dark:bg-ocean-900
                        border-b border-sage-100 dark:border-ocean-700 shadow-sm">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className={`${LP_CONTAINER} h-16 flex items-center justify-between`}>
 
-        <Logo size="sm" />
+        <Logo size="md" />
 
         <div className="flex items-center gap-3">
           <nav className="hidden md:flex items-center gap-6 mr-2" aria-label="Main navigation">
@@ -86,7 +87,7 @@ function Navbar() {
       {open && (
         <nav aria-label="Mobile navigation"
           className="md:hidden bg-[#FDFAF5] dark:bg-ocean-900 border-t border-sage-100
-                     dark:border-ocean-700 px-6 py-4 space-y-3">
+                     dark:border-ocean-700 px-4 sm:px-6 py-4 space-y-3">
           {NAV_LINKS.map(({ label, href }) => (
             <a key={href} href={href} onClick={() => setOpen(false)}
               className="block text-sm text-sage-600 dark:text-white/80 py-2">
@@ -124,7 +125,7 @@ function Navbar() {
 const FAQS = [
   {
     q: 'How does Balance match tasks to my mood?',
-    a: 'Each day you select one of five mood states — Exhausted, Stressed, Neutral, Good, or Energised. Balance uses this to filter your task list by difficulty and set a cap on how many tasks to show, so you always see a realistic and manageable set of work.',
+    a: 'Each day you select one of five mood states — Exhausted, Stressed, Neutral, Good, or Energised. Balance uses AI to recommend the right tasks for how you feel, prioritising easy tasks on low-energy days and your hardest work when you\'re energised. It also filters by difficulty and caps the number shown so you always see a realistic, manageable set.',
   },{
     q: 'Is Balance really free?',
     a: 'Yes — Balance is completely free during the research phase. It was built as part of a dissertation project at Southampton Solent University and is available at no cost to participants.',
@@ -140,7 +141,7 @@ const FAQS = [
     a: 'Yes. Balance is designed mobile-first and works in any modern browser on Android, iOS, and desktop. No app store download is required — just open it in your browser.',
   },
   { q: 'How does Balance protect my privacy?',
-    a: 'Your mood and task data is stored in Firebase Firestore with strict server-side security rules. Only you can access your own data. It is never sold, shared, or used for advertising.',
+    a: 'Your mood and task data is stored in Firebase Firestore with strict server-side security rules. Only you can access your own data. AI suggestions send only your mood label (e.g. "energised") to OpenAI — no personal details or task content is ever included. Your data is never sold, shared, or used for advertising.',
   },
   {
     q: 'Can I use Balance without checking in?',
@@ -220,25 +221,25 @@ export default function LandingPage() {
         </section> */}
 
         {/* ── HERO + STATS grouped ── */}
-        <section className="pt-20 pb-10 px-6 bg-white dark:bg-ocean-900">
-          <div className="max-w-6xl mx-auto">
+        <section className="pt-12 pb-8 md:pt-14 md:pb-10 bg-white dark:bg-ocean-900 min-h-[calc(88svh-4rem)] lg:min-h-[calc(82svh-4rem)] flex items-center">
+          <div className={LP_CONTAINER}>
 
             {/* Two column on desktop */}
-            <div className="grid md:grid-cols-2 gap-10 items-center mb-10">
+            <div className="grid md:grid-cols-2 gap-8 items-center mb-8">
 
               {/* Left */}
               <div>
 
-                <h1 className="font-serif text-4xl lg:text-5xl text-sage-900 dark:text-white leading-tight mb-4">
+                <h1 className="font-serif text-5xl lg:text-6xl text-sage-900 dark:text-white leading-tight mb-4">
                   Your tasks, in tune with{' '}
                   <em className="text-sage-500 dark:text-teal-400 not-italic">how you feel</em>
                 </h1>
 
-                <p className="text-base text-sage-700 dark:text-white/90 leading-relaxed mb-6 max-w-lg">
+                <p className="text-lg text-sage-700 dark:text-white/90 leading-relaxed mb-6 max-w-xl">
                   Balance recommends the right tasks at the right time — based on your mood, not just your to-do list.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 mb-8">
+                <div className="flex flex-col sm:flex-row gap-3 mb-6">
                   <Link href="/auth/signup"
                     className="btn-primary flex items-center justify-center gap-2">
                     Get started free
@@ -317,7 +318,7 @@ export default function LandingPage() {
             </div>
 
             {/* Stats bar */}
-            <div className="grid grid-cols-3 gap-4 py-6 border-t border-sage-100 dark:border-ocean-700">
+            <div className="grid grid-cols-3 gap-4 py-4 border-t border-sage-100 dark:border-ocean-700">
               {[
                 { num: '5',    label: 'Mood states tracked'  },
                 { num: '3×',   label: 'More tasks completed' },
@@ -335,15 +336,15 @@ export default function LandingPage() {
 
 
         {/*How it works*/}
-        <section id="how-it-works" className="lp-bg-2 py-14 px-6 scroll-mt-16">
-          <div className="max-w-5xl mx-auto text-center">
+        <section id="how-it-works" className="lp-bg-2 py-10 md:py-12 scroll-mt-16">
+          <div className={`${LP_CONTAINER} text-center`}>
             <p className="text-xs font-semibold lp-accent uppercase tracking-widest mb-3">
               How it works
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lp-text mb-3">
               Three simple steps to better productivity
             </h2>
-            <p className="text-sm lp-text-90 max-w-lg mx-auto mb-8 leading-relaxed">
+            <p className="text-sm lp-text-90 max-w-lg mx-auto mb-6 leading-relaxed">
               Balance makes emotion-aware productivity effortless with a simple daily routine
             </p>
 
@@ -379,15 +380,15 @@ export default function LandingPage() {
         </section>
 
         {/*Features */}
-        <section id="features" className="lp-bg-1 py-14 px-6 scroll-mt-16">
-          <div className="max-w-5xl mx-auto text-center">
+        <section id="features" className="lp-bg-1 py-10 md:py-12 scroll-mt-16">
+          <div className={`${LP_CONTAINER} text-center`}>
             <p className="text-xs font-semibold lp-accent uppercase tracking-widest mb-3">
               Features
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lp-text mb-3">
               Everything you need to thrive
             </h2>
-            <p className="text-sm lp-text-80 max-w-lg mx-auto mb-8 leading-relaxed">
+            <p className="text-sm lp-text-80 max-w-lg mx-auto mb-6 leading-relaxed">
               Tools that adapt to your energy, protect your focus, and support your well-being every day.
             </p>
 
@@ -402,8 +403,8 @@ export default function LandingPage() {
                   body: 'See how your mood and progress connect over time, so you can plan with more confidence.',
                 },
                 {
-                  icon: Sparkles, title: 'Daily motivational message',
-                  body: 'Start each check-in with an encouraging message to help you begin with clarity.',
+                  icon: Sparkles, title: 'AI-powered mood suggestions',
+                  body: 'Balance uses AI to generate a personalised suggestion each time you check in — tailored to exactly how you feel.',
                 },
                 {
                   icon: Coffee,   title: 'Supportive break suggestions',
@@ -415,7 +416,7 @@ export default function LandingPage() {
                 },
                 {
                   icon: Lock,     title: 'Privacy first approach',
-                  body: 'Your mood and task data stays private, stored securely with no third-party sharing.',
+                  body: 'Your data is stored securely. AI suggestions use only your mood — never your personal details.',
                 },
               ].map(({ icon: Icon, title, body }) => (
                 <div key={title}
@@ -434,15 +435,15 @@ export default function LandingPage() {
         </section>
 
         {/*FAQ  */}
-        <section id="faq" className="lp-bg-1 py-14 px-6 scroll-mt-16">
-          <div className="max-w-2xl mx-auto text-center">
+        <section id="faq" className="lp-bg-1 py-10 md:py-12 scroll-mt-16">
+          <div className="w-full max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-xs font-semibold lp-accent uppercase tracking-widest mb-3">
               FAQ
             </p>
             <h2 className="font-serif text-3xl md:text-4xl lp-text mb-3">
               Frequently asked questions
             </h2>
-            <p className="text-sm lp-text-80 mb-12">
+            <p className="text-sm lp-text-80 mb-8">
               Everything you need to know about Balance
             </p>
 
@@ -478,11 +479,11 @@ export default function LandingPage() {
 
       {/*Footer*/}
       <footer style={{ backgroundColor: '#3D5248' }}>
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-10 mb-12">
+        <div className={`${LP_CONTAINER} py-16`}>
+          <div className="grid grid-cols-2 md:grid-cols-[2.5fr_1fr_1fr_1fr] gap-10 mb-12">
 
             <div className="col-span-2 md:col-span-1">
-              <span className="font-script text-2xl text-white">Balance</span>
+              <div className="dark"><Logo size="sm" /></div>
               <p className="text-sm text-white/75 mt-2 leading-relaxed">
                 Your tasks, in tune with how you feel.
               </p>
@@ -509,16 +510,6 @@ export default function LandingPage() {
 
             <div>
               <p className="text-xs font-semibold text-white/75 uppercase tracking-widest mb-4">
-                Contact
-              </p>
-              <a href="mailto:balancedtasks.mood@gmail.com"
-                className="text-sm text-white/75 hover:text-white transition-colors break-all">
-                balancedtasks.mood@gmail.com
-              </a>
-            </div>
-
-            <div>
-              <p className="text-xs font-semibold text-white/75 uppercase tracking-widest mb-4">
                 Legal
               </p>
               <ul className="space-y-3">
@@ -534,6 +525,16 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-white/75 uppercase tracking-widest mb-4">
+                Contact
+              </p>
+              <a href="mailto:balancedtasks.mood@gmail.com"
+                className="text-sm text-white/75 hover:text-white transition-colors break-all">
+                balancedtasks.mood@gmail.com
+              </a>
             </div>
 
           </div>

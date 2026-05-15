@@ -57,7 +57,7 @@ export default function UserAvatarMenu() {
                         bg-white dark:bg-ocean-800
                         border border-sage-100 dark:border-ocean-600
                         py-1 z-50 animate-[fadeIn_0.15s_ease]">
-          <p className="px-3 py-2 text-xs text-sage-400 dark:text-white/40 truncate border-b border-sage-100 dark:border-ocean-700">
+          <p className="px-3 py-2 text-xs text-sage-600 dark:text-white/40 truncate border-b border-sage-100 dark:border-ocean-700">
             {user?.displayName ?? user?.email}
           </p>
           {isAdmin && (

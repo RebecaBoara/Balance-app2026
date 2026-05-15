@@ -66,8 +66,8 @@ export default function Sidebar() {
               <Icon size={20} aria-hidden="true" className="w-6 flex-shrink-0" />
               <p className={`text-sm font-medium transition-colors
                              ${isActive
-                               ? 'text-sage-700 dark:text-teal-400'
-                               : 'text-sage-600 dark:text-white/80 group-hover:text-sage-700'
+                               ? 'text-sage-900 dark:text-teal-400'
+                               : 'text-sage-900 dark:text-white/80 group-hover:text-sage-700'
                              }`}>
                 {label}
               </p>
@@ -82,7 +82,7 @@ export default function Sidebar() {
         <button
           onClick={() => setConfirmSignOut(true)}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg
-                     text-sage-600 dark:text-white/70 text-sm
+                     text-sage-700 dark:text-white/80 text-sm
                      hover:bg-coral-pale dark:hover:bg-coral-app/20
                      hover:text-coral-app dark:hover:text-coral-pale
                      transition-all duration-200"

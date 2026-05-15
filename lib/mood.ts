@@ -172,3 +172,26 @@ export function getDailySparkMessage(mood: MoodType): string {
   const dayOfYear = Math.floor(Date.now() / 86400000)
   return messages[dayOfYear % messages.length]
 }
+
+const GENERAL_SPARKS = [
+  "Every day is a fresh start. You've got this.",
+  "Small steps taken consistently lead to big changes.",
+  "You don't have to do everything today — just the next right thing.",
+  "Your effort today is shaping the version of you tomorrow.",
+  "Progress, not perfection. That's what counts.",
+  "Today is full of possibility. Begin.",
+  "Even on hard days, showing up matters more than you know.",
+  "Be kind to yourself today — you're doing better than you think.",
+  "One task at a time. One moment at a time. You've got it.",
+  "The way you start your day shapes everything that follows.",
+  "You have everything you need to make today a good one.",
+  "Gentle beginnings lead to great endings.",
+  "Take a breath. You're exactly where you need to be.",
+  "Whatever today holds, you are more capable than you feel.",
+  "Good things take time. Keep going.",
+]
+
+export function getDailyGeneralSpark(): string {
+  const dayOfYear = Math.floor(Date.now() / 86400000)
+  return GENERAL_SPARKS[dayOfYear % GENERAL_SPARKS.length]
+}

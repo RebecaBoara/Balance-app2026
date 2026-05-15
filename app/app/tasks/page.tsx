@@ -12,7 +12,7 @@ import MoodSuggestionBanner from '@/components/tasks/MoodSuggestion'
 import EmptyState           from '@/components/ui/EmptyState'
 import PageHeader   from '@/components/ui/PageHeader'
 import Spinner      from '@/components/ui/Spinner'
-import { Plus, CheckCircle2, Sparkles, AlertCircle, List, CalendarDays, X } from 'lucide-react'
+import { Plus, CheckCircle2, Sparkles, AlertCircle, List, CalendarDays, ChevronDown } from 'lucide-react'
 
 type FilterType = 'all' | 'today' | 'upcoming'
 type ViewType   = 'list' | 'calendar'
@@ -81,7 +81,8 @@ export default function TasksPage() {
   const [celebrated,  setCelebrated]  = useState<Set<string>>(new Set())
   const [deleting,       setDeleting]       = useState<string | null>(null)
   const [showBreaks,     setShowBreaks]     = useState(true)
-  const [showOverdueBanner, setShowOverdueBanner] = useState(true)
+  const [overdueOpen, setOverdueOpen] = useState(true)
+  const [aiSuggestion,      setAiSuggestion]      = useState<string | undefined>(undefined)
 
   useEffect(() => {
     if (!user) return
@@ -94,6 +95,7 @@ export default function TasksPage() {
         ])
         setTasks(fetchedTasks)
         setTodaysMood(moodEntry?.mood ?? null)
+        setAiSuggestion(moodEntry?.aiSuggestion)
         setShowBreaks(profile?.breakSuggestions ?? true)
       } catch (e) {
         console.error(e)
@@ -121,6 +123,7 @@ export default function TasksPage() {
   const { recommended, deferred } = todaysMood
     ? getRecommendedTasks(todaysMood, filtered)
     : { recommended: filtered, deferred: [] }
+
 
 async function handleAddTask(data: NewTask) {
     if (!user) return
@@ -264,7 +267,7 @@ async function handleAddTask(data: NewTask) {
   }
 
   return (
-    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 pb-24">
+    <div className="min-h-screen bg-warm-100 dark:bg-ocean-800 pb-24">
 
       <PageHeader
         title="Your tasks"
@@ -291,44 +294,18 @@ async function handleAddTask(data: NewTask) {
           </div>
         )}
 
-        <MoodSuggestionBanner mood={todaysMood} showBreaks={showBreaks} />
+        <MoodSuggestionBanner mood={todaysMood} showBreaks={showBreaks} aiSuggestion={aiSuggestion} />
 
-        {/* Overdue banner */}
-        {overdueTasks.length > 0 && showOverdueBanner && (
-          <div className="flex items-start gap-3 mb-4 px-4 py-3 rounded-sm
-                          bg-coral-pale dark:bg-coral-app/15
-                          border border-coral-app/30 dark:border-coral-app/40
-                          animate-fade-in">
-            <AlertCircle className="w-4 h-4 text-red-800 dark:text-coral-pale flex-shrink-0 mt-0.5"
-              aria-hidden="true" />
-            <p className="text-sm text-red-800 dark:text-coral-pale flex-1">
-              <span className="font-semibold">
-                {overdueTasks.length} {overdueTasks.length === 1 ? 'task is' : 'tasks are'} overdue.
-              </span>{' '}
-              {todaysMood === 'exhausted' || todaysMood === 'stressed'
-                ? "Don't push yourself — reschedule them or tackle them when you're feeling better."
-                : `Try to tackle ${overdueTasks.length === 1 ? 'it' : 'them'} today or update the due date.`
-              }
-            </p>
-            <button
-              onClick={() => setShowOverdueBanner(false)}
-              aria-label="Dismiss overdue tasks banner"
-              className="flex-shrink-0 p-1 rounded-sm text-red-800 dark:text-coral-pale hover:bg-coral-app/10 dark:hover:bg-coral-app/20 transition-colors"
-            >
-              <X className="w-4 h-4" aria-hidden="true" />
-            </button>
-          </div>
-        )}
 
         {/* Filter tabs + view toggle */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex flex-wrap items-center gap-2 mb-5">
           <div role="tablist" aria-label="Task filter"
             className="flex gap-1 p-1 rounded-sm bg-sage-500/10 dark:bg-ocean-800
-                       border border-sage-500/15 dark:border-ocean-600 w-fit">
+                       border border-sage-500/15 dark:border-ocean-600">
             {(['today', 'upcoming', 'all'] as FilterType[]).map(f => (
               <button key={f} role="tab" aria-selected={filter === f}
                 onClick={() => { setFilter(f); setView('list') }}
-                className={`px-4 py-1.5 rounded-sm text-sm font-medium
+                className={`px-3 py-1.5 rounded-sm text-sm font-medium
                             transition-all duration-200 capitalize
                             ${filter === f && view === 'list'
                               ? 'bg-sage-500 dark:bg-teal-600 text-white shadow-sm'
@@ -339,7 +316,7 @@ async function handleAddTask(data: NewTask) {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-auto">
             <button
               onClick={() => setShowModal(true)}
               aria-label="Add new task"
@@ -396,13 +373,48 @@ async function handleAddTask(data: NewTask) {
               />
             )}
 
+            {/* Overdue — Today tab only */}
+            {filter === 'today' && overdueTasks.length > 0 && (
+              <div className="mb-4">
+                <button
+                  onClick={() => setOverdueOpen(o => !o)}
+                  className="flex items-center gap-2 mb-2 w-full text-left"
+                  aria-expanded={overdueOpen}
+                >
+                  <AlertCircle className="w-3.5 h-3.5 text-coral-app dark:text-coral-pale flex-shrink-0" aria-hidden="true" />
+                  <p className="text-xs font-semibold text-coral-app dark:text-coral-pale uppercase tracking-wider flex-1">
+                    Overdue
+                  </p>
+                  <span className="text-xs text-coral-app/70 dark:text-coral-pale/70">({overdueTasks.length})</span>
+                  <span className="text-xs text-sage-400 dark:text-white/40 font-medium ml-2">
+                    {overdueOpen ? 'Hide' : 'Show'}
+                  </span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-sage-400 dark:text-white/40 transition-transform duration-200 ${overdueOpen ? 'rotate-180' : ''}`}
+                    aria-hidden="true"
+                  />
+                </button>
+                {overdueOpen && (
+                  <div className="space-y-2">
+                    {overdueTasks.map(task => (
+                      <TaskCard key={task.id} task={task}
+                        celebrated={celebrated.has(task.id)}
+                        deleting={deleting === task.id}
+                        onSetRepeat={handleSetRepeat}
+                        onToggle={handleToggle} onDelete={handleDelete} onEdit={setEditingTask} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Recommended */}
             {recommended.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-3 h-3 text-sage-700 dark:text-white/70" aria-hidden="true" />
                   <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
-                Recommended first
+                    Recommended first
                   </p>
                   <span className="text-xs text-sage-700 dark:text-white/50">({recommended.length})</span>
                 </div>
@@ -423,7 +435,7 @@ async function handleAddTask(data: NewTask) {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
                   <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
-                Saved for later
+                    Saved for later
                   </p>
                   <span className="text-xs text-sage-700 dark:text-white/50">({deferred.length})</span>
                 </div>

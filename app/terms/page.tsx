@@ -2,46 +2,68 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, ArrowRight, ArrowLeft, FileText } from 'lucide-react'
-
-const SAGE_GRADIENT = 'linear-gradient(135deg, #3D5248 0%, #4C6659 50%, #536E60 100%)'
+import { Menu, X, ArrowLeft, ArrowRight, FileText, Moon, Sun, Monitor } from 'lucide-react'
+import Logo from '@/components/ui/Logo'
+import { useTheme } from '@/components/layout/ThemeProvider'
+import { useAuth } from '@/hooks/useAuth'
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [open, setOpen]     = useState(false)
+  const { theme, setTheme } = useTheme()
+  const { user }            = useAuth()
+
+  function cycleTheme() {
+    if (theme === 'dark')       setTheme('light')
+    else if (theme === 'light') setTheme('system')
+    else                        setTheme('dark')
+  }
+
+  const ThemeIcon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor
 
   return (
-    <nav aria-label="Main navigation"
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{ background: SAGE_GRADIENT }}>
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="font-script text-2xl text-white leading-none">
-          Balance
-        </Link>
-        <div className="hidden md:flex items-center gap-4">
-          <Link href="/" className="text-sm text-white/80 hover:text-white transition-colors">
-            Home
-          </Link>
-          <Link href="/auth/signup"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-sm bg-white/20 hover:bg-white/30 text-white text-sm font-medium transition-all duration-200">
-            Get started <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-          </Link>
+    <header className="sticky top-0 z-50 bg-[#FDFAF5] dark:bg-ocean-900
+                       border-b border-sage-100 dark:border-ocean-700 shadow-sm">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Logo size="md" />
+        <div className="flex items-center gap-3">
+          <nav className="hidden md:flex items-center gap-6 mr-2" aria-label="Main navigation">
+            <Link href="/" className="text-sm text-sage-600 dark:text-white/80 hover:text-sage-900 dark:hover:text-white transition-colors">
+              Home
+            </Link>
+          </nav>
+          <button onClick={cycleTheme} aria-label="Toggle theme"
+            className="p-2 text-sage-500 dark:text-white/80 hover:text-sage-900 dark:hover:text-white transition-colors">
+            <ThemeIcon size={17} aria-hidden="true" />
+          </button>
+          {user ? (
+            <Link href="/app/mood"
+              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white hover:bg-sage-800 transition-colors">
+              Go to app →
+            </Link>
+          ) : (
+            <Link href="/auth/signup"
+              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white hover:bg-sage-800 transition-colors">
+              Get started free
+            </Link>
+          )}
+          <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'}
+            className="md:hidden p-2 text-sage-600 dark:text-white/70 hover:text-sage-900 dark:hover:text-white transition-colors">
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-        <button
-          onClick={() => setMenuOpen(p => !p)}
-          aria-label="Toggle menu"
-          className="md:hidden p-2 rounded-lg text-white/80 hover:bg-white/10 transition-colors"
-        >
-          {menuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
-        </button>
       </div>
-      {menuOpen && (
-        <div className="md:hidden border-t border-white/10 px-6 py-3 space-y-1"
-          style={{ background: SAGE_GRADIENT }}>
-          <Link href="/" className="block text-sm text-white/80 py-2" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link href="/auth/signup" className="block text-center px-5 py-2.5 rounded-lg bg-white/20 text-white text-sm font-medium mt-1" onClick={() => setMenuOpen(false)}>Get started free</Link>
-        </div>
+      {open && (
+        <nav aria-label="Mobile navigation"
+          className="md:hidden bg-[#FDFAF5] dark:bg-ocean-900 border-t border-sage-100
+                     dark:border-ocean-700 px-6 py-4 space-y-3">
+          <Link href="/" onClick={() => setOpen(false)} className="block text-sm text-sage-600 dark:text-white/80 py-2">Home</Link>
+          <Link href="/auth/signup" onClick={() => setOpen(false)}
+            className="block text-center px-5 py-2.5 rounded-sm bg-sage-700 text-white text-sm font-medium">
+            Get started free
+          </Link>
+        </nav>
       )}
-    </nav>
+    </header>
   )
 }
 
@@ -50,7 +72,7 @@ function Footer() {
     <footer className="mt-16" style={{ backgroundColor: '#3D5248' }}>
       <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-          <span className="font-script text-xl text-white">Balance</span>
+          <div className="dark"><Logo size="sm" /></div>
           <p className="text-xs text-white/55">© 2026 Balance — Rebeca Boara. All rights reserved.</p>
           <div className="flex gap-5">
             <Link href="/privacy" className="text-xs text-white/70 hover:text-white transition-colors">Privacy Policy</Link>
@@ -67,7 +89,7 @@ export default function TermsPage() {
     <div className="min-h-screen bg-white dark:bg-ocean-900">
       <Navbar />
 
-      <main className="max-w-3xl mx-auto px-6 pt-24 pb-12">
+      <main className="max-w-3xl mx-auto px-6 pt-12 pb-12">
 
         {/* Back */}
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-500 hover:text-sage-700 mb-8 transition-colors">

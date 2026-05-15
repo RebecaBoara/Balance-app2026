@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { saveMoodEntry, getTodaysMood } from '@/lib/db'
@@ -30,6 +30,48 @@ export default function MoodPage() {
   const [checking, setChecking]         = useState(true)
   const [loadError, setLoadError]       = useState(false)
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false)
+  const savedMoodRef = useRef<MoodType | null>(null)
+  const [aiSpark,       setAiSpark]       = useState<string | null>(null)
+  const [aiSuggestion,  setAiSuggestion]  = useState<string | null>(null)
+  const [aiLoading,     setAiLoading]     = useState(false)
+
+  // On page load: fetch a general spark with no mood
+  useEffect(() => {
+    fetch('/api/ai/daily-message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mood: null }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { spark?: string } | null) => {
+        if (data?.spark) setAiSpark(data.spark)
+      })
+      .catch(() => null)
+  }, [])
+
+  // On mood selection: fetch mood-specific spark + suggestion
+  // Skip if mood matches the saved entry — use cached Firestore values instead
+  useEffect(() => {
+    if (!selected) return
+    if (selected === savedMoodRef.current) return
+    const controller = new AbortController()
+    setAiSuggestion(null)
+    setAiLoading(true)
+    fetch('/api/ai/daily-message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mood: selected }),
+      signal: controller.signal,
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { spark?: string; suggestion?: string } | null) => {
+        if (data?.spark)      setAiSpark(data.spark)
+        if (data?.suggestion) setAiSuggestion(data.suggestion)
+      })
+      .catch(() => null)
+      .finally(() => setAiLoading(false))
+    return () => controller.abort()
+  }, [selected])
 
   const now       = new Date()
   const hour      = now.getHours()
@@ -50,7 +92,10 @@ export default function MoodPage() {
         if (profile?.hasOnboarded === false) { router.push('/onboarding'); return }
         if (entry) {
           setSelected(entry.mood)
+          savedMoodRef.current = entry.mood
           setAlreadyCheckedIn(true)
+          if (entry.aiSpark)      setAiSpark(entry.aiSpark)
+          if (entry.aiSuggestion) setAiSuggestion(entry.aiSuggestion)
         }
       } catch (e) {
         console.error(e)
@@ -66,7 +111,7 @@ export default function MoodPage() {
     if (!selected || !user) return
     setLoading(true)
     try {
-      await saveMoodEntry(user.uid, selected, note)
+      await saveMoodEntry(user.uid, selected, note, aiSpark ?? undefined, aiSuggestion ?? undefined)
       router.push('/app/tasks')
     } catch (e) {
       console.error(e)
@@ -84,13 +129,13 @@ export default function MoodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 pb-24">
+    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 pb-52 md:pb-36">
 
       {/* Header */}
       <div className="px-6 md:px-0 pt-4 pb-4 flex justify-between items-start">
         <div>
-          <h1 className="font-serif text-2xl text-sage-900 dark:text-white leading-tight">
-            {greeting}, <span className="text-sage-900 dark:text-white">{firstName}</span> 🌿
+          <h1 className="font-serif text-2xl text-sage-800 dark:text-white leading-tight">
+            {greeting}, <span className="text-sage-800 dark:text-white">{firstName}</span> 🌿
           </h1>
           <p className="text-sm text-sage-600 dark:text-white/70 mt-1">{dateStr}</p>
         </div>
@@ -98,7 +143,7 @@ export default function MoodPage() {
       </div>
 
       {/* Daily spark */}
-      {selected && <DailySparkCard mood={selected} />}
+      <DailySparkCard mood={selected} aiSpark={aiSpark} />
 
       {/* Already checked in */}
       {alreadyCheckedIn && (
@@ -150,45 +195,66 @@ export default function MoodPage() {
         {/* Suggestion banner */}
         {selected && (
           <div className="mb-5 px-4 py-3 rounded-sm
-                          bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80
+                          bg-white dark:bg-ocean-800
                           border border-sage-500/15 dark:border-ocean-600
-                          animate-fade-in shadow-raised lp-border">
-            <p className="text-sm font-semibold text-sage-700 dark:text-white/80
-                          uppercase tracking-wider mb-1">
-              ✦ Balance suggests
+                          animate-fade-in shadow-raised">
+            <p className="text-sm font-semibold text-sage-700 dark:text-teal-400
+                          uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span aria-hidden="true">✦</span> Balance suggests
             </p>
-            <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
-              {MOOD_CONFIG[selected].suggestion}
-            </p>
+            {aiLoading
+              ? <p className="text-sm text-sage-500 dark:text-white/50 italic">Personalising suggestion…</p>
+              : <>
+                  <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
+                    {aiSuggestion ?? MOOD_CONFIG[selected].suggestion}
+                  </p>
+                  {!aiSuggestion && MOOD_CONFIG[selected].breakSuggestion && (
+                    <p className="text-sm text-sage-600 dark:text-white/70 mt-2 leading-relaxed">
+                      {MOOD_CONFIG[selected].breakSuggestion}
+                    </p>
+                  )}
+                </>
+            }
           </div>
         )}
 
-        {selected && <MoodRecommendations mood={selected} />}
+        {/* Two-column on desktop: activities left, note right */}
+        <div className="md:grid md:grid-cols-2 md:gap-6">
+          <div>
+            {selected && <MoodRecommendations mood={selected} />}
+          </div>
 
-        {/* Note */}
-        <div className="mb-6">
-          <label htmlFor="mood-note" className="label text-sage-900 dark:text-white/70">
-            Add a note (optional)
-          </label>
-          <textarea
-            id="mood-note"
-            value={note}
-            onChange={e => setNote(e.target.value)}
-            placeholder="What's on your mind today?"
-            rows={3}
-            className="input resize-none"
-            maxLength={300}
-          />
-          <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
-            {note.length}/300
-          </p>
+          {/* Note */}
+          <div className="mb-6">
+            <label htmlFor="mood-note" className="label text-sage-900 dark:text-white/70">
+              Add a note (optional)
+            </label>
+            <textarea
+              id="mood-note"
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              placeholder="What's on your mind today?"
+              rows={3}
+              className="input resize-none"
+              maxLength={300}
+            />
+            <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
+              {note.length}/300
+            </p>
+          </div>
         </div>
 
-        {/* CTA */}
+      </div>
+
+      {/* Sticky CTA — sits above bottom nav on mobile, at bottom on desktop */}
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 md:left-64 z-20
+                      bg-warm-100/90 dark:bg-ocean-900/90 backdrop-blur-sm
+                      border-t border-sage-200 dark:border-ocean-700
+                      px-6 py-4 flex flex-col gap-2">
         <button
           onClick={handleSubmit}
           disabled={!selected || loading}
-          className="btn-primary w-full flex items-center justify-center gap-2 shadow-raised animate-fade-in"
+          className="btn-primary w-full flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -199,16 +265,13 @@ export default function MoodPage() {
             alreadyCheckedIn ? 'Update my mood →' : 'See my recommended tasks →'
           )}
         </button>
-
-        {/* Skip */}
         <button
           onClick={() => router.push('/app/tasks')}
-          className="w-full text-center text-sm text-sage-400 dark:text-white/70
-                     hover:text-sage-600 transition-colors mt-3 py-2"
+          className="text-center text-sm text-sage-400 dark:text-white/70
+                     hover:text-sage-600 transition-colors py-1"
         >
           Skip for today
         </button>
-
       </div>
     </div>
   )

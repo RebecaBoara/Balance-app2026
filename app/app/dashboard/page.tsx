@@ -123,6 +123,7 @@ export default function DashboardPage() {
     setDismissedTaskIds(prev => [...prev, taskId])
   }
 
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -311,6 +312,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
+
         <InsightCard insight={insight} />
 
         {/* Mood breakdown + Recent reflections */}
@@ -415,7 +417,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-sage-500 dark:text-white" aria-hidden="true" />
                 <h3 className="text-[0.95rem] font-semibold text-sage-800 dark:text-white">
-                  Today's focus
+                  Today&apos;s focus
                 </h3>
               </div>
               <Link href="/app/tasks"

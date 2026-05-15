@@ -16,8 +16,8 @@ const HOW_IT_WORKS = [
   },
   {
     emoji: '✦',
-    title: 'Get smart task recommendations',
-    desc:  'Balance surfaces tasks that match your current mood and energy level.',
+    title: 'Get AI-powered recommendations',
+    desc:  'Balance uses AI to surface tasks and suggestions that match your mood and energy level.',
   },
   {
     emoji: '📊',

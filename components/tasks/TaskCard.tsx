@@ -108,10 +108,8 @@ export default function TaskCard({
           )}
         </button>
 
-        {/* Content*/}
+        {/* Title + meta */}
         <div className="flex-1 min-w-0">
-
-          {/* Title */}
           <p className={`text-sm font-semibold leading-snug mb-1.5
                          ${task.completed
                            ? 'line-through text-sage-600 dark:text-white/50'
@@ -120,40 +118,39 @@ export default function TaskCard({
             {task.title}
           </p>
 
-          {/* Meta row */}
           <div className="flex items-center gap-3 flex-wrap">
             <DifficultyBadge difficulty={task.difficulty} />
 
-            <span className="text-sm text-sage-600 dark:text-white/70
-                             flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="text-xs text-sage-500 dark:text-white/50 flex items-center gap-1">
+              <Clock className="w-3 h-3" aria-hidden="true" />
               {task.estimatedMin} min
             </span>
 
             {task.dueDate && (
-              <span className={`text-sm flex items-center gap-1.5
+              <span className={`text-xs flex items-center gap-1
                                 ${isOverdue(task.dueDate, task.completed)
                                   ? 'text-coral-app dark:text-coral-pale font-medium'
                                   : isToday(task.dueDate)
                                     ? 'text-amber-800 dark:text-amber-400 font-medium'
-                                    : 'text-sage-600 dark:text-white/70'
+                                    : 'text-sage-500 dark:text-white/50'
                                 }`}>
-                <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
+                <Calendar className="w-3 h-3" aria-hidden="true" />
                 {isOverdue(task.dueDate, task.completed)
                   ? `Overdue · ${formatDate(task.dueDate)}`
                   : isToday(task.dueDate) ? 'Due today' : formatDate(task.dueDate)
                 }
               </span>
             )}
+
             {task.dueTime && (
-  <span className="text-sm text-sage-600 dark:text-white/70 flex items-center gap-1.5">
-    <Clock className="w-3.5 h-3.5" aria-hidden="true" />
-    {formatTime(task.dueTime)}
-  </span>
-)}
+              <span className="text-xs text-sage-500 dark:text-white/50 flex items-center gap-1">
+                <Clock className="w-3 h-3" aria-hidden="true" />
+                {formatTime(task.dueTime)}
+              </span>
+            )}
 
             {deferred && (
-              <span className="text-xs text-sage-700 dark:text-white/50 italic">
+              <span className="text-xs text-sage-500 dark:text-white/40 italic">
                 Saved for better energy
               </span>
             )}
@@ -161,46 +158,42 @@ export default function TaskCard({
             {task.notes && (
               <button
                 onClick={() => setShowNotes(p => !p)}
-                className="text-xs text-sage-600 dark:text-white/70
-                           hover:text-sage-700 underline transition-colors"
+                className="text-xs text-sage-400 dark:text-white/40
+                           hover:text-sage-600 underline transition-colors"
               >
-                {showNotes ? 'Hide notes' : 'Show notes'}
+                {showNotes ? 'Hide notes' : 'Notes'}
               </button>
             )}
           </div>
 
-          {/* Notes  */}
           {task.notes && showNotes && (
             <p className="text-sm text-sage-600 dark:text-white/80
-                          mt-3 leading-relaxed p-3 rounded-lg
+                          mt-2 leading-relaxed p-3 rounded-lg
                           bg-sage-50 dark:bg-ocean-800
                           border border-sage-500/15 dark:border-ocean-600
                           animate-fade-in">
               {task.notes}
             </p>
           )}
-
         </div>
 
-        {/* Actions */}
-        <div className="flex-shrink-0 flex gap-1 transition-all duration-200">
+        {/* Actions only */}
+        <div className="flex-shrink-0 flex items-center gap-1 transition-all duration-200">
           {onSetRepeat && !completed && (
             <div className="relative">
-              <span className="mr-1 text-xs text-sage-500 dark:text-white/60 align-middle">
-                {repeatLabel(task.repeat)}
-              </span>
               <button
                 onClick={() => setShowRepeatMenu(v => !v)}
                 aria-label={`Change repeat for: ${task.title}. Current: ${repeatLabel(task.repeat) || 'No repeat'}`}
                 title={repeatLabel(task.repeat)}
-                className={`p-1.5 rounded-xs transition-all duration-200
+                className={`flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xs transition-all duration-200
                            ${task.repeat && task.repeat !== 'none'
                              ? 'text-sage-700 bg-sage-50 dark:text-teal-300 dark:bg-teal-900/20'
-                             : 'text-sage-600 dark:text-white/50'
+                             : 'text-sage-500 dark:text-white/50'
                            }
                            hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600`}
               >
-                <Repeat className="w-4 h-4" aria-hidden="true" />
+                <Repeat className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="text-[10px] leading-none">Repeat</span>
               </button>
               {showRepeatMenu && (
                 <div className="absolute right-0 top-8 z-20 min-w-[170px] rounded-lg border border-sage-500/15 dark:border-ocean-600 bg-white dark:bg-ocean-700 shadow-card p-1">
@@ -234,21 +227,25 @@ export default function TaskCard({
             <button
               onClick={() => onEdit(task)}
               aria-label={`Edit task: ${task.title}`}
-              className="p-1.5 rounded-xs text-sage-600 dark:text-white/50
+              className="flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xs
+                         text-sage-500 dark:text-white/50
                          hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600
                          transition-all duration-200"
             >
-              <Pencil className="w-4 h-4" aria-hidden="true" />
+              <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+              <span className="text-[10px] leading-none">Edit</span>
             </button>
           )}
           <button
             onClick={() => setConfirmDelete(true)}
             aria-label={`Delete task: ${task.title}`}
-            className="p-1.5 rounded-lg text-sage-600 dark:text-white/50
+            className="flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xs
+                       text-sage-500 dark:text-white/50
                        hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20
                        transition-all duration-200"
           >
-            <Trash2 className="w-4 h-4" aria-hidden="true" />
+            <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="text-[10px] leading-none">Delete</span>
           </button>
         </div>
 

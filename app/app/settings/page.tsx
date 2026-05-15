@@ -15,6 +15,7 @@ import PageHeader    from '@/components/ui/PageHeader'
 import ThemeToggle   from '@/components/ui/Themetoggle'
 import Spinner       from '@/components/ui/Spinner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import Logo          from '@/components/ui/Logo'
 import {
   Coffee, Shield, LogOut, Trash2, ChevronRight, Check, X, Info, Pencil, Mail,
 } from 'lucide-react'
@@ -56,7 +57,7 @@ function ToggleRow({ label, description, icon: Icon, value, onChange }: {
           <p className="text-sm leading-relaxed">
             <span className="font-medium text-sage-800 dark:text-white">{label}</span>
             {description && (
-              <span className="text-sage-400 dark:text-white/40"> — {description}</span>
+              <span className="text-sage-500 dark:text-white/40"> — {description}</span>
             )}
           </p>
         </div>
@@ -103,7 +104,7 @@ function LinkRow({ label, description, icon: Icon, href, danger = false }: {
           : 'text-sage-700 dark:text-white/80'}`}>
           <span className="font-medium">{label}</span>
           {description && (
-            <span className="text-sage-400 dark:text-white/40"> — {description}</span>
+            <span className="text-sage-500 dark:text-white/40"> — {description}</span>
           )}
         </p>
       </div>
@@ -244,9 +245,13 @@ export default function SettingsPage() {
 
       <PageHeader title="Settings" />
 
-      <div className="px-6 md:px-0">
+      <div className="px-6 md:px-0 xl:grid xl:grid-cols-2 xl:gap-8 xl:items-start">
+
+        {/* Left column */}
+        <div>
 
         {/* Profile */}
+        <SectionLabel>Account</SectionLabel>
         <Card>
           <div className="flex items-center gap-4 px-4 py-3.5">
             <div className="w-12 h-12 rounded-full bg-sage-500 dark:bg-teal-600
@@ -290,7 +295,7 @@ export default function SettingsPage() {
               ) : (
                 <div className="flex items-center justify-between gap-2 w-full">
                   <div className="min-w-0 flex-1 pr-2">
-                    <p className="text-sm font-semibold text-sage-900 dark:text-white truncate">
+                    <p className="text-sm font-semibold text-sage-800 dark:text-white truncate">
                       {displayName}
                     </p>
                     <p className="text-xs text-sage-400 dark:text-white/40 truncate">
@@ -335,7 +340,7 @@ export default function SettingsPage() {
               <div className="min-w-0">
                 <p className="text-sm leading-relaxed">
                   <span className="font-medium text-sage-800 dark:text-white">Theme</span>
-                  <span className="text-sage-400 dark:text-white/40"> — Choose how Balance looks across your app experience</span>
+                  <span className="text-sage-500 dark:text-white/40"> — Choose how Balance looks across your app experience</span>
                 </p>
               </div>
               </div>
@@ -364,6 +369,22 @@ export default function SettingsPage() {
             'Save preferences'
           )}
         </button>
+
+        {/* Support */}
+        <SectionLabel>Support</SectionLabel>
+        <Card>
+          <LinkRow
+            label="Contact support"
+            description="Get help or send feedback"
+            icon={Mail}
+            href="mailto:balancedtasks.mood@gmail.com"
+          />
+        </Card>
+
+        </div>{/* end left column */}
+
+        {/* Right column */}
+        <div>
 
         {/* Privacy & Data */}
         <SectionLabel>Privacy & Data</SectionLabel>
@@ -398,17 +419,6 @@ export default function SettingsPage() {
           </button>
         </Card>
 
-        {/* Support */}
-        <SectionLabel>Support</SectionLabel>
-        <Card>
-          <LinkRow
-            label="Contact support"
-            description="Get help or send feedback"
-            icon={Mail}
-            href="mailto:balancedtasks.mood@gmail.com"
-          />
-        </Card>
-
         {/* About */}
         <SectionLabel>About</SectionLabel>
         <Card>
@@ -420,15 +430,15 @@ export default function SettingsPage() {
             <div className="flex-1 min-w-0">
               <p className="text-sm leading-relaxed">
                 <span className="font-medium text-sage-700 dark:text-white/80">App version</span>
-                <span className="text-sage-400 dark:text-white/40"> — Current installed release used for this research build.</span>
+                <span className="text-sage-500 dark:text-white/40"> — Current installed release used for this research build.</span>
               </p>
             </div>
-            <span className="text-sm text-sage-400 dark:text-white/40 flex-shrink-0">1.0.0</span>
+            <span className="text-sm text-sage-500 dark:text-white/40 flex-shrink-0">1.0.0</span>
           </div>
-          <div className="px-4 py-3 text-center">
-            <p className="font-script text-lg text-sage-400 dark:text-white/30">Balance</p>
-            <p className="text-xs text-sage-300 dark:text-white/20 mt-0.5">
-              Southampton Solent University · Rebeca Boara
+          <div className="px-4 py-4 flex flex-col items-center gap-1">
+            <Logo size="sm" href="/" />
+            <p className="text-xs text-sage-400 dark:text-white/20">
+              Rebeca Boara
             </p>
           </div>
         </Card>
@@ -449,7 +459,9 @@ export default function SettingsPage() {
           Ends your current session on this device.
         </p>
 
-      </div>
+        </div>{/* end right column */}
+
+      </div>{/* end grid */}
 
       {/* Sign out confirmation */}
       {showSignOut && (
