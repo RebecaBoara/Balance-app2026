@@ -20,7 +20,7 @@ const HOW_IT_WORKS = [
     desc:  'Balance uses AI to surface tasks and suggestions that match your mood and energy level.',
   },
   {
-    emoji: '📊',
+    emoji: '📈',
     title: 'Track your patterns',
     desc:  'See insights about when you work best and what helps you thrive.',
   },

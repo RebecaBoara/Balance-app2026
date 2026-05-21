@@ -23,7 +23,7 @@ export default function StatCard({ label, value, accent = false, sub }: StatCard
       </p>
 
       {sub && (
-        <p className={`text-[13px] mt-1.5 ${accent ? 'text-white/80' : 'text-sage-700 dark:text-white/70'}`}>
+        <p className={`text-xs mt-1.5 ${accent ? 'text-white/80' : 'text-sage-700 dark:text-white/70'}`}>
           {sub}
         </p>
       )}

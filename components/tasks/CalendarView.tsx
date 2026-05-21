@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Task } from '@/types'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
 import TaskCard from './TaskCard'
 
 interface CalendarViewProps {
@@ -33,10 +33,13 @@ export default function CalendarView({
   tasks, celebrated, deleting, onToggle, onDelete, onEdit,
 }: CalendarViewProps) {
   const now = new Date()
-  const [cur, setCur]           = useState({ year: now.getFullYear(), month: now.getMonth() })
-  const [selected, setSelected] = useState<string | null>(TODAY)
+  const [cur, setCur]             = useState({ year: now.getFullYear(), month: now.getMonth() })
+  const [selected, setSelected]   = useState<string | null>(TODAY)
+  const [undatedOpen, setUndated] = useState(true)
 
   const cells = getMonthGrid(cur.year, cur.month)
+
+  const undatedTasks = tasks.filter(t => !t.dueDate && !t.completed)
 
   const tasksByDay = new Map<string, Task[]>()
   tasks.forEach(t => {
@@ -73,7 +76,7 @@ export default function CalendarView({
         >
           <ChevronLeft className="w-4 h-4 text-sage-600 dark:text-white/70" />
         </button>
-        <p className="font-serif text-base text-sage-900 dark:text-white">{monthLabel}</p>
+        <p className="text-sm font-semibold text-sage-900 dark:text-white">{monthLabel}</p>
         <button
           onClick={next}
           aria-label="Next month"
@@ -93,15 +96,20 @@ export default function CalendarView({
       </div>
 
       {/* Day grid */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 divide-x divide-sage-500/10 dark:divide-ocean-600 border-t border-sage-500/10 dark:border-ocean-600">
         {cells.map((dateStr, i) => {
-          if (!dateStr) return <div key={i} />
+          if (!dateStr) return (
+            <div key={i} className="min-h-[80px] border-b border-sage-500/10 dark:border-ocean-600 bg-warm-100/40 dark:bg-ocean-900/20" />
+          )
 
-          const dayTasks  = tasksByDay.get(dateStr) ?? []
-          const isToday   = dateStr === TODAY
-          const isOverdue = dateStr < TODAY && dayTasks.some(t => !t.completed)
-          const isSel     = dateStr === selected
-          const dayNum    = Number(dateStr.split('-')[2])
+          const dayTasks    = tasksByDay.get(dateStr) ?? []
+          const incomplete  = dayTasks.filter(t => !t.completed)
+          const isToday     = dateStr === TODAY
+          const isOverdue   = dateStr < TODAY && incomplete.length > 0
+          const isSel       = dateStr === selected
+          const dayNum      = Number(dateStr.split('-')[2])
+          const visible     = incomplete.slice(0, 2)
+          const overflow    = incomplete.length - visible.length
 
           return (
             <button
@@ -109,41 +117,79 @@ export default function CalendarView({
               onClick={() => setSelected(isSel ? null : dateStr)}
               aria-pressed={isSel}
               aria-label={`${dateStr}${dayTasks.length ? `, ${dayTasks.length} task${dayTasks.length > 1 ? 's' : ''}` : ''}`}
-              className={`flex flex-col items-center py-1.5 rounded-lg transition-all duration-150
+              className={`min-h-[80px] flex flex-col items-start p-1.5 text-left transition-colors duration-150 border-b border-sage-500/10 dark:border-ocean-600
                           ${isSel
-                            ? 'bg-sage-500 dark:bg-teal-600'
+                            ? 'bg-sage-50 dark:bg-teal-900/20'
                             : isToday
-                              ? 'bg-amber-pale dark:bg-amber-900/20'
-                              : 'hover:bg-sage-50 dark:hover:bg-ocean-700'
+                              ? 'bg-sage-50/60 dark:bg-sage-900/10'
+                              : 'hover:bg-warm-200/50 dark:hover:bg-ocean-700/40'
                           }`}
             >
-              <span className={`text-sm leading-none mb-1
-                                ${isSel    ? 'text-white font-semibold'
-                                : isToday  ? 'text-amber-800 dark:text-amber-400 font-semibold'
-                                :            'text-sage-800 dark:text-white'}`}>
+              <span className={`text-sm leading-none mb-1.5 w-6 h-6 flex items-center justify-center rounded-full flex-shrink-0
+                                ${isSel    ? 'bg-sage-500 dark:bg-teal-600 text-white font-semibold'
+                                : isToday  ? 'bg-sage-500 dark:bg-teal-600 text-white font-semibold'
+                                : isOverdue ? 'text-coral-app dark:text-coral-pale font-medium'
+                                :            'text-sage-600 dark:text-white/70'}`}>
                 {dayNum}
               </span>
 
-              {/* Task dots */}
-              {dayTasks.length > 0 && (
-                <div className="flex gap-0.5">
-                  {dayTasks.slice(0, 3).map((t, idx) => (
-                    <span
-                      key={idx}
-                      className={`w-1 h-1 rounded-full
-                        ${isSel         ? 'bg-white/70'
-                        : t.completed   ? 'bg-sage-300 dark:bg-white/30'
-                        : isOverdue     ? 'bg-coral-app dark:bg-coral-pale'
-                        : isToday       ? 'bg-amber-app'
-                        :                 'bg-sage-400 dark:bg-teal-400'}`}
-                    />
-                  ))}
-                </div>
-              )}
+              {/* Inline task pills */}
+              <div className="flex flex-col gap-0.5 w-full">
+                {visible.map((t) => (
+                  <span
+                    key={t.id}
+                    className={`text-xs leading-tight px-1 py-0.5 rounded truncate w-full
+                      ${t.difficulty === 'easy'
+                        ? 'bg-sage-50 dark:bg-sage-900/30 text-sage-700 dark:text-sage-300'
+                        : t.difficulty === 'medium'
+                          ? 'bg-amber-pale dark:bg-amber-900/20 text-amber-800 dark:text-amber-400'
+                          : 'bg-coral-pale dark:bg-red-900/20 text-coral-app dark:text-coral-pale'
+                      }`}
+                  >
+                    {t.title}
+                  </span>
+                ))}
+                {overflow > 0 && (
+                  <span className="text-xs text-sage-400 dark:text-white/40 pl-1">
+                    +{overflow} more
+                  </span>
+                )}
+              </div>
             </button>
           )
         })}
       </div>
+
+      {/* Undated tasks */}
+      {undatedTasks.length > 0 && (
+        <div className="mt-5 border-t border-sage-100 dark:border-ocean-600 pt-4">
+          <button
+            onClick={() => setUndated(v => !v)}
+            className="flex items-center justify-between w-full text-left mb-2"
+          >
+            <p className="text-xs font-semibold text-sage-600 dark:text-white/50 uppercase tracking-wider">
+              No due date · {undatedTasks.length} task{undatedTasks.length > 1 ? 's' : ''}
+            </p>
+            <ChevronDown className={`w-4 h-4 text-sage-400 dark:text-white/40 transition-transform duration-200
+                                     ${undatedOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {undatedOpen && (
+            <div className="space-y-2 animate-fade-in">
+              {undatedTasks.map(task => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  celebrated={celebrated.has(task.id)}
+                  deleting={deleting === task.id}
+                  onToggle={onToggle}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Selected day panel */}
       {selected && (

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { getUserProfile, saveUserProfile } from '@/lib/db'
-import { useTheme } from '@/components/layout/ThemeProvider'
+
 import {
   signOut, deleteUser, updateProfile,
   EmailAuthProvider, reauthenticateWithCredential,
@@ -15,52 +15,45 @@ import PageHeader    from '@/components/ui/PageHeader'
 import ThemeToggle   from '@/components/ui/Themetoggle'
 import Spinner       from '@/components/ui/Spinner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
-import Logo          from '@/components/ui/Logo'
+import Button        from '@/components/ui/Button'
 import {
-  Coffee, Shield, LogOut, Trash2, ChevronRight, Check, X, Info, Pencil, Mail,
+  LogOut, Trash2, ChevronRight, Check, X, Pencil,
 } from 'lucide-react'
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-xs font-semibold text-sage-500 dark:text-white/40
-                  uppercase tracking-widest px-1 mb-2 mt-4 first:mt-0">
-      {children}
-    </p>
-  )
-}
 
-function Card({ children }: { children: React.ReactNode }) {
+function Card({ children, title }: { children: React.ReactNode; title?: string }) {
   return (
     <div className="bg-white dark:bg-ocean-700 rounded-sm shadow-raised
-                    border border-sage-500/15 dark:border-ocean-600
-                    divide-y divide-sage-50 dark:divide-ocean-600 overflow-hidden">
-      {children}
+                    border border-sage-500/15 dark:border-ocean-600 overflow-hidden">
+      {title && (
+        <div className="px-4 py-3 border-b border-sage-500/10 dark:border-ocean-600">
+          <p className="text-sm font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">
+            {title}
+          </p>
+        </div>
+      )}
+      <div className="divide-y divide-sage-50 dark:divide-ocean-600">
+        {children}
+      </div>
     </div>
   )
 }
 
-function ToggleRow({ label, description, icon: Icon, value, onChange }: {
+function ToggleRow({ label, description, value, onChange }: {
   label:        string
   description?: string
-  icon:         React.ElementType
   value:        boolean
   onChange:     (v: boolean) => void
 }) {
   return (
     <div className="flex items-center justify-between px-4 py-3">
-      <div className="flex items-center gap-3 flex-1 min-w-0 pr-4">
-        <div className="w-8 h-8 rounded-lg bg-sage-50 dark:bg-ocean-600
-                        flex items-center justify-center flex-shrink-0">
-          <Icon className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-sm leading-relaxed">
-            <span className="font-medium text-sage-800 dark:text-white">{label}</span>
-            {description && (
-              <span className="text-sage-500 dark:text-white/40"> — {description}</span>
-            )}
-          </p>
-        </div>
+      <div className="flex-1 min-w-0 pr-4">
+        <p className="text-sm leading-relaxed">
+          <span className="font-medium text-sage-800 dark:text-white">{label}</span>
+          {description && (
+            <span className="text-sage-500 dark:text-white/40"> — {description}</span>
+          )}
+        </p>
       </div>
       <button
         role="switch"
@@ -78,10 +71,9 @@ function ToggleRow({ label, description, icon: Icon, value, onChange }: {
   )
 }
 
-function LinkRow({ label, description, icon: Icon, href, danger = false }: {
+function LinkRow({ label, description, href, danger = false }: {
   label:   string
   description?: string
-  icon:    React.ElementType
   href:    string
   danger?: boolean
 }) {
@@ -90,14 +82,6 @@ function LinkRow({ label, description, icon: Icon, href, danger = false }: {
       className="flex items-center gap-3 px-4 py-3
                  hover:bg-sage-50 dark:hover:bg-ocean-600
                  transition-colors duration-150 group">
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
-                       ${danger
-                         ? 'bg-red-50 dark:bg-red-900/20'
-                         : 'bg-sage-50 dark:bg-ocean-600'
-                       }`}>
-        <Icon className={`w-4 h-4 ${danger ? 'text-red-400' : 'text-sage-500 dark:text-teal-400'}`}
-          aria-hidden="true" />
-      </div>
       <div className="flex-1 min-w-0">
         <p className={`text-sm leading-relaxed ${danger
           ? 'text-red-500 dark:text-red-400'
@@ -114,14 +98,34 @@ function LinkRow({ label, description, icon: Icon, href, danger = false }: {
   )
 }
 
+function CopyEmailButton({ email }: { email: string }) {
+  const [copied, setCopied] = useState(false)
+  function handleCopy() {
+    navigator.clipboard.writeText(email).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+  return (
+    <button
+      onClick={handleCopy}
+      aria-label="Copy email address"
+      className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+                 transition-colors duration-150
+                 bg-sage-50 dark:bg-ocean-600
+                 text-sage-600 dark:text-white/70
+                 hover:bg-sage-100 dark:hover:bg-ocean-500"
+    >
+      {copied ? <><Check className="w-3.5 h-3.5" aria-hidden="true" /> Copied!</> : 'Copy'}
+    </button>
+  )
+}
+
 export default function SettingsPage() {
   const { user }   = useAuth()
-  const { theme }  = useTheme()
   const router     = useRouter()
 
   const [loading,          setLoading]        = useState(true)
-  const [saving,           setSaving]         = useState(false)
-  const [saved,            setSaved]          = useState(false)
   const [showSignOut,      setShowSignOut]     = useState(false)
   const [showDeleteModal,  setShowDelete]      = useState(false)
   const [deletePassword,   setDeletePass]      = useState('')
@@ -154,17 +158,14 @@ export default function SettingsPage() {
     load()
   }, [user])
 
-  async function handleSave() {
+  async function handleToggleBreaks(value: boolean) {
+    setBreakSuggestions(value)
     if (!user) return
-    setSaving(true)
     try {
-      await saveUserProfile(user.uid, { breakSuggestions, theme })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2500)
+      await saveUserProfile(user.uid, { breakSuggestions: value })
     } catch (e) {
       console.error(e)
-    } finally {
-      setSaving(false)
+      setBreakSuggestions(!value) // revert on failure
     }
   }
 
@@ -192,6 +193,7 @@ export default function SettingsPage() {
   }
 
   async function handleSignOut() {
+    await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
     router.push('/')
   }
@@ -245,14 +247,13 @@ export default function SettingsPage() {
 
       <PageHeader title="Settings" />
 
-      <div className="px-6 md:px-0 xl:grid xl:grid-cols-2 xl:gap-8 xl:items-start">
-
-        {/* Left column */}
-        <div>
-
-        {/* Profile */}
-        <SectionLabel>Account</SectionLabel>
+      <div className="px-6 md:px-0">
         <Card>
+
+          {/* Account */}
+          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
+            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Account</p>
+          </div>
           <div className="flex items-center gap-4 px-4 py-3.5">
             <div className="w-12 h-12 rounded-full bg-sage-500 dark:bg-teal-600
                             flex items-center justify-center
@@ -273,34 +274,22 @@ export default function SettingsPage() {
                   />
                   {nameError && <p className="text-xs text-red-500 mb-1">{nameError}</p>}
                   <div className="flex gap-2">
-                    <button
-                      onClick={handleSaveName}
-                      disabled={savingName}
-                      className="flex items-center gap-1 px-3 py-1 rounded-md
-                                 bg-sage-500 text-white text-xs font-medium
-                                 hover:bg-sage-700 disabled:opacity-60 transition-colors">
+                    <Button onClick={handleSaveName} disabled={savingName} size="sm" className="gap-1 px-3 py-1">
                       {savingName ? <Spinner size="sm" /> : <Check className="w-3 h-3" />}
                       Save
-                    </button>
-                    <button
-                      onClick={() => setIsEditingName(false)}
-                      className="flex items-center gap-1 px-3 py-1 rounded-md
-                                 border border-sage-200 dark:border-ocean-500
-                                 text-sage-500 dark:text-white/60 text-xs
-                                 hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors">
+                    </Button>
+                    <Button onClick={() => setIsEditingName(false)} variant="secondary" size="sm" className="gap-1 px-3 py-1 text-sage-500 dark:text-white/60">
                       <X className="w-3 h-3" /> Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-2 w-full">
                   <div className="min-w-0 flex-1 pr-2">
-                    <p className="text-sm font-semibold text-sage-800 dark:text-white truncate">
-                      {displayName}
-                    </p>
-                    <p className="text-xs text-sage-400 dark:text-white/40 truncate">
+                    <p className="text-sm font-semibold text-sage-800 dark:text-white truncate">{displayName}</p>
+                    <p className="text-sm text-sage-400 dark:text-white/40 truncate">
                       {user?.email}
-                      {isGoogleUser && <span className="ml-1 text-white/30">· Google</span>}
+                      {isGoogleUser && <span className="ml-1 text-sage-400 dark:text-white/30">· Google</span>}
                     </p>
                   </div>
                   <button
@@ -318,115 +307,48 @@ export default function SettingsPage() {
               )}
             </div>
           </div>
-        </Card>
 
-        {/* Preferences */}
-        <SectionLabel>Preferences</SectionLabel>
-        <Card>
+          {/* Preferences */}
+          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
+            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Preferences</p>
+          </div>
           <ToggleRow
             label="Break suggestions"
             description="Suggests short breaks when you're exhausted or stressed"
-            icon={Coffee}
             value={breakSuggestions}
-            onChange={setBreakSuggestions}
+            onChange={handleToggleBreaks}
           />
           <div className="px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0 pr-4">
-              <div className="w-8 h-8 rounded-lg bg-sage-50 dark:bg-ocean-600
-                              flex items-center justify-center flex-shrink-0">
-                <span className="text-sm" aria-hidden="true">☀️</span>
-              </div>
-              <div className="min-w-0">
+              <div className="flex-1 min-w-0 pr-4">
                 <p className="text-sm leading-relaxed">
                   <span className="font-medium text-sage-800 dark:text-white">Theme</span>
                   <span className="text-sage-500 dark:text-white/40"> — Choose how Balance looks across your app experience</span>
                 </p>
               </div>
-              </div>
-              <div className="flex-shrink-0">
-                <ThemeToggle />
-              </div>
+              <div className="flex-shrink-0"><ThemeToggle /></div>
             </div>
           </div>
-        </Card>
 
-        {/* Save button */}
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full flex items-center justify-center gap-2 mt-3
-                     py-3 rounded-xl bg-sage-500 dark:bg-teal-600
-                     text-white font-medium text-sm
-                     hover:bg-sage-700 dark:hover:bg-teal-700
-                     transition-all duration-200 disabled:opacity-60"
-        >
-          {saving ? (
-            <><Spinner size="sm" /> Saving...</>
-          ) : saved ? (
-            <><Check className="w-4 h-4" aria-hidden="true" /> Saved!</>
-          ) : (
-            'Save preferences'
-          )}
-        </button>
-
-        {/* Support */}
-        <SectionLabel>Support</SectionLabel>
-        <Card>
-          <LinkRow
-            label="Contact support"
-            description="Get help or send feedback"
-            icon={Mail}
-            href="mailto:balancedtasks.mood@gmail.com"
-          />
-        </Card>
-
-        </div>{/* end left column */}
-
-        {/* Right column */}
-        <div>
-
-        {/* Privacy & Data */}
-        <SectionLabel>Privacy & Data</SectionLabel>
-        <Card>
-          <LinkRow
-            label="Privacy Policy"
-            description="See how your data is stored, used, and protected."
-            icon={Shield}
-            href="/privacy"
-          />
-          <LinkRow
-            label="Terms of Service"
-            description="Review app rules, account responsibilities, and usage terms."
-            icon={Shield}
-            href="/terms"
-          />
-          <button
-            onClick={() => setShowDelete(true)}
-            className="w-full flex items-center gap-3 px-4 py-3
-                       hover:bg-red-50 dark:hover:bg-red-900/20
-                       transition-colors duration-150 group text-left">
-            <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20
-                            flex items-center justify-center flex-shrink-0">
-              <Trash2 className="w-4 h-4 text-red-400" aria-hidden="true" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm text-red-500 dark:text-red-400 leading-relaxed">
-                <span className="font-medium">Delete account</span>
-                <span className="text-red-400/90 dark:text-red-300/80"> — Permanently remove your account and all saved data.</span>
-              </p>
-            </div>
-          </button>
-        </Card>
-
-        {/* About */}
-        <SectionLabel>About</SectionLabel>
-        <Card>
+          {/* Support */}
+          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
+            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Support</p>
+          </div>
           <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-8 h-8 rounded-lg bg-sage-50 dark:bg-ocean-600
-                            flex items-center justify-center flex-shrink-0">
-              <Info className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-sage-800 dark:text-white">Contact support</p>
+              <p className="text-sm text-sage-400 dark:text-white/40 truncate">balancedtasks.mood@gmail.com</p>
             </div>
+            <CopyEmailButton email="balancedtasks.mood@gmail.com" />
+          </div>
+
+          {/* Privacy & Data */}
+          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
+            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Privacy & Data</p>
+          </div>
+          <LinkRow label="Privacy Policy" description="See how your data is stored, used, and protected." href="/privacy" />
+          <LinkRow label="Terms of Service" description="Review app rules, account responsibilities, and usage terms." href="/terms" />
+          <div className="flex items-center px-4 py-3">
             <div className="flex-1 min-w-0">
               <p className="text-sm leading-relaxed">
                 <span className="font-medium text-sage-700 dark:text-white/80">App version</span>
@@ -435,33 +357,28 @@ export default function SettingsPage() {
             </div>
             <span className="text-sm text-sage-500 dark:text-white/40 flex-shrink-0">1.0.0</span>
           </div>
-          <div className="px-4 py-4 flex flex-col items-center gap-1">
-            <Logo size="sm" href="/" />
-            <p className="text-xs text-sage-400 dark:text-white/20">
-              Rebeca Boara
+          <button
+            onClick={() => setShowDelete(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 text-left group">
+            <p className="text-sm text-red-500 dark:text-red-400 leading-relaxed flex-1">
+              <span className="font-medium">Delete account</span>
+              <span className="text-red-400/90 dark:text-red-300/80"> — Permanently remove your account and all saved data.</span>
             </p>
-          </div>
+            <ChevronRight className="w-4 h-4 text-red-300 dark:text-red-400/40 group-hover:text-red-400 transition-colors flex-shrink-0" aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => setShowSignOut(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 text-left group">
+            <LogOut className="w-4 h-4 text-red-500 dark:text-red-400 flex-shrink-0" aria-hidden="true" />
+            <p className="text-sm leading-relaxed flex-1">
+              <span className="font-medium text-red-500 dark:text-red-400">Sign out</span>
+              <span className="text-sage-400 dark:text-white/40"> — Ends your current session on this device.</span>
+            </p>
+            <ChevronRight className="w-4 h-4 text-sage-300 dark:text-white/20 group-hover:text-sage-400 transition-colors flex-shrink-0" aria-hidden="true" />
+          </button>
+
         </Card>
-
-        {/* Sign out */}
-        <button
-          onClick={() => setShowSignOut(true)}
-          className="w-full flex items-center justify-center gap-2 mt-5
-                     py-3 rounded-xl border border-coral-app dark:border-red-500/60
-                     text-coral-app dark:text-red-400 text-sm font-medium
-                     hover:bg-red-50 dark:hover:bg-red-900/10
-                     transition-all duration-200"
-        >
-          <LogOut className="w-4 h-4" aria-hidden="true" />
-          Sign out
-        </button>
-        <p className="text-xs text-sage-400 dark:text-white/40 mt-2 px-1">
-          Ends your current session on this device.
-        </p>
-
-        </div>{/* end right column */}
-
-      </div>{/* end grid */}
+      </div>
 
       {/* Sign out confirmation */}
       {showSignOut && (
@@ -538,23 +455,23 @@ export default function SettingsPage() {
             )}
 
             <div className="flex gap-3">
-              <button
+              <Button
                 onClick={closeDeleteModal}
-                className="btn-ghost flex-1">
+                variant="secondary"
+                className="flex-1">
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleDeleteAccount}
                 disabled={deleting || (!isGoogleUser && !deletePassword)}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3
-                           rounded-lg bg-red-500 text-white text-sm font-medium
-                           hover:bg-red-600 transition-colors
-                           disabled:opacity-50 disabled:cursor-not-allowed">
+                variant="danger"
+                className="flex-1 rounded-lg"
+              >
                 {deleting
                   ? <><Spinner size="sm" /> Deleting...</>
                   : <><Trash2 className="w-4 h-4" aria-hidden="true" /> Delete account</>
                 }
-              </button>
+              </Button>
             </div>
           </div>
         </div>

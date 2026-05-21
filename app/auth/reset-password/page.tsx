@@ -6,6 +6,7 @@ import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import AuthLayout from '@/components/layout/AuthLayout'
 import Spinner from '@/components/ui/Spinner'
+import Button from '@/components/ui/Button'
 import { ArrowLeft } from 'lucide-react'
 
 export default function ResetPasswordPage() {
@@ -52,10 +53,9 @@ export default function ResetPasswordPage() {
                 We've sent a password reset link to <strong className="text-sage-700 dark:text-white">{email}</strong>.
                 Check your spam folder if it doesn't arrive within a few minutes.
               </p>
-              <Link href="/auth/login"
-                className="btn-primary inline-block px-6">
+              <Button href="/auth/login" className="px-6">
                 Back to sign in
-              </Link>
+              </Button>
             </div>
           ) : (
             <>
@@ -93,10 +93,11 @@ export default function ResetPasswordPage() {
                   />
                 </div>
 
-                <button
+                <Button
                   type="submit"
                   disabled={loading}
-                  className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
+                  fullWidth
+                  className="mt-2"
                 >
                   {loading ? (
                     <>
@@ -104,7 +105,7 @@ export default function ResetPasswordPage() {
                       Sending...
                     </>
                   ) : 'Send reset link'}
-                </button>
+                </Button>
               </form>
             </>
           )}

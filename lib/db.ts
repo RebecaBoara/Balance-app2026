@@ -6,7 +6,7 @@ import {
   getDocs, getDoc, setDoc,  query, where, orderBy
 } from 'firebase/firestore'
 import { db } from './firebase'
-import { Task, MoodEntry, DifficultyType, MoodType, RepeatType, UserProfile } from '@/types'
+import { Task, MoodEntry, DifficultyType, PriorityType, MoodType, RepeatType, UserProfile } from '@/types'
 
 
 //USER PROFILE 
@@ -61,6 +61,7 @@ export async function addTask(
   userId: string,
   title: string,
   difficulty: DifficultyType,
+  priority: PriorityType = 'medium',
   estimatedMin: number,
   repeat: RepeatType = 'none',
   dueDate?: string,
@@ -71,11 +72,12 @@ export async function addTask(
     userId,
     title,
     difficulty,
+    priority,
     estimatedMin,
     repeat,
     dueDate:   dueDate || null,
     dueTime:   dueTime || null,
-    notes:    notes || null,
+    notes:     notes   || null,
     completed: false,
     createdAt: Date.now(),
   })
@@ -84,16 +86,17 @@ export async function addTask(
 
 export async function updateTask(
   taskId: string,
-  data: { title: string; difficulty: DifficultyType; estimatedMin: number; repeat?: RepeatType; dueDate?: string; dueTime?: string; notes?: string }
+  data: { title: string; difficulty: DifficultyType; priority?: PriorityType; estimatedMin: number; repeat?: RepeatType; dueDate?: string; dueTime?: string; notes?: string }
 ): Promise<void> {
   await updateDoc(doc(db, 'tasks', taskId), {
     title:        data.title,
     difficulty:   data.difficulty,
+    priority:     data.priority ?? 'medium',
     estimatedMin: data.estimatedMin,
-    repeat:       data.repeat || 'none',
-    dueDate:      data.dueDate  || null,
-    dueTime:      data.dueTime  || null,
-    notes:        data.notes    || null,
+    repeat:       data.repeat  || 'none',
+    dueDate:      data.dueDate || null,
+    dueTime:      data.dueTime || null,
+    notes:        data.notes   || null,
   })
 }
 

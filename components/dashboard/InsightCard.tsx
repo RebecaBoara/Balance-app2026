@@ -14,7 +14,7 @@ export default function InsightCard({ insight }: InsightCardProps) {
           aria-hidden="true"
         />
         <div>
-          <p className="text-[0.875rem] font-semibold text-sage-700 dark:text-white/80
+          <p className="text-xs font-semibold text-sage-700 dark:text-white/80
                         uppercase tracking-wider mb-1.5">
             Weekly insight
           </p>

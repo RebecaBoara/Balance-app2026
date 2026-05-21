@@ -28,6 +28,7 @@ export default function Sidebar() {
   const [confirmSignOut, setConfirmSignOut] = useState(false)
 
   async function handleSignOut() {
+    await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
     router.push('/')
   }

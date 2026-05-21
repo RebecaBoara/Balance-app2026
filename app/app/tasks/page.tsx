@@ -12,6 +12,7 @@ import MoodSuggestionBanner from '@/components/tasks/MoodSuggestion'
 import EmptyState           from '@/components/ui/EmptyState'
 import PageHeader   from '@/components/ui/PageHeader'
 import Spinner      from '@/components/ui/Spinner'
+import Button       from '@/components/ui/Button'
 import { Plus, CheckCircle2, Sparkles, AlertCircle, List, CalendarDays, ChevronDown } from 'lucide-react'
 
 type FilterType = 'all' | 'today' | 'upcoming'
@@ -131,6 +132,7 @@ async function handleAddTask(data: NewTask) {
       user.uid,
       data.title.trim(),
       data.difficulty,
+      data.priority,
       data.estimatedMin,
       data.repeat,
       data.dueDate || undefined,
@@ -142,6 +144,7 @@ async function handleAddTask(data: NewTask) {
       userId:       user.uid,
       title:        data.title.trim(),
       difficulty:   data.difficulty,
+      priority:     data.priority,
       estimatedMin: data.estimatedMin,
       repeat:       data.repeat,
       completed:    false,
@@ -186,6 +189,7 @@ async function handleAddTask(data: NewTask) {
             user.uid,
             task.title,
             task.difficulty,
+            task.priority ?? 'medium',
             task.estimatedMin,
             task.repeat,
             nextDate,
@@ -198,6 +202,7 @@ async function handleAddTask(data: NewTask) {
             userId: user.uid,
             title: task.title,
             difficulty: task.difficulty,
+            priority: task.priority ?? 'medium',
             estimatedMin: task.estimatedMin,
             repeat: task.repeat,
             completed: false,
@@ -235,6 +240,7 @@ async function handleAddTask(data: NewTask) {
       await updateTask(task.id, {
         title: task.title,
         difficulty: task.difficulty,
+        priority: task.priority ?? 'medium',
         estimatedMin: task.estimatedMin,
         repeat,
         dueDate: task.dueDate || '',
@@ -317,30 +323,31 @@ async function handleAddTask(data: NewTask) {
           </div>
 
           <div className="flex items-center gap-2 ml-auto">
-            <button
+            <Button
               onClick={() => setShowModal(true)}
               aria-label="Add new task"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-sm
-                         bg-sage-500 dark:bg-teal-600 text-white text-sm font-medium
-                         hover:bg-sage-700 dark:hover:bg-teal-700 transition-colors"
+              size="sm"
+              className="px-3 py-2 rounded-sm"
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
               Add task
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setView(v => v === 'calendar' ? 'list' : 'calendar')}
               aria-label={view === 'calendar' ? 'Switch to list view' : 'Switch to calendar view'}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-sm border text-sm font-medium transition-all duration-200
+              variant={view === 'calendar' ? 'primary' : 'secondary'}
+              size="sm"
+              className={`px-3 py-2 rounded-sm transition-all duration-200
                           ${view === 'calendar'
-                            ? 'bg-sage-500 border-sage-500 text-white dark:bg-teal-600 dark:border-teal-600 shadow-sm'
-                            : 'bg-white dark:bg-ocean-700 border-sage-300 dark:border-ocean-500 text-sage-700 dark:text-white/80 hover:border-sage-400 hover:bg-sage-50 dark:hover:bg-ocean-600'
+                            ? 'shadow-sm'
+                            : 'border-sage-300 dark:border-ocean-500 text-sage-700 dark:text-white/80 hover:border-sage-400'
                           }`}
             >
               {view === 'calendar'
                 ? <><List className="w-4 h-4" aria-hidden="true" /> List</>
                 : <><CalendarDays className="w-4 h-4" aria-hidden="true" /> Calendar</>
               }
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -366,9 +373,9 @@ async function handleAddTask(data: NewTask) {
                 title="No tasks yet"
                 description="Add your first task to get started with mood-based recommendations."
                 action={
-                  <button onClick={() => setShowModal(true)} className="btn-primary px-6">
+                  <Button onClick={() => setShowModal(true)} className="px-6">
                     Add your first task
-                  </button>
+                  </Button>
                 }
               />
             )}
@@ -382,11 +389,11 @@ async function handleAddTask(data: NewTask) {
                   aria-expanded={overdueOpen}
                 >
                   <AlertCircle className="w-3.5 h-3.5 text-coral-app dark:text-coral-pale flex-shrink-0" aria-hidden="true" />
-                  <p className="text-xs font-semibold text-coral-app dark:text-coral-pale uppercase tracking-wider flex-1">
+                  <p className="text-sm font-semibold text-coral-app dark:text-coral-pale uppercase tracking-wider flex-1">
                     Overdue
                   </p>
-                  <span className="text-xs text-coral-app/70 dark:text-coral-pale/70">({overdueTasks.length})</span>
-                  <span className="text-xs text-sage-400 dark:text-white/40 font-medium ml-2">
+                  <span className="text-sm text-coral-app/70 dark:text-coral-pale/70">({overdueTasks.length})</span>
+                  <span className="text-sm text-sage-400 dark:text-white/40 font-medium ml-2">
                     {overdueOpen ? 'Hide' : 'Show'}
                   </span>
                   <ChevronDown
@@ -413,10 +420,10 @@ async function handleAddTask(data: NewTask) {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-3 h-3 text-sage-700 dark:text-white/70" aria-hidden="true" />
-                  <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
+                  <p className="text-sm font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                     Recommended first
                   </p>
-                  <span className="text-xs text-sage-700 dark:text-white/50">({recommended.length})</span>
+                  <span className="text-sm text-sage-700 dark:text-white/50">({recommended.length})</span>
                 </div>
                 <div className="space-y-2">
                   {recommended.map(task => (
@@ -434,10 +441,10 @@ async function handleAddTask(data: NewTask) {
             {deferred.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
+                  <p className="text-sm font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                     Saved for later
                   </p>
-                  <span className="text-xs text-sage-700 dark:text-white/50">({deferred.length})</span>
+                  <span className="text-sm text-sage-700 dark:text-white/50">({deferred.length})</span>
                 </div>
                 <div className="space-y-2 opacity-60">
                   {deferred.map(task => (
@@ -456,10 +463,10 @@ async function handleAddTask(data: NewTask) {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircle2 className="w-3.5 h-3.5 text-sage-600 dark:text-white/70" aria-hidden="true" />
-                  <p className="text-xs font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
+                  <p className="text-sm font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                 Completed recently
                   </p>
-                  <span className="text-xs text-sage-700 dark:text-white/50">({completedToday.length})</span>
+                  <span className="text-sm text-sage-700 dark:text-white/50">({completedToday.length})</span>
                 </div>
                 <div className="space-y-2">
                   {completedToday.map(task => (
@@ -507,6 +514,7 @@ async function handleAddTask(data: NewTask) {
             id:           editingTask.id,
             title:        editingTask.title,
             difficulty:   editingTask.difficulty,
+            priority:     editingTask.priority  ?? 'medium',
             estimatedMin: editingTask.estimatedMin,
             repeat:       editingTask.repeat || 'none',
             dueDate:      editingTask.dueDate  || '',

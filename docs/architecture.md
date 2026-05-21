@@ -3,8 +3,8 @@
 **Project:** Balance — Productivity & Wellbeing  
 **Author:** Rebeca Boara  
 **University:** Southampton Solent University  
-**Module:** QHO656 Dissertation Project 2025-26  
-**Last updated:** April 2026
+**Module:** Dissertation Project 2025-2026  
+**Last updated:** May 2026
 
 ---
 
@@ -27,24 +27,26 @@
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
-| Framework | Next.js | 14.2 | React framework with App Router |
+| Framework | Next.js | 16.2 | React framework with App Router |
 | Language | TypeScript | 5.x | Type safety across all files |
-| Styling | Tailwind CSS | 3.4 | Utility-first CSS with custom design tokens |
-| Icons | Lucide React | Latest | Consistent SVG icon library |
-| Authentication | Firebase Auth | 10.x | Email/password and Google sign-in |
-| Database | Firebase Firestore | 10.x | NoSQL cloud document database |
+| UI Library | React | 19.x | Component rendering |
+| Styling | Tailwind CSS | 4.x | Utility-first CSS with custom design tokens |
+| Icons | Lucide React | 1.x | Consistent SVG icon library |
+| Authentication | Firebase Auth | 12.x | Email/password and Google sign-in |
+| Database | Firebase Firestore | 12.x | NoSQL cloud document database |
+| AI | OpenAI SDK | 6.x | GPT-4o-mini for personalised daily messages |
 | Deployment | Vercel | — | Serverless Next.js hosting |
 | Version control | GitHub | — | Source control and progress log |
 | Fonts | Google Fonts | — | DM Serif Display, DM Sans, Dancing Script |
 
-### Why Next.js 14 App Router?
+### Why Next.js App Router?
 
 The App Router (introduced in Next.js 13) was chosen over the older Pages Router for the following reasons:
 
 - **Layouts** — nested layouts mean the sidebar and bottom nav are defined once and apply to all app screens automatically
 - **Server components** — non-interactive parts of the UI render on the server, reducing JavaScript sent to the browser
 - **File-based routing** — the folder structure IS the URL structure, making the codebase easy to navigate
-- **API routes** — backend logic lives in the same project, no separate server needed
+- **API routes** — backend logic lives in the same project, no separate server needed. Used for the OpenAI integration to keep the API key server-side only
 
 ---
 
@@ -56,8 +58,8 @@ The App Router (introduced in Next.js 13) was chosen over the older Pages Router
 │                                                        │
 │  ┌──────────────┐    ┌──────────────┐                  │
 │  │  Next.js     │    │  Tailwind    │                  │
-│  │  App Router  │    │  CSS         │                  │
-│  │  (React)     │    │  + Lucide    │                  │
+│  │  App Router  │    │  CSS 4       │                  │
+│  │  (React 19)  │    │  + Lucide    │                  │
 │  └──────┬───────┘    └──────────────┘                  │
 │         │                                              │
 │         ▼                                              │
@@ -75,7 +77,17 @@ The App Router (introduced in Next.js 13) was chosen over the older Pages Router
 │  │                      └── BottomNav   │              │
 │  └──────────────────────────────────────┘              │
 └─────────────────────┬──────────────────────────────────┘
-                      │  Firebase SDK
+                      │  Firebase SDK + fetch (API routes)
+                      ▼
+┌────────────────────────────────────────────────────────┐
+│              NEXT.JS API ROUTES (server-side)          │
+│                                                        │
+│  POST /api/ai/daily-message                            │
+│   └── Authenticated via Firebase ID token             │
+│       └── Calls OpenAI GPT-4o-mini                    │
+│           └── Returns { spark, suggestion }           │
+└─────────────────────┬──────────────────────────────────┘
+                      │
                       ▼
 ┌────────────────────────────────────────────────────────┐
 │                    FIREBASE (Google Cloud)             │
@@ -117,7 +129,7 @@ balance-app/
 │   │   ├── login/
 │   │   │   └── page.tsx          # Login page
 │   │   └── signup/
-│   │       └── page.tsx          # Sign up page
+│   │       └── page.tsx          # Sign up page (with consent checkbox)
 │   │
 │   ├── app/                      # Protected app routes (require auth)
 │   │   ├── layout.tsx            # App layout — AuthProvider + AppShell
@@ -130,13 +142,17 @@ balance-app/
 │   │   └── settings/
 │   │       └── page.tsx          # User settings
 │   │
-│   ├── api/                      # Next.js API routes (server-side)
-│   │   └── recommendations/
-│   │       └── route.ts          # Mood-based task recommendation API
+│   ├── api/                      # Next.js API routes (server-side only)
+│   │   └── ai/
+│   │       └── daily-message/
+│   │           └── route.ts      # OpenAI: generates personalised spark + suggestion
 │   │
-│   └── privacy/                  # Public legal pages
-│       └── page.tsx              # Privacy Policy
-│   terms/
+│   ├── onboarding/
+│   │   └── page.tsx              # First-time user onboarding flow
+│   │
+│   ├── privacy/
+│   │   └── page.tsx              # Privacy Policy
+│   └── terms/
 │       └── page.tsx              # Terms of Service
 │
 ├── components/                   # Reusable React components
@@ -147,43 +163,58 @@ balance-app/
 │   │   ├── Sidebar.tsx           # Desktop/tablet sidebar navigation
 │   │   └── ThemeProvider.tsx     # Light/dark/system theme manager
 │   │
+│   ├── mood/                     # Mood check-in components
+│   │   ├── DailySparkCard.tsx    # Daily Spark message card
+│   │   ├── MoodPill.tsx          # Individual mood selector pill
+│   │   └── MoodRecommendations.tsx # Mental health resource links
+│   │
+│   ├── tasks/                    # Task management components
+│   │   ├── TaskCard.tsx          # Individual task card with actions
+│   │   ├── AddTaskModal.tsx      # Modal for creating tasks
+│   │   └── EditTaskModal.tsx     # Modal for editing tasks
+│   │
+│   ├── dashboard/                # Dashboard components
+│   │   ├── StatCard.tsx          # Individual stat display card
+│   │   ├── MoodChart.tsx         # 7-day mood bar chart
+│   │   └── InsightCard.tsx       # Productivity insight card
+│   │
 │   └── ui/                       # Generic UI building blocks
+│       ├── Button.tsx            # Reusable button (primary/secondary/ghost/danger)
+│       ├── ConfirmDialog.tsx     # Confirmation dialog modal
 │       ├── DifficultyBadge.tsx   # Easy / Medium / Hard coloured badge
 │       ├── EmptyState.tsx        # Empty list state with icon and CTA
+│       ├── Logo.tsx              # Balance logo component
 │       ├── MoodBadge.tsx         # Mood label with emoji and colour
-│       ├── PageHeader.tsx        # Consistent page title + subtitle + action
 │       ├── Spinner.tsx           # Loading indicator (sm / md / lg)
 │       ├── ThemeToggle.tsx       # Light / System / Dark toggle button
-│       └── TaskCard.tsx          # Individual task card (coming soon)
+│       └── UserAvatarMenu.tsx    # User avatar dropdown menu
 │
 ├── lib/                          # Shared utilities and services
 │   ├── db.ts                     # All Firestore database operations
 │   ├── firebase.ts               # Firebase client SDK initialisation
-│   └── mood.ts                   # Emotion-aware recommendation logic
+│   └── mood.ts                   # Emotion-aware recommendation logic + MOOD_CONFIG
 │
 ├── hooks/                        # Custom React hooks
 │   └── useAuth.ts                # Firebase auth state hook
 │
 ├── types/                        # TypeScript type definitions
-│   └── index.ts                  # All shared types: Task, MoodEntry, etc.
+│   └── index.ts                  # All shared types: Task, MoodEntry, UserProfile, etc.
 │
 ├── docs/                         # Project documentation
-│   ├── DATABASE.md               # Database schema and security rules
-│   └── ARCHITECTURE.md           # This file
+│   ├── requirements.md           # Functional and non-functional requirements
+│   ├── mood.logic.md             # Recommendation algorithm documentation
+│   ├── database.md               # Database schema and security rules
+│   └── architecture.md           # This file
 │
 ├── public/                       # Static assets
-│   ├── favicon.ico               # Browser tab icon
-│   └── logo.svg                  # Balance logo SVG
+│   └── favicon.ico               # Browser tab icon
 │
 ├── .env.local                    # Local environment variables (never committed)
-├── .env.local.example            # Template showing required variables
 ├── .gitignore                    # Files excluded from Git
 ├── firestore.rules               # Firestore security rules reference
-├── middleware.ts                 # Route protection (currently minimal)
-├── next.config.js                # Next.js configuration
+├── middleware.ts                 # Route protection
+├── next.config.ts                # Next.js configuration
 ├── package.json                  # Dependencies and scripts
-├── postcss.config.js             # PostCSS for Tailwind
-├── tailwind.config.js            # Tailwind with custom design tokens
 └── tsconfig.json                 # TypeScript configuration
 ```
 
@@ -199,7 +230,7 @@ Next.js App Router uses the filesystem as the router. Every `page.tsx` file insi
 |---|---|---|
 | `/` | `app/page.tsx` | Landing page |
 | `/auth/login` | `app/auth/login/page.tsx` | Login screen |
-| `/auth/signup` | `app/auth/signup/page.tsx` | Sign up screen |
+| `/auth/signup` | `app/auth/signup/page.tsx` | Sign up screen (with explicit consent checkbox) |
 | `/privacy` | `app/privacy/page.tsx` | Privacy Policy |
 | `/terms` | `app/terms/page.tsx` | Terms of Service |
 
@@ -207,6 +238,7 @@ Next.js App Router uses the filesystem as the router. Every `page.tsx` file insi
 
 | URL | File | Description |
 |---|---|---|
+| `/onboarding` | `app/onboarding/page.tsx` | First-time onboarding flow |
 | `/app/mood` | `app/app/mood/page.tsx` | Daily mood check-in |
 | `/app/tasks` | `app/app/tasks/page.tsx` | Task list with mood recommendations |
 | `/app/dashboard` | `app/app/dashboard/page.tsx` | Productivity and mood insights |
@@ -216,7 +248,7 @@ Next.js App Router uses the filesystem as the router. Every `page.tsx` file insi
 
 | URL | File | Method | Description |
 |---|---|---|---|
-| `/api/recommendations` | `app/api/recommendations/route.ts` | `POST` | Returns mood-filtered task recommendations |
+| `/api/ai/daily-message` | `app/api/ai/daily-message/route.ts` | `POST` | Generates personalised spark + suggestion via OpenAI GPT-4o-mini. Requires Firebase ID token in Authorization header. |
 
 ### Layouts
 
@@ -246,7 +278,7 @@ The main layout wrapper for all authenticated screens.
 
 - On mobile (< 768px): full-width content + fixed bottom nav
 - On tablet/desktop (≥ 768px): sidebar on left, content shifted right
-- Adds `pb-20` padding at bottom so content isn't hidden by bottom nav
+- Adds padding at bottom so content isn't hidden by bottom nav
 
 #### `AuthProvider.tsx`
 Protects all `/app/*` routes from unauthenticated access.
@@ -260,7 +292,8 @@ Protects all `/app/*` routes from unauthenticated access.
 - Uses `useAuth` hook to check Firebase auth state
 - Shows Balance logo + spinner while checking
 - Redirects to `/auth/login` if not authenticated
-- Renders children only when user is confirmed signed in
+- Checks `hasOnboarded` flag on user profile — redirects to `/onboarding` if false
+- Renders children only when user is confirmed signed in and onboarded
 
 #### `BottomNav.tsx`
 Fixed bottom navigation bar. Mobile only (`md:hidden`).
@@ -273,11 +306,10 @@ Fixed bottom navigation bar. Mobile only (`md:hidden`).
 #### `Sidebar.tsx`
 Left sidebar navigation. Tablet and desktop only (`hidden md:flex`).
 
-- Balance logo and tagline at top
-- Four nav items with description text and active left border
-- User profile (avatar, name, email) at bottom
+- Balance logo at top
+- Four nav items with active left border indicator
+- Sign out button with confirmation dialog
 - Theme toggle (Light/System/Dark)
-- Sign out button with `signOut()` from Firebase Auth
 
 #### `ThemeProvider.tsx`
 Manages light/dark/system theme for the entire app.
@@ -289,6 +321,18 @@ Manages light/dark/system theme for the entire app.
 
 ### UI components
 
+#### `Button.tsx`
+
+```tsx
+<Button variant="primary" size="md">Save</Button>
+<Button variant="secondary">Cancel</Button>
+<Button variant="ghost">Skip</Button>
+<Button variant="danger">Delete</Button>
+<Button href="/app/tasks">Link button</Button>
+```
+
+Five variants: `primary` (sage green), `secondary` (outlined), `ghost` (transparent), `danger` (red filled), `outlineDanger` (red outlined). Two sizes: `sm` and `md`. Supports `href` to render as a Next.js `<Link>`.
+
 #### `DifficultyBadge.tsx`
 
 ```tsx
@@ -297,10 +341,7 @@ Manages light/dark/system theme for the entire app.
 <DifficultyBadge difficulty="hard" />
 ```
 
-Coloured pill badge showing task difficulty:
-- Easy → sage green
-- Medium → amber
-- Hard → coral/red
+Coloured pill badge showing task difficulty: Easy → sage green, Medium → amber, Hard → coral/red.
 
 #### `MoodBadge.tsx`
 
@@ -323,36 +364,15 @@ Accessible loading indicator with `role="status"` and `aria-label="Loading"`.
 
 #### `EmptyState.tsx`
 
-```tsx
-<EmptyState
-  icon="✦"
-  title="No tasks yet"
-  description="Add your first task to get started."
-  action={<button>Add task</button>}
-/>
-```
-
 Used when a list has no items — tasks screen when no tasks exist, dashboard on first use.
 
-#### `PageHeader.tsx`
+#### `ConfirmDialog.tsx`
 
-```tsx
-<PageHeader
-  title="Your tasks"
-  subtitle="Thursday 9 April"
-  action={<button>+ Add task</button>}
-/>
-```
+Modal dialog for destructive actions (sign out, task deletion). Renders with a message and two buttons: confirm and cancel.
 
-Consistent page heading with optional subtitle and right-aligned action button. Handles responsive padding automatically.
+#### `UserAvatarMenu.tsx`
 
-#### `ThemeToggle.tsx`
-
-```tsx
-<ThemeToggle />
-```
-
-Three-button toggle (Light / System / Dark) using Lucide icons. Calls `setTheme` from `ThemeProvider` context.
+Avatar button showing the user's initial. Appears in the mood check-in header on mobile (the sidebar handles this on desktop).
 
 ---
 
@@ -363,10 +383,12 @@ Three-button toggle (Light / System / Dark) using Lucide icons. Calls `setTheme`
 | Font | Weight | Usage |
 |---|---|---|
 | Dancing Script | 700 | Logo wordmark only (`font-script`) |
-| DM Serif Display | 400, italic | Page headings, hero text, large numbers (`font-serif`) |
-| DM Sans | 300, 400, 500, 600 | All body text, labels, UI (`font-sans`) |
+| DM Serif Display | 400 | Page headings and hero text only (`font-serif`) — not italic in body content |
+| DM Sans | 300, 400, 500, 600 | All body text, labels, UI, navigation (`font-sans`) |
 
 Loaded from Google Fonts in `app/layout.tsx`. The anti-flash script in `<head>` ensures the correct theme is applied before fonts load.
+
+**Typography scale:** All visible body text uses `text-sm` (14px) as the minimum. `text-xs` (12px) is reserved for non-content elements such as difficulty badge pills. Arbitrary pixel sizes (`text-[10px]`, `text-[0.95rem]`) are not used — only Tailwind's standard scale.
 
 ### Colour system
 
@@ -402,27 +424,7 @@ Loaded from Google Fonts in `app/layout.tsx`. The anti-flash script in `<head>` 
 
 ### CSS variables
 
-Defined in `app/globals.css`. Override in `.dark` selector for dark mode:
-
-```css
-:root {
-  --sage:   #5C7A6A;
-  --ink:    #1E2822;
-  --card:   #FFFFFF;
-  --bg:     #F5F0E8;
-  --muted:  #6B7D74;
-  --border: rgba(92, 122, 106, 0.15);
-}
-
-.dark {
-  --sage:   #4ECBA3;
-  --ink:    #E8EFF5;
-  --card:   #1E2A35;
-  --bg:     #0F1419;
-  --muted:  #7A9BB5;
-  --border: rgba(78, 203, 163, 0.12);
-}
-```
+Defined in `app/globals.css` using Tailwind 4's `@theme` block. Override in `.dark` selector for dark mode.
 
 ### Spacing scale
 
@@ -460,13 +462,9 @@ Defined in `app/globals.css`. Override in `.dark` selector for dark mode:
 Defined in `app/globals.css` under `@layer components`:
 
 ```css
-.btn-primary   /* Sage green filled button */
-.btn-ghost     /* Transparent outlined button */
 .card          /* White card with border and shadow */
 .input         /* Form input with focus state */
-.label         /* Form label — uppercase, spaced */
-.section-title /* DM Serif Display heading */
-.mood-pill     /* Mood selector pill */
+.label         /* Form label — text-sm, muted colour */
 ```
 
 ### Animations
@@ -493,6 +491,26 @@ All animations respect `prefers-reduced-motion` — users who have enabled reduc
 ## 7. Authentication Flow
 
 ```
+User visits /auth/signup
+        │
+        ▼
+User fills email, password, ticks consent checkbox
+        │
+        ▼
+Client validates: 8+ chars, uppercase, number, symbol (mirrors Firebase policy)
+        │
+        ▼
+createUserWithEmailAndPassword() called
+        │
+        ├── auth/email-already-in-use → friendly error shown
+        ├── auth/password-does-not-meet-requirements → friendly error shown
+        │
+        └── Success → createUserProfile() creates /users/{uid}
+                │
+                └── router.push('/onboarding')
+
+---
+
 User visits /app/*
         │
         ▼
@@ -502,23 +520,24 @@ AuthProvider checks onAuthStateChanged
         │
         ├── Not signed in → redirect to /auth/login
         │
-        └── Signed in → render page
+        └── Signed in → check hasOnboarded flag
                 │
-                ▼
-        User signs in (/auth/login or /auth/signup)
+                ├── hasOnboarded === false → redirect to /onboarding
                 │
-                ├── Firebase Auth verifies credentials
-                │
-                ├── createUserProfile() called
-                │   └── Creates /users/{uid} if first time
-                │
-                └── router.push('/app/mood')
+                └── hasOnboarded === true → render page
 ```
+
+### Google sign-in error handling
+
+`auth/cancelled-popup-request` and `auth/popup-closed-by-user` are silently swallowed — these occur when the user opens the Google popup twice or closes it before completing sign-in, and are not errors from the user's perspective.
 
 ### Sign out flow
 
 ```
-User clicks Sign out (Sidebar)
+User clicks Sign out (Sidebar or Settings)
+        │
+        ▼
+ConfirmDialog prompts for confirmation
         │
         ▼
 signOut(auth) — Firebase clears auth state
@@ -534,13 +553,25 @@ AuthProvider detects no user → redirects to /auth/login
 
 ## 8. Data Flow
 
-### Mood check-in → task recommendations
+### Mood check-in → AI generation → task recommendations
 
 ```
 User selects mood on /app/mood
         │
+        ├── fetchAiForMood(mood) — POST /api/ai/daily-message
+        │       │
+        │       ├── Server verifies Firebase ID token
+        │       ├── Calls OpenAI GPT-4o-mini
+        │       └── Returns { spark?, suggestion? }
+        │               │
+        │               └── Cached in React useRef<Map> for session
+        │
         ▼
-saveMoodEntry(userId, mood, note) → writes to Firestore /moods
+User clicks "See my recommended tasks"
+        │
+        ▼
+saveMoodEntry(userId, mood, note, aiSpark, aiSuggestion)
+        → writes to Firestore /moods (with AI content if available)
         │
         ▼
 router.push('/app/tasks')
@@ -555,28 +586,34 @@ router.push('/app/tasks')
                 ▼
         getRecommendedTasks(mood, tasks) — lib/mood.ts
                 │
-                ├── Filters tasks by allowed difficulty for mood
+                ├── Exhausted / Stressed:
+                │     mustDo  = high-priority OR overdue tasks (any difficulty)
+                │     easy    = easy tasks not in mustDo
+                │     deferred = everything else
+                │     sorted by priority then creation date
                 │
-                ├── Sorts: easy first, then by creation date
+                ├── Neutral:
+                │     allowed  = easy + medium tasks
+                │     deferred = hard tasks
                 │
-                ├── Caps recommended list at maxTasks for mood
-                │
-                └── Returns { recommended[], deferred[] }
+                └── Good / Energised:
+                      sorted = all tasks, by priority → difficulty → creation date
+                      deferred = []
                         │
                         ▼
                 Task list renders two sections:
-                "Recommended first" and "Saved for later"
+                "Recommended" and "Saved for later"
 ```
 
 ### Mood to difficulty mapping
 
-| Mood | Allowed difficulties | Max tasks | Rationale |
+| Mood | Recommended | Deferred | Sort order |
 |---|---|---|---|
-| Exhausted | Easy only | 3 | Protect wellbeing, prevent overwhelm |
-| Stressed | Easy only | 4 | Reduce cognitive load |
-| Neutral | Easy, Medium | 5 | Balanced workload |
-| Good | Easy, Medium, Hard | 6 | Full task access |
-| Energised | Easy, Medium, Hard | 8 | Leverage peak performance |
+| Exhausted | High-priority + overdue (any difficulty), then easy tasks | Medium/hard without urgency | Priority → creation date |
+| Stressed | High-priority + overdue (any difficulty), then easy tasks | Medium/hard without urgency | Priority → creation date |
+| Neutral | Easy + medium tasks | Hard tasks only | Creation date |
+| Good | All tasks | None | Priority → difficulty (hard first) → creation date |
+| Energised | All tasks | None | Priority → difficulty (hard first) → creation date |
 
 ---
 
@@ -611,7 +648,17 @@ Live at: https://balance-app.vercel.app
 
 ### Environment variables
 
-Set in `.env.local` for local development and in Vercel dashboard for production.
+Set in `.env.local` for local development and in Vercel dashboard for production:
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+NEXT_PUBLIC_FIREBASE_PROJECT_ID
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+NEXT_PUBLIC_FIREBASE_APP_ID
+OPENAI_API_KEY          ← server-side only, never exposed to client
+```
 
 See `.env.local.example` for the full list of required variables.
 
@@ -666,4 +713,13 @@ All CSS animations are wrapped in:
 
 ---
 
-*This document was created as part of the dissertation project (QHO656) at Solent University, 2025–26.*
+## Revision history
+
+| Version | Date | Author | Changes |
+|---|---|---|---|
+| 1.0 | April 2026 | Rebeca Boara | Initial version |
+| 1.1 | May 2026 | Rebeca Boara | Updated tech stack versions (Next.js 16.2, React 19, Tailwind 4, Firebase 12); added OpenAI SDK row; replaced `/api/recommendations` with `/api/ai/daily-message`; updated folder structure; updated auth flow (consent checkbox, hasOnboarded redirect, Google popup error handling); updated data flow diagram (priority-based algorithm, no maxTasks caps, AI integration); updated mood-to-difficulty mapping table; updated font usage notes (no serif italic in body); updated typography notes (text-sm minimum for body) |
+
+---
+
+*This document was created as part of the dissertation project at Solent University, 2025–2026.*

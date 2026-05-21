@@ -29,7 +29,7 @@ export default function DailySparkCard({ mood, aiSpark }: DailySparkCardProps) {
         <Sparkles className="w-3 h-3" aria-hidden="true" />
         Daily spark
       </p>
-      <p className="font-serif italic text-white text-sm leading-relaxed relative z-10">
+      <p className="text-white text-sm leading-relaxed relative z-10">
         "{message}"
       </p>
     </div>

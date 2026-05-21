@@ -9,9 +9,10 @@ import { MoodType } from '@/types'
 import Spinner        from '@/components/ui/Spinner'
 import MoodPill       from '@/components/mood/MoodPill'
 import DailySparkCard from '@/components/mood/DailySparkCard'
-import MoodRecommendations from '@/components/mood/MoodRecommendations'
+import MoodRecommendations, { MoodSupportCard } from '@/components/mood/MoodRecommendations'
 import { AlertCircle } from 'lucide-react'
 import UserAvatarMenu from '@/components/ui/UserAvatarMenu'
+import Button from '@/components/ui/Button'
 
 const MOODS: { type: MoodType; emoji: string; label: string }[] = [
   { type: 'exhausted', emoji: '😴', label: 'Exhausted' },
@@ -30,48 +31,61 @@ export default function MoodPage() {
   const [checking, setChecking]         = useState(true)
   const [loadError, setLoadError]       = useState(false)
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false)
-  const savedMoodRef = useRef<MoodType | null>(null)
+  const savedMoodRef        = useRef<MoodType | null>(null)
+  const savedAiSparkRef      = useRef<string | null>(null)
+  const savedAiSuggestionRef = useRef<string | null>(null)
   const [aiSpark,       setAiSpark]       = useState<string | null>(null)
   const [aiSuggestion,  setAiSuggestion]  = useState<string | null>(null)
   const [aiLoading,     setAiLoading]     = useState(false)
+  const aiCacheRef = useRef<Map<string, { spark?: string; suggestion?: string }>>(new Map())
+  const generalLoadedRef = useRef(false)
 
-  // On page load: fetch a general spark with no mood
-  useEffect(() => {
-    fetch('/api/ai/daily-message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mood: null }),
-    })
-      .then(r => r.ok ? r.json() : null)
-      .then((data: { spark?: string } | null) => {
-        if (data?.spark) setAiSpark(data.spark)
+  async function fetchAiForMood(mood: MoodType | null): Promise<{ spark?: string; suggestion?: string } | null> {
+    if (!user) return null
+    const moodKey = mood ?? 'general'
+    const cached = aiCacheRef.current.get(moodKey)
+    if (cached) return cached
+
+    try {
+      const idToken = await user.getIdToken()
+      const res = await fetch('/api/ai/daily-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ mood: mood ?? 'general' }),
       })
-      .catch(() => null)
-  }, [])
+      if (!res.ok) return null
+      const data = (await res.json()) as { spark?: string; suggestion?: string }
+      aiCacheRef.current.set(moodKey, data)
+      return data
+    } catch {
+      return null
+    }
+  }
 
-  // On mood selection: fetch mood-specific spark + suggestion
-  // Skip if mood matches the saved entry — use cached Firestore values instead
+  // On mood selection: fetch mood-specific spark + suggestion (debounced + cached)
+  // Skip if mood matches the saved entry, because Firestore already has persisted content.
   useEffect(() => {
-    if (!selected) return
-    if (selected === savedMoodRef.current) return
-    const controller = new AbortController()
+    if (!selected || !user) return
+    if (selected === savedMoodRef.current) {
+      if (savedAiSparkRef.current)      setAiSpark(savedAiSparkRef.current)
+      if (savedAiSuggestionRef.current) setAiSuggestion(savedAiSuggestionRef.current)
+      return
+    }
     setAiSuggestion(null)
     setAiLoading(true)
-    fetch('/api/ai/daily-message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mood: selected }),
-      signal: controller.signal,
-    })
-      .then(r => r.ok ? r.json() : null)
-      .then((data: { spark?: string; suggestion?: string } | null) => {
-        if (data?.spark)      setAiSpark(data.spark)
-        if (data?.suggestion) setAiSuggestion(data.suggestion)
-      })
-      .catch(() => null)
-      .finally(() => setAiLoading(false))
-    return () => controller.abort()
-  }, [selected])
+    const timeout = setTimeout(() => {
+      fetchAiForMood(selected)
+        .then((data) => {
+          if (data?.suggestion) setAiSuggestion(data.suggestion)
+        })
+        .finally(() => setAiLoading(false))
+    }, 250)
+
+    return () => clearTimeout(timeout)
+  }, [selected, user])
 
   const now       = new Date()
   const hour      = now.getHours()
@@ -91,11 +105,17 @@ export default function MoodPage() {
         ])
         if (profile?.hasOnboarded === false) { router.push('/onboarding'); return }
         if (entry) {
+          savedMoodRef.current        = entry.mood
+          savedAiSparkRef.current      = entry.aiSpark      ?? null
+          savedAiSuggestionRef.current = entry.aiSuggestion ?? null
           setSelected(entry.mood)
-          savedMoodRef.current = entry.mood
           setAlreadyCheckedIn(true)
-          if (entry.aiSpark)      setAiSpark(entry.aiSpark)
-          if (entry.aiSuggestion) setAiSuggestion(entry.aiSuggestion)
+          setAiSpark(entry.aiSpark      ?? null)
+          setAiSuggestion(entry.aiSuggestion ?? null)
+        } else if (!generalLoadedRef.current) {
+          generalLoadedRef.current = true
+          const generalData = await fetchAiForMood(null)
+          if (generalData?.spark) setAiSpark(generalData.spark)
         }
       } catch (e) {
         console.error(e)
@@ -173,7 +193,7 @@ export default function MoodPage() {
           </div>
         )}
 
-        <p className="text-lg font-medium text-sage-800 dark:text-white mb-4">
+        <p className="text-md font-medium text-sage-800 dark:text-white mb-4">
           How are you feeling right now?
         </p>
         
@@ -202,59 +222,61 @@ export default function MoodPage() {
                           uppercase tracking-wider mb-2 flex items-center gap-1.5">
               <span aria-hidden="true">✦</span> Balance suggests
             </p>
-            {aiLoading
-              ? <p className="text-sm text-sage-500 dark:text-white/50 italic">Personalising suggestion…</p>
-              : <>
-                  <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
-                    {aiSuggestion ?? MOOD_CONFIG[selected].suggestion}
+            {aiLoading ? (
+              <p className="text-sm text-sage-500 dark:text-white/50 italic">Personalising suggestion…</p>
+            ) : (
+              <>
+                <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
+                  {aiSuggestion ?? MOOD_CONFIG[selected].suggestion}
+                </p>
+                {!aiSuggestion && MOOD_CONFIG[selected].breakSuggestion && (
+                  <p className="text-sm text-sage-600 dark:text-white/70 mt-2 leading-relaxed">
+                    {MOOD_CONFIG[selected].breakSuggestion}
                   </p>
-                  {!aiSuggestion && MOOD_CONFIG[selected].breakSuggestion && (
-                    <p className="text-sm text-sage-600 dark:text-white/70 mt-2 leading-relaxed">
-                      {MOOD_CONFIG[selected].breakSuggestion}
-                    </p>
-                  )}
-                </>
-            }
+                )}
+              </>
+            )}
           </div>
         )}
 
-        {/* Two-column on desktop: activities left, note right */}
-        <div className="md:grid md:grid-cols-2 md:gap-6">
-          <div>
-            {selected && <MoodRecommendations mood={selected} />}
-          </div>
+        {/* Activities + Music side by side */}
+        {selected && <MoodRecommendations mood={selected} />}
 
-          {/* Note */}
-          <div className="mb-6">
-            <label htmlFor="mood-note" className="label text-sage-900 dark:text-white/70">
-              Add a note (optional)
-            </label>
-            <textarea
-              id="mood-note"
-              value={note}
-              onChange={e => setNote(e.target.value)}
-              placeholder="What's on your mind today?"
-              rows={3}
-              className="input resize-none"
-              maxLength={300}
-            />
-            <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
-              {note.length}/300
-            </p>
-          </div>
+        {/* Note */}
+        <div className="mb-6">
+          <label htmlFor="mood-note" className="label text-sage-900 dark:text-white/70">
+            Add a note (optional)
+          </label>
+          <textarea
+            id="mood-note"
+            value={note}
+            onChange={e => setNote(e.target.value)}
+            placeholder="What's on your mind today?"
+            rows={3}
+            className="input resize-none"
+            maxLength={300}
+          />
+          <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
+            {note.length}/300
+          </p>
         </div>
+
+        {/* Support card — low moods only */}
+        {selected && (selected === 'exhausted' || selected === 'stressed') && (
+          <MoodSupportCard />
+        )}
 
       </div>
 
-      {/* Sticky CTA — sits above bottom nav on mobile, at bottom on desktop */}
+      {/* Sticky CTA sits above bottom nav on mobile, at bottom on desktop */}
       <div className="fixed bottom-16 md:bottom-0 left-0 right-0 md:left-64 z-20
                       bg-warm-100/90 dark:bg-ocean-900/90 backdrop-blur-sm
                       border-t border-sage-200 dark:border-ocean-700
                       px-6 py-4 flex flex-col gap-2">
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={!selected || loading}
-          className="btn-primary w-full flex items-center justify-center gap-2"
+          fullWidth
         >
           {loading ? (
             <>
@@ -264,14 +286,14 @@ export default function MoodPage() {
           ) : (
             alreadyCheckedIn ? 'Update my mood →' : 'See my recommended tasks →'
           )}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => router.push('/app/tasks')}
-          className="text-center text-sm text-sage-400 dark:text-white/70
-                     hover:text-sage-600 transition-colors py-1"
+          variant="ghost"
+          className="text-center text-sm text-sage-400 dark:text-white/70 hover:text-sage-600 py-1"
         >
           Skip for today
-        </button>
+        </Button>
       </div>
     </div>
   )

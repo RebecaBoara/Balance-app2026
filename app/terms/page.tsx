@@ -6,6 +6,7 @@ import { Menu, X, ArrowLeft, ArrowRight, FileText, Moon, Sun, Monitor } from 'lu
 import Logo from '@/components/ui/Logo'
 import { useTheme } from '@/components/layout/ThemeProvider'
 import { useAuth } from '@/hooks/useAuth'
+import Button from '@/components/ui/Button'
 
 function Navbar() {
   const [open, setOpen]     = useState(false)
@@ -36,15 +37,13 @@ function Navbar() {
             <ThemeIcon size={17} aria-hidden="true" />
           </button>
           {user ? (
-            <Link href="/app/mood"
-              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white hover:bg-sage-800 transition-colors">
+            <Button href="/app/mood" size="sm" className="px-4 py-2">
               Go to app →
-            </Link>
+            </Button>
           ) : (
-            <Link href="/auth/signup"
-              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white hover:bg-sage-800 transition-colors">
+            <Button href="/auth/signup" size="sm" className="px-4 py-2">
               Get started free
-            </Link>
+            </Button>
           )}
           <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'}
             className="md:hidden p-2 text-sage-600 dark:text-white/70 hover:text-sage-900 dark:hover:text-white transition-colors">
@@ -57,10 +56,9 @@ function Navbar() {
           className="md:hidden bg-[#FDFAF5] dark:bg-ocean-900 border-t border-sage-100
                      dark:border-ocean-700 px-6 py-4 space-y-3">
           <Link href="/" onClick={() => setOpen(false)} className="block text-sm text-sage-600 dark:text-white/80 py-2">Home</Link>
-          <Link href="/auth/signup" onClick={() => setOpen(false)}
-            className="block text-center px-5 py-2.5 rounded-sm bg-sage-700 text-white text-sm font-medium">
+          <Button href="/auth/signup" onClick={() => setOpen(false)} fullWidth className="py-2.5">
             Get started free
-          </Link>
+          </Button>
         </nav>
       )}
     </header>
@@ -213,7 +211,7 @@ export default function TermsPage() {
               <p className="mb-3">If you have questions about these terms, please contact:</p>
               <div className="space-y-1">
                 
-                <p><span className="font-semibold text-sage-800 dark:text-white">Email:</span> rebeca.boara@gmail.com</p>
+                <p><span className="font-semibold text-sage-800 dark:text-white">Email:</span> balancedtasks.mood@gmail.com</p>
                
               </div>
             </div>
@@ -227,9 +225,9 @@ export default function TermsPage() {
             <p className="text-sm font-medium text-sage-700 dark:text-white">Also read our Privacy Policy</p>
             <p className="text-xs text-sage-500 dark:text-ocean-300 mt-0.5">Learn how we handle your data and your GDPR rights</p>
           </div>
-          <Link href="/privacy" className="flex items-center gap-2 px-5 py-2.5 rounded-sm border border-sage-200 dark:border-ocean-600 text-sage-600 dark:text-ocean-200 text-sm font-medium hover:bg-sage-50 dark:hover:bg-ocean-700 transition-colors flex-shrink-0">
+          <Button href="/privacy" variant="secondary" className="px-5 py-2.5 flex-shrink-0 text-sage-600 dark:text-ocean-200">
             Privacy Policy <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </Link>
+          </Button>
         </div>
 
       </main>

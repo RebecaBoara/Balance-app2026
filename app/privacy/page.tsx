@@ -6,6 +6,7 @@ import { Menu, X, ArrowLeft, Shield, Moon, Sun, Monitor } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 import { useTheme } from '@/components/layout/ThemeProvider'
 import { useAuth } from '@/hooks/useAuth'
+import Button from '@/components/ui/Button'
 
 function Navbar() {
   const [open, setOpen]     = useState(false)
@@ -36,15 +37,13 @@ function Navbar() {
             <ThemeIcon size={17} aria-hidden="true" />
           </button>
           {user ? (
-            <Link href="/app/mood"
-              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white hover:bg-sage-800 transition-colors">
+            <Button href="/app/mood" size="sm" className="px-4 py-2">
               Go to app →
-            </Link>
+            </Button>
           ) : (
-            <Link href="/auth/signup"
-              className="px-4 py-2 rounded-sm text-sm font-medium bg-sage-700 text-white hover:bg-sage-800 transition-colors">
+            <Button href="/auth/signup" size="sm" className="px-4 py-2">
               Get started free
-            </Link>
+            </Button>
           )}
           <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'}
             className="md:hidden p-2 text-sage-600 dark:text-white/70 hover:text-sage-900 dark:hover:text-white transition-colors">
@@ -57,10 +56,9 @@ function Navbar() {
           className="md:hidden bg-[#FDFAF5] dark:bg-ocean-900 border-t border-sage-100
                      dark:border-ocean-700 px-6 py-4 space-y-3">
           <Link href="/" onClick={() => setOpen(false)} className="block text-sm text-sage-600 dark:text-white/80 py-2">Home</Link>
-          <Link href="/auth/signup" onClick={() => setOpen(false)}
-            className="block text-center px-5 py-2.5 rounded-sm bg-sage-700 text-white text-sm font-medium">
+          <Button href="/auth/signup" onClick={() => setOpen(false)} fullWidth className="py-2.5">
             Get started free
-          </Link>
+          </Button>
         </nav>
       )}
     </header>

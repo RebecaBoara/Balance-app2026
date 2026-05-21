@@ -7,6 +7,7 @@ import { verifyPasswordResetCode, confirmPasswordReset } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import AuthLayout from '@/components/layout/AuthLayout'
 import Spinner from '@/components/ui/Spinner'
+import Button from '@/components/ui/Button'
 import { ArrowLeft, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 
 function ResetConfirmForm() {
@@ -61,9 +62,9 @@ function ResetConfirmForm() {
         <p className="text-sm text-sage-500 dark:text-white/70 mb-6 leading-relaxed">
           This password reset link has expired or already been used. Please request a new one.
         </p>
-        <Link href="/auth/reset-password" className="btn-primary inline-block px-6">
+        <Button href="/auth/reset-password" className="px-6">
           Request new link
-        </Link>
+        </Button>
       </div>
     )
   }
@@ -76,9 +77,9 @@ function ResetConfirmForm() {
         <p className="text-sm text-sage-500 dark:text-white/70 mb-6">
           Your password has been reset. Redirecting you to sign in…
         </p>
-        <Link href="/auth/login" className="btn-primary inline-block px-6">
+        <Button href="/auth/login" className="px-6">
           Sign in now
-        </Link>
+        </Button>
       </div>
     )
   }
@@ -146,10 +147,9 @@ function ResetConfirmForm() {
             />
           </div>
 
-          <button type="submit" disabled={loading}
-            className="btn-primary w-full flex items-center justify-center gap-2 mt-2">
+          <Button type="submit" disabled={loading} fullWidth className="mt-2">
             {loading ? <><Spinner size="sm" /> Updating…</> : 'Set new password'}
-          </button>
+          </Button>
         </form>
 
     </div>

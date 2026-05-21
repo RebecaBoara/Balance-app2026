@@ -41,7 +41,7 @@ export default function MoodPill({
       >
         {emoji}
       </span>
-      <span className="text-[11px] font-medium text-sage-600 dark:text-white/80
+      <span className="text-sm font-medium text-sage-600 dark:text-white/80
                        text-center leading-tight">
         {label}
       </span>

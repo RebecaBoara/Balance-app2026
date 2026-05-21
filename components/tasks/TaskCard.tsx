@@ -120,6 +120,15 @@ export default function TaskCard({
 
           <div className="flex items-center gap-3 flex-wrap">
             <DifficultyBadge difficulty={task.difficulty} />
+            {task.priority && task.priority !== 'medium' && (
+              <span className={`text-xs font-medium px-1.5 py-0.5 rounded
+                               ${task.priority === 'high'
+                                 ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
+                                 : 'text-sage-400 dark:text-white/40 bg-sage-50 dark:bg-ocean-700'
+                               }`}>
+                {task.priority === 'high' ? '🔴 High' : '🟢 Low'}
+              </span>
+            )}
 
             <span className="text-xs text-sage-500 dark:text-white/50 flex items-center gap-1">
               <Clock className="w-3 h-3" aria-hidden="true" />
@@ -193,7 +202,7 @@ export default function TaskCard({
                            hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600`}
               >
                 <Repeat className="w-3.5 h-3.5" aria-hidden="true" />
-                <span className="text-[10px] leading-none">Repeat</span>
+                <span className="text-xs leading-none">Repeat</span>
               </button>
               {showRepeatMenu && (
                 <div className="absolute right-0 top-8 z-20 min-w-[170px] rounded-lg border border-sage-500/15 dark:border-ocean-600 bg-white dark:bg-ocean-700 shadow-card p-1">
@@ -233,7 +242,7 @@ export default function TaskCard({
                          transition-all duration-200"
             >
               <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
-              <span className="text-[10px] leading-none">Edit</span>
+              <span className="text-xs leading-none">Edit</span>
             </button>
           )}
           <button
@@ -245,7 +254,7 @@ export default function TaskCard({
                        transition-all duration-200"
           >
             <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
-            <span className="text-[10px] leading-none">Delete</span>
+            <span className="text-xs leading-none">Delete</span>
           </button>
         </div>
 
