@@ -296,7 +296,7 @@ body {
   }
 
   .label {
-    @apply block text-xs font-medium text-muted dark:text-white/50 uppercase tracking-wider mb-1.5;
+    @apply block text-sm font-medium text-muted dark:text-white/50 uppercase tracking-wider mb-1.5;
   }
 
   .section-title {

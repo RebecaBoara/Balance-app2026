@@ -8,11 +8,8 @@
 //   - Mental health resources for low moods (Exhausted / Stressed)
 
 
-import { useState } from 'react'
 import { MoodType } from '@/types'
-import {
-  Music, Activity, Heart, ChevronDown, ExternalLink
-} from 'lucide-react'
+import { Music, Activity, Heart, ExternalLink } from 'lucide-react'
 
 // ─Music recommendations per mood ─
 const MUSIC: Record<MoodType, {
@@ -75,51 +72,51 @@ const ACTIVITIES: Record<MoodType, {
   exhausted: {
     label: 'Gentle activities',
     items: [
-      '🛏 Take a 20-minute power nap',
-      '🚶 A slow 10-minute walk outside',
-      '🧘 5 minutes of gentle stretching',
-      '☕ Make a warm drink and rest quietly',
-      '📖 Read something light and enjoyable',
+      'Take a 20-minute power nap',
+      'A slow 10-minute walk outside',
+      '5 minutes of gentle stretching',
+      'Make a warm drink and rest quietly',
+      'Read something light and enjoyable',
     ],
   },
   stressed: {
     label: 'Calming activities',
     items: [
-      '🌬 Try 4-7-8 breathing (inhale 4, hold 7, exhale 8)',
-      '📝 Write down what\'s on your mind — then close the notebook',
-      '🚿 Take a warm shower or bath',
-      '🌳 Step outside for fresh air, even for 5 minutes',
-      '🤝 Talk to someone you trust',
+      'Try 4-7-8 breathing (inhale 4, hold 7, exhale 8)',
+      'Write down what\'s on your mind — then close the notebook',
+      'Take a warm shower or bath',
+      'Step outside for fresh air, even for 5 minutes',
+      'Talk to someone you trust',
     ],
   },
   neutral: {
     label: 'Productive activities',
     items: [
-      '📋 Tidy your workspace before starting',
-      '🍅 Try a 25-minute Pomodoro session',
-      '📌 Review and organise your task list',
-      '🧠 Tackle one medium-difficulty task',
-      '💧 Drink a glass of water and take a short stretch',
+      'Tidy your workspace before starting',
+      'Try a 25-minute Pomodoro session',
+      'Review and organise your task list',
+      'Tackle one medium-difficulty task',
+      'Drink a glass of water and take a short stretch',
     ],
   },
   good: {
     label: 'Momentum activities',
     items: [
-      '🎯 Pick your most important task and start now',
-      '📞 Have a conversation you\'ve been putting off',
-      '🏃 A brisk walk or light exercise to maintain energy',
-      '✍️ Write, plan, or create something meaningful',
-      '📚 Learn something new — read an article or watch a tutorial',
+      'Pick your most important task and start now',
+      'Have a conversation you\'ve been putting off',
+      'A brisk walk or light exercise to maintain energy',
+      'Write, plan, or create something meaningful',
+      'Learn something new — read an article or watch a tutorial',
     ],
   },
   energised: {
     label: 'Peak performance activities',
     items: [
-      '💪 Tackle your hardest or most ambitious task first',
-      '🏋️ Go for a run, gym session, or intense workout',
-      '🎨 Create or build something you\'ve been excited about',
-      '📊 Make important decisions while your mind is sharp',
-      '🤝 Lead a meeting, collaborate, or teach someone something',
+      'Tackle your hardest or most ambitious task first',
+      'Go for a run, gym session, or intense workout',
+      'Create or build something you\'ve been excited about',
+      'Make important decisions while your mind is sharp',
+      'Lead a meeting, collaborate, or teach someone something',
     ],
   },
 }
@@ -158,181 +155,117 @@ interface MoodRecommendationsProps {
 }
 
 export default function MoodRecommendations({ mood }: MoodRecommendationsProps) {
-  const [openSection, setOpenSection] = useState<'music' | 'activities' | 'support' | null>('activities')
-
   const music      = MUSIC[mood]
   const activities = ACTIVITIES[mood]
-  const showSupport = mood === 'exhausted' || mood === 'stressed'
-
-  function toggle(section: 'music' | 'activities' | 'support') {
-    setOpenSection(openSection === section ? null : section)
-  }
 
   return (
-    <div className="mx-6 space-y-2 mb-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
 
-      {/* ── Activities ── */}
-      <div className="bg-white dark:bg-ocean-700 rounded-sm border border-sage-100 dark:border-ocean-600 overflow-hidden shadow-raised animate-fade-in">
-        <button
-          onClick={() => toggle('activities')}
-          aria-expanded={openSection === 'activities'}
-          className="w-full flex items-center justify-between px-4 py-3
-                     hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
-            <span className="text-sm font-medium text-sage-800 dark:text-white">
-              {activities.label}
-            </span>
-          </div>
-          <ChevronDown
-            className={`w-4 h-4 text-sage-400 dark:text-white/40 transition-transform duration-200
-                        ${openSection === 'activities' ? 'rotate-180' : ''}`}
-            aria-hidden="true"
-          />
-        </button>
-
-        {openSection === 'activities' && (
-          <div className="px-4 pb-3 border-t border-sage-50 dark:border-ocean-600 animate-fade-in">
-            <ul className="space-y-2 pt-2">
-              {activities.items.map((item, i) => (
-                <li key={i} className="text-sm text-sage-600 dark:text-ocean-200 leading-relaxed">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {/* ── Music ── */}
-      <div className="bg-white dark:bg-ocean-700 rounded-sm border border-sage-100 dark:border-ocean-600 overflow-hidden shadow-raised animate-fade-in">
-        <button
-          onClick={() => toggle('music')}
-          aria-expanded={openSection === 'music'}
-          className="w-full flex items-center justify-between px-4 py-3
-                     hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <Music className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
-            <span className="text-sm font-medium text-sage-800 dark:text-white">
-              {music.label}
-            </span>
-          </div>
-          <ChevronDown
-            className={`w-4 h-4 text-sage-400 dark:text-white/40 transition-transform duration-200
-                        ${openSection === 'music' ? 'rotate-180' : ''}`}
-            aria-hidden="true"
-          />
-        </button>
-
-        {openSection === 'music' && (
-          <div className="px-4 pb-3 border-t border-sage-50 dark:border-ocean-600 animate-fade-in">
-            <p className="text-xs text-sage-400 dark:text-ocean-300 pt-2 mb-2">
-              {music.description}
-            </p>
-            <div className="space-y-2">
-              {music.playlists.map(({ name, url, source }) => (
-                <a
-                  key={name}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-2.5 rounded-lg
-                             bg-sage-50 dark:bg-ocean-800
-                             hover:bg-sage-100 dark:hover:bg-ocean-700
-                             transition-colors group"
-                >
-                  <span className="text-sm text-sage-700 dark:text-ocean-200 font-medium">
-                    {name}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-sage-400 dark:text-ocean-400">
-                      {source}
-                    </span>
-                    <ExternalLink
-                      className="w-3 h-3 text-sage-300 group-hover:text-sage-500
-                                 dark:text-ocean-500 dark:group-hover:text-teal-400
-                                 transition-colors"
-                      aria-hidden="true"
-                    />
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── Mental health support (low moods only) ── */}
-      {showSupport && (
-        <div className="bg-white dark:bg-ocean-700 rounded-sm border border-sage-200 dark:border-ocean-600 overflow-hidden shadow-raised animate-fade-in">
-          <button
-            onClick={() => toggle('support')}
-            aria-expanded={openSection === 'support'}
-            className="w-full flex items-center justify-between px-4 py-3
-                       hover:bg-sage-50 dark:hover:bg-ocean-600 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-sage-500 dark:text-teal-400" aria-hidden="true" />
-              <span className="text-sm font-medium text-sage-800 dark:text-white">
-                Need some support?
-              </span>
-            </div>
-            <ChevronDown
-              className={`w-4 h-4 text-sage-400 dark:text-white/40 transition-transform duration-200
-                          ${openSection === 'support' ? 'rotate-180' : ''}`}
-              aria-hidden="true"
-            />
-          </button>
-
-          {openSection === 'support' && (
-            <div className="px-4 pb-4 border-t border-sage-50 dark:border-ocean-600 animate-fade-in">
-              <p className="text-xs text-sage-500 dark:text-ocean-300 pt-3 pb-3 leading-relaxed">
-                It's okay to not be okay. If you're struggling, these free UK resources are here to help.
-              </p>
-              <div className="space-y-2">
-                {MENTAL_HEALTH_RESOURCES.map(({ name, description, url, phone }) => (
-                  <a
-                    key={name}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-start justify-between p-3 rounded-lg
-                               bg-sage-50 dark:bg-ocean-800
-                               hover:bg-sage-100 dark:hover:bg-ocean-700
-                               transition-colors group"
-                  >
-                    <div className="flex-1 min-w-0 pr-3">
-                      <p className="text-sm font-semibold text-sage-800 dark:text-white mb-0.5">
-                        {name}
-                      </p>
-                      <p className="text-xs text-sage-500 dark:text-ocean-300 leading-relaxed">
-                        {description}
-                      </p>
-                      {phone && (
-                        <p className="text-xs text-sage-600 dark:text-teal-400 font-medium mt-1">
-                          📞 {phone}
-                        </p>
-                      )}
-                    </div>
-                    <ExternalLink
-                      className="w-3.5 h-3.5 text-sage-300 group-hover:text-sage-500
-                                 dark:text-ocean-500 dark:group-hover:text-teal-400
-                                 transition-colors flex-shrink-0 mt-0.5"
-                      aria-hidden="true"
-                    />
-                  </a>
-                ))}
-              </div>
-              <p className="text-[10px] text-sage-300 dark:text-ocean-500 mt-3 leading-relaxed text-center">
-                Balance is not a mental health tool. If you are in crisis, please contact Samaritans on 116 123 (free, 24/7).
-              </p>
-            </div>
-          )}
+      {/* Activities*/}
+      <div className="bg-white dark:bg-ocean-900 rounded-sm  dark:border-ocean-600 overflow-hidden shadow-raised animate-fade-in">
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-sage-500/10 dark:border-ocean-600">
+          <Activity className="w-4 h-4 text-sage-800 dark:text-white/60" aria-hidden="true" />
+          <span className="text-sm font-semibold uppercase tracking-wider text-sage-700 dark:text-white/60">
+            {activities.label}
+          </span>
         </div>
-      )}
+        <ul className="px-4 py-3 space-y-2">
+          {activities.items.map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm text-sage-700 dark:text-white/70 leading-relaxed">
+              <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-sage-300 dark:bg-white/30 flex-shrink-0" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
 
+      {/* Music */}
+      <div className="bg-white dark:bg-ocean-900 rounded-sm  dark:border-ocean-600 overflow-hidden shadow-raised animate-fade-in">
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-sage-500/10 dark:border-ocean-600">
+          <Music className="w-4 h-4 text-sage-700 dark:text-white/60" aria-hidden="true" />
+          <span className="text-sm font-semibold uppercase tracking-wider text-sage-700 dark:text-white/60">
+            {music.label}
+          </span>
+        </div>
+        <div className="px-4 py-3">
+          <p className="text-sm text-sage-800 dark:text-white/50 mb-3">{music.description}</p>
+          <div className="space-y-2">
+            {music.playlists.map(({ name, url, source }) => (
+              <a
+                key={name}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-2.5 rounded-lg
+                           bg-sage-50 dark:bg-ocean-800
+                           hover:bg-sage-100 dark:hover:bg-ocean-700
+                           transition-colors group"
+              >
+                <span className="text-sm text-sage-700 dark:text-white/70 font-medium">{name}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-sage-500 dark:text-white/40">{source}</span>
+                  <ExternalLink
+                    className="w-3 h-3 text-sage-500 group-hover:text-sage-500
+                               dark:text-white/40 dark:group-hover:text-teal-400 transition-colors"
+                    aria-hidden="true"
+                  />
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
+export function MoodSupportCard() {
+  return (
+    <div className="bg-white dark:bg-ocean-900 rounded-sm  dark:border-ocean-600 overflow-hidden shadow-raised animate-fade-in mb-5">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-sage-500/10 dark:border-ocean-600">
+        <Heart className="w-4 h-4 text-green-500 dark:text-green-400" aria-hidden="true" />
+        <span className="text-sm font-semibold uppercase tracking-wider text-sage-700 dark:text-white/60">
+          You don't have to face this alone
+        </span>
+      </div>
+      <div className="px-4 py-3">
+        <p className="text-sm text-sage-800 dark:text-white/70 mb-3 leading-relaxed">
+          It&apos;s okay to not be okay. If you&apos;re struggling, these free resources are here to help.
+        </p>
+        <div className="space-y-2">
+          {MENTAL_HEALTH_RESOURCES.map(({ name, description, url, phone }) => (
+            <a
+              key={name}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start justify-between p-3 rounded-lg
+                         bg-sage-50 dark:bg-ocean-800
+                         hover:bg-sage-100 dark:hover:bg-ocean-700
+                         transition-colors group"
+            >
+              <div className="flex-1 min-w-0 pr-3">
+                <p className="text-sm font-semibold text-sage-800 dark:text-white mb-0.5">{name}</p>
+                <p className="text-xs text-sage-500 dark:text-white/70 leading-relaxed">{description}</p>
+                {phone && (
+                  <p className="text-xs text-sage-600 dark:text-teal-400 font-medium mt-1">📞 {phone}</p>
+                )}
+              </div>
+              <ExternalLink
+                className="w-3.5 h-3.5 text-sage-500 group-hover:text-sage-500
+                           dark:text-ocean-500 dark:group-hover:text-teal-400
+                           transition-colors flex-shrink-0 mt-0.5"
+                aria-hidden="true"
+              />
+            </a>
+          ))}
+        </div>
+        <p className="text-xs text-sage-500 dark:text-white/40 mt-3 leading-relaxed text-center">
+          Resources listed are UK-based. Outside the UK? Search for a local mental health helpline in your country.
+          Balance is not a mental health tool. If you are in crisis, please contact Samaritans on 116 123 (free, 24/7).
+        </p>
+      </div>
     </div>
   )
 }

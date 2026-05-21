@@ -11,7 +11,8 @@ import {
 import { auth, googleProvider } from '@/lib/firebase'
 import { createUserProfile } from '@/lib/db'
 import Spinner from '@/components/ui/Spinner'
-import Logo from '@/components/ui/Logo'
+import AuthLayout from '@/components/layout/AuthLayout'
+import Button from '@/components/ui/Button'
 import { Eye, EyeOff } from 'lucide-react'
 export default function SignupPage() {
   const router = useRouter()
@@ -22,19 +23,23 @@ export default function SignupPage() {
   const [showPass,  setShowPass]  = useState(false)
   const [error,     setError]     = useState('')
   const [loading,   setLoading]   = useState(false)
+  const [agreed,    setAgreed]    = useState(false)
 
-  // Password strength
+  // Password strength — mirrors Firebase password policy
   function getPasswordStrength(pwd: string): {
     score: number
     label: string
     colour: string
   } {
-    if (pwd.length === 0) return { score: 0, label: '',        colour: '' }
-    if (pwd.length < 6)   return { score: 1, label: 'Too short', colour: 'bg-coral-app' }
-    if (pwd.length < 8)   return { score: 2, label: 'Weak',    colour: 'bg-amber-app' }
-    if (pwd.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/))
-                          return { score: 4, label: 'Strong',  colour: 'bg-sage-500' }
-    return               { score: 3, label: 'Good',    colour: 'bg-sage-300' }
+    if (pwd.length === 0) return { score: 0, label: '',           colour: '' }
+    if (pwd.length < 8)   return { score: 1, label: 'Too short',  colour: 'bg-coral-app' }
+    const hasUpper  = /[A-Z]/.test(pwd)
+    const hasNumber = /[0-9]/.test(pwd)
+    const hasSymbol = /[^A-Za-z0-9]/.test(pwd)
+    const met = [hasUpper, hasNumber, hasSymbol].filter(Boolean).length
+    if (met === 3)        return { score: 4, label: 'Strong',     colour: 'bg-sage-500' }
+    if (met === 2)        return { score: 3, label: 'Good',       colour: 'bg-sage-300' }
+    return                       { score: 2, label: 'Weak',       colour: 'bg-amber-app' }
   }
 
   const strength = getPasswordStrength(password)
@@ -43,23 +48,31 @@ export default function SignupPage() {
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    const normalizedEmail = email.trim().toLowerCase()
 
     if (password !== confirm) {
       setError('Passwords do not match.')
       return
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.')
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.')
       return
     }
 
     setLoading(true)
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password)
+      const cred = await createUserWithEmailAndPassword(auth, normalizedEmail, password)
       await updateProfile(cred.user, { displayName: name })
       await createUserProfile(cred.user.uid, cred.user.email!, name)
-      router.push('/app/mood')
+      const idToken = await cred.user.getIdToken()
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
+      router.push('/onboarding')
     } catch (err: any) {
+      console.error('[Auth] Signup failed:', err.code, err.message)
       setError(getFriendlyError(err.code))
     } finally {
       setLoading(false)
@@ -74,35 +87,37 @@ export default function SignupPage() {
     try {
       const cred = await signInWithPopup(auth, googleProvider)
       await createUserProfile(cred.user.uid, cred.user.email!, cred.user.displayName || undefined)
-      router.push('/app/mood')
+      const idToken = await cred.user.getIdToken()
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
+      router.push('/onboarding')
     } catch (err: any) {
+      if (err.code === 'auth/cancelled-popup-request' || err.code === 'auth/popup-closed-by-user') return
       setError(getFriendlyError(err.code))
     } finally {
       setLoading(false)
     }
   }
 
-  // Friendly error messages 
+  // Friendly error messages
   function getFriendlyError(code: string): string {
     switch (code) {
       case 'auth/email-already-in-use': return 'An account with this email already exists.'
+      case 'auth/account-exists-with-different-credential': return 'This email is already registered with a different sign-in method. Try logging in with Google or reset your password.'
+      case 'auth/popup-blocked': return 'Popup was blocked by your browser. Please allow popups and try again.'
       case 'auth/invalid-email':        return 'Please enter a valid email address.'
-      case 'auth/weak-password':        return 'Password must be at least 6 characters.'
+      case 'auth/weak-password':
+      case 'auth/password-does-not-meet-requirements':
+        return 'Password must be at least 8 characters and include an uppercase letter, a number, and a symbol.'
       default:                          return 'Something went wrong. Please try again.'
     }
   }
 
   return (
-    <div className="min-h-screen bg-warm-70 dark:bg-ocean-900 flex flex-col">
-
-      {/* Top bar */}
-      <div className="p-6">
-        <Logo size="md" />
-      </div>
-
-      {/* Card */}
-      <div className="flex-1 flex items-center justify-center px-6 pb-12">
-        <div className="w-full max-w-sm">
+    <AuthLayout>
 
           {/* Heading */}
           <div className="mb-8">
@@ -116,7 +131,7 @@ export default function SignupPage() {
 
           {/* Error banner */}
           {error && (
-            <div className="mb-4 px-4 py-3 rounded-lg bg-coral-pale dark:bg-coral-app/20
+            <div className="mb-4 px-4 py-3 rounded-sm bg-coral-pale dark:bg-coral-app/20
                             border border-coral-app/30 text-red-800 dark:text-coral-pale
                             text-sm animate-fade-in">
               {error}
@@ -135,7 +150,7 @@ export default function SignupPage() {
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="Rebeca"
+                placeholder="Full name"
                 required
                 autoComplete="given-name"
                 className="input"
@@ -234,24 +249,32 @@ export default function SignupPage() {
               )}
             </div>
 
-            {/* Privacy notice */}
-            <p className="text-xs text-sage-400 dark:text-white/70 leading-relaxed">
-              By creating an account you agree to our{' '}
-              <Link href="/terms" className="underline hover:text-sage-600">
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="/privacy" className="underline hover:text-sage-600">
-                Privacy Policy
-              </Link>
-              . Your mood data is private and never shared.
-            </p>
+            {/* Consent checkbox */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={e => setAgreed(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded accent-sage-500 flex-shrink-0 cursor-pointer"
+              />
+              <span className="text-xs text-sage-500 dark:text-white/70 leading-relaxed">
+                I agree to the{' '}
+                <Link href="/terms" target="_blank" className="underline hover:text-sage-700 dark:hover:text-white">
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link href="/privacy" target="_blank" className="underline hover:text-sage-700 dark:hover:text-white">
+                  Privacy Policy
+                </Link>
+                . I understand my mood data is private and never shared.
+              </span>
+            </label>
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
-              disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              disabled={loading || !agreed}
+              fullWidth
             >
               {loading ? (
                 <>
@@ -259,7 +282,7 @@ export default function SignupPage() {
                   Creating account...
                 </>
               ) : 'Create account'}
-            </button>
+            </Button>
 
           </form>
 
@@ -271,15 +294,12 @@ export default function SignupPage() {
           </div>
 
           {/* Google */}
-          <button
+          <Button
             onClick={handleGoogleSignup}
+            variant="secondary"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg
-                       border border-sage-500/15 dark:border-ocean-600
-                       bg-white dark:bg-ocean-700
-                       text-sage-800 dark:text-white text-sm font-medium
-                       hover:bg-sage-50 dark:hover:bg-ocean-600
-                       transition-all duration-200 disabled:opacity-50"
+            fullWidth
+            className="gap-3 text-sage-700 dark:text-white"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -288,7 +308,7 @@ export default function SignupPage() {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             Continue with Google
-          </button>
+          </Button>
 
           {/* Sign in link */}
           <p className="text-center text-sm text-sage-500 dark:text-white/70 mt-6">
@@ -301,8 +321,6 @@ export default function SignupPage() {
             </Link>
           </p>
 
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   )
 }

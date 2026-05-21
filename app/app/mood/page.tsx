@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { saveMoodEntry, getTodaysMood } from '@/lib/db'
@@ -9,9 +9,10 @@ import { MoodType } from '@/types'
 import Spinner        from '@/components/ui/Spinner'
 import MoodPill       from '@/components/mood/MoodPill'
 import DailySparkCard from '@/components/mood/DailySparkCard'
-import MoodRecommendations from '@/components/mood/MoodRecommendations'
+import MoodRecommendations, { MoodSupportCard } from '@/components/mood/MoodRecommendations'
 import { AlertCircle } from 'lucide-react'
 import UserAvatarMenu from '@/components/ui/UserAvatarMenu'
+import Button from '@/components/ui/Button'
 
 const MOODS: { type: MoodType; emoji: string; label: string }[] = [
   { type: 'exhausted', emoji: '😴', label: 'Exhausted' },
@@ -30,6 +31,61 @@ export default function MoodPage() {
   const [checking, setChecking]         = useState(true)
   const [loadError, setLoadError]       = useState(false)
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false)
+  const savedMoodRef        = useRef<MoodType | null>(null)
+  const savedAiSparkRef      = useRef<string | null>(null)
+  const savedAiSuggestionRef = useRef<string | null>(null)
+  const [aiSpark,       setAiSpark]       = useState<string | null>(null)
+  const [aiSuggestion,  setAiSuggestion]  = useState<string | null>(null)
+  const [aiLoading,     setAiLoading]     = useState(false)
+  const aiCacheRef = useRef<Map<string, { spark?: string; suggestion?: string }>>(new Map())
+  const generalLoadedRef = useRef(false)
+
+  async function fetchAiForMood(mood: MoodType | null): Promise<{ spark?: string; suggestion?: string } | null> {
+    if (!user) return null
+    const moodKey = mood ?? 'general'
+    const cached = aiCacheRef.current.get(moodKey)
+    if (cached) return cached
+
+    try {
+      const idToken = await user.getIdToken()
+      const res = await fetch('/api/ai/daily-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ mood: mood ?? 'general' }),
+      })
+      if (!res.ok) return null
+      const data = (await res.json()) as { spark?: string; suggestion?: string }
+      aiCacheRef.current.set(moodKey, data)
+      return data
+    } catch {
+      return null
+    }
+  }
+
+  // On mood selection: fetch mood-specific spark + suggestion (debounced + cached)
+  // Skip if mood matches the saved entry, because Firestore already has persisted content.
+  useEffect(() => {
+    if (!selected || !user) return
+    if (selected === savedMoodRef.current) {
+      if (savedAiSparkRef.current)      setAiSpark(savedAiSparkRef.current)
+      if (savedAiSuggestionRef.current) setAiSuggestion(savedAiSuggestionRef.current)
+      return
+    }
+    setAiSuggestion(null)
+    setAiLoading(true)
+    const timeout = setTimeout(() => {
+      fetchAiForMood(selected)
+        .then((data) => {
+          if (data?.suggestion) setAiSuggestion(data.suggestion)
+        })
+        .finally(() => setAiLoading(false))
+    }, 250)
+
+    return () => clearTimeout(timeout)
+  }, [selected, user])
 
   const now       = new Date()
   const hour      = now.getHours()
@@ -43,10 +99,23 @@ export default function MoodPage() {
     async function checkToday() {
       if (!user) return
       try {
-        const entry = await getTodaysMood(user.uid)
+        const [entry, profile] = await Promise.all([
+          getTodaysMood(user.uid),
+          import('@/lib/db').then(m => m.getUserProfile(user.uid)),
+        ])
+        if (profile?.hasOnboarded === false) { router.push('/onboarding'); return }
         if (entry) {
+          savedMoodRef.current        = entry.mood
+          savedAiSparkRef.current      = entry.aiSpark      ?? null
+          savedAiSuggestionRef.current = entry.aiSuggestion ?? null
           setSelected(entry.mood)
           setAlreadyCheckedIn(true)
+          setAiSpark(entry.aiSpark      ?? null)
+          setAiSuggestion(entry.aiSuggestion ?? null)
+        } else if (!generalLoadedRef.current) {
+          generalLoadedRef.current = true
+          const generalData = await fetchAiForMood(null)
+          if (generalData?.spark) setAiSpark(generalData.spark)
         }
       } catch (e) {
         console.error(e)
@@ -62,7 +131,7 @@ export default function MoodPage() {
     if (!selected || !user) return
     setLoading(true)
     try {
-      await saveMoodEntry(user.uid, selected, note)
+      await saveMoodEntry(user.uid, selected, note, aiSpark ?? undefined, aiSuggestion ?? undefined)
       router.push('/app/tasks')
     } catch (e) {
       console.error(e)
@@ -80,13 +149,13 @@ export default function MoodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 pb-24">
+    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 pb-52 md:pb-36">
 
       {/* Header */}
       <div className="px-6 md:px-0 pt-4 pb-4 flex justify-between items-start">
         <div>
-          <h1 className="font-serif text-2xl text-sage-900 dark:text-white leading-tight">
-            {greeting}, <span className="text-sage-900 dark:text-teal-400">{firstName}</span> 🌿
+          <h1 className="font-serif text-2xl text-sage-800 dark:text-white leading-tight">
+            {greeting}, <span className="text-sage-800 dark:text-white">{firstName}</span> 🌿
           </h1>
           <p className="text-sm text-sage-600 dark:text-white/70 mt-1">{dateStr}</p>
         </div>
@@ -94,14 +163,14 @@ export default function MoodPage() {
       </div>
 
       {/* Daily spark */}
-      {selected && <DailySparkCard mood={selected} />}
+      <DailySparkCard mood={selected} aiSpark={aiSpark} />
 
       {/* Already checked in */}
       {alreadyCheckedIn && (
         <div className="mx-6 md:mx-0 mb-4 px-4 py-3 rounded-sm
                         bg-sage-50 dark:bg-sage-900/20
-                        border border-sage-200 dark:border-sage-700
-                        text-sage-700 dark:text-sage-300 text-sm  animate-fade-in">
+                        border border-sage-200 dark:border-white/30
+                        text-sage-700 dark:text-white/70 text-sm  animate-fade-in">
           ✓ You already checked in today — you can update your mood below.
         </div>
       )}
@@ -124,7 +193,7 @@ export default function MoodPage() {
           </div>
         )}
 
-        <p className="text-lg font-medium text-sage-800 dark:text-white mb-4">
+        <p className="text-md font-medium text-sage-800 dark:text-white mb-4">
           How are you feeling right now?
         </p>
         
@@ -146,19 +215,31 @@ export default function MoodPage() {
         {/* Suggestion banner */}
         {selected && (
           <div className="mb-5 px-4 py-3 rounded-sm
-                          bg-white dark:bg-ocean-700
+                          bg-white dark:bg-ocean-800
                           border border-sage-500/15 dark:border-ocean-600
-                          animate-fade-in shadow-raised lp-border">
+                          animate-fade-in shadow-raised">
             <p className="text-sm font-semibold text-sage-700 dark:text-teal-400
-                          uppercase tracking-wider mb-1">
-              ✦ Balance suggests
+                          uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span aria-hidden="true">✦</span> Balance suggests
             </p>
-            <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
-              {MOOD_CONFIG[selected].suggestion}
-            </p>
+            {aiLoading ? (
+              <p className="text-sm text-sage-500 dark:text-white/50 italic">Personalising suggestion…</p>
+            ) : (
+              <>
+                <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
+                  {aiSuggestion ?? MOOD_CONFIG[selected].suggestion}
+                </p>
+                {!aiSuggestion && MOOD_CONFIG[selected].breakSuggestion && (
+                  <p className="text-sm text-sage-600 dark:text-white/70 mt-2 leading-relaxed">
+                    {MOOD_CONFIG[selected].breakSuggestion}
+                  </p>
+                )}
+              </>
+            )}
           </div>
         )}
 
+        {/* Activities + Music side by side */}
         {selected && <MoodRecommendations mood={selected} />}
 
         {/* Note */}
@@ -175,16 +256,27 @@ export default function MoodPage() {
             className="input resize-none"
             maxLength={300}
           />
-          <p className="text-sm text-sage-300 dark:text-white/50 text-right mt-1">
+          <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
             {note.length}/300
           </p>
         </div>
 
-        {/* CTA */}
-        <button
+        {/* Support card — low moods only */}
+        {selected && (selected === 'exhausted' || selected === 'stressed') && (
+          <MoodSupportCard />
+        )}
+
+      </div>
+
+      {/* Sticky CTA sits above bottom nav on mobile, at bottom on desktop */}
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 md:left-64 z-20
+                      bg-warm-100/90 dark:bg-ocean-900/90 backdrop-blur-sm
+                      border-t border-sage-200 dark:border-ocean-700
+                      px-6 py-4 flex flex-col gap-2">
+        <Button
           onClick={handleSubmit}
           disabled={!selected || loading}
-          className="btn-primary w-full flex items-center justify-center gap-2 shadow-raised animate-fade-in"
+          fullWidth
         >
           {loading ? (
             <>
@@ -194,17 +286,14 @@ export default function MoodPage() {
           ) : (
             alreadyCheckedIn ? 'Update my mood →' : 'See my recommended tasks →'
           )}
-        </button>
-
-        {/* Skip */}
-        <button
+        </Button>
+        <Button
           onClick={() => router.push('/app/tasks')}
-          className="w-full text-center text-sm text-sage-400 dark:text-white/70
-                     hover:text-sage-600 transition-colors mt-3 py-2"
+          variant="ghost"
+          className="text-center text-sm text-sage-400 dark:text-white/70 hover:text-sage-600 py-1"
         >
           Skip for today
-        </button>
-
+        </Button>
       </div>
     </div>
   )

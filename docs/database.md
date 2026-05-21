@@ -4,7 +4,7 @@
 **Author:** Rebeca Boara  
 **University:** Southampton Solent University  
 **Module:** QHO656 Dissertation Project 2025–26 
-**Last updated:** April 2026
+**Last updated:** May 2026
 
 ---
 
@@ -110,8 +110,11 @@ Stores all tasks created by users. Each task belongs to one user identified by t
 | `title` | string | Yes | Task name/description | `"Write dissertation chapter"` |
 | `difficulty` | string | Yes | Task difficulty level | `"easy"` \| `"medium"` \| `"hard"` |
 | `estimatedMin` | number | Yes | Estimated completion time in minutes | `30` |
+| `priority` | string | No | Task priority level | `"high"` \| `"medium"` \| `"low"` |
 | `completed` | boolean | Yes | Whether task is done | `false` |
 | `dueDate` | string \| null | No | Optional due date (YYYY-MM-DD) | `"2026-04-20"` |
+| `dueTime` | string \| null | No | Optional due time (HH:mm) | `"14:00"` |
+| `notes` | string | No | Optional additional notes | `"Check references"` |
 | `createdAt` | number | Yes | Creation timestamp (ms) | `1713254400000` |
 | `completedAt` | number \| null | No | Completion timestamp (ms) | `null` |
 
@@ -123,8 +126,11 @@ Stores all tasks created by users. Each task belongs to one user identified by t
   "title": "Write dissertation chapter",
   "difficulty": "hard",
   "estimatedMin": 90,
+  "priority": "high",
   "completed": false,
   "dueDate": "2026-04-20",
+  "dueTime": "14:00",
+  "notes": "Focus on methodology section first",
   "createdAt": 1713254400000,
   "completedAt": null
 }
@@ -160,7 +166,7 @@ The `update` rule checks both the existing document (`resource`) and the incomin
 | Function | Description |
 |---|---|
 | `getTasks(userId)` | Fetches all tasks for a user, ordered by `createdAt` descending |
-| `addTask(userId, title, difficulty, estimatedMin, dueDate?)` | Creates a new task document |
+| `addTask(userId, title, difficulty, estimatedMin, dueDate?, dueTime?, notes?, priority?)` | Creates a new task document |
 | `toggleTask(taskId, completed)` | Marks a task complete or incomplete |
 | `deleteTask(taskId)` | Permanently deletes a task |
 
@@ -189,6 +195,8 @@ Stores daily mood check-in entries. One entry per user per day — if a user che
 | `note` | string | No | Optional user note | `"Didn't sleep well"` |
 | `date` | string | Yes | ISO date string (YYYY-MM-DD) | `"2026-04-09"` |
 | `createdAt` | number | Yes | Entry creation timestamp (ms) | `1713254400000` |
+| `aiSpark` | string | No | AI-generated daily spark quote for this entry | `"One step at a time is still forward."` |
+| `aiSuggestion` | string | No | AI-generated Balance suggests message for this entry | `"Start with one small task to build momentum..."` |
 
 #### Example document
 
@@ -198,9 +206,13 @@ Stores daily mood check-in entries. One entry per user per day — if a user che
   "mood": "exhausted",
   "note": "Didn't sleep well last night",
   "date": "2026-04-09",
-  "createdAt": 1713254400000
+  "createdAt": 1713254400000,
+  "aiSpark": "One step at a time is still forward. You've got this.",
+  "aiSuggestion": "You're doing enough. Start with one small task to build momentum — even one thing crossed off makes the day count. Try 15 minutes on, 10 minutes off to protect your energy."
 }
 ```
+
+`aiSpark` and `aiSuggestion` are optional — they are only present when AI generation succeeded. If the AI request fails, the fields are omitted and the UI falls back to static messages from `MOOD_CONFIG`.
 
 #### Document path
 
@@ -229,7 +241,7 @@ match /moods/{moodId} {
 
 | Function | Description |
 |---|---|
-| `saveMoodEntry(userId, mood, note?)` | Creates or updates today's mood entry |
+| `saveMoodEntry(userId, mood, note?, aiSpark?, aiSuggestion?)` | Creates or updates today's mood entry; persists AI content when available |
 | `getTodaysMood(userId)` | Fetches today's mood entry if it exists |
 | `getMoodHistory(userId, days?)` | Fetches mood entries for the last N days (default 7) |
 | `getDashboardStats(userId)` | Aggregates tasks and moods into dashboard statistics |
@@ -313,14 +325,16 @@ Firebase Auth (manages identity)
         ▼
 User checks in mood
         │
+        ├──► /api/ai/daily-message  ← AI generates spark + suggestion
+        │
         ▼
-/moods/{moodId}                  ← mood entry saved with date
+/moods/{moodId}                  ← mood entry saved with date, aiSpark, aiSuggestion
         │
         ▼
 Recommendation engine (lib/mood.ts)
         │
-        ├── reads mood
-        └── filters /tasks/{taskId} by difficulty allowed for that mood
+        ├── reads mood + task priority + due dates
+        └── filters and sorts /tasks/{taskId} based on mood tier
                 │
                 ▼
         Task list displayed to user
@@ -338,18 +352,19 @@ Recommendation engine (lib/mood.ts)
 
 In accordance with the General Data Protection Regulation (GDPR) and the project's ethical clearance from Southampton Solent University:
 
-- **Data minimisation** — only the minimum necessary data is collected (mood, tasks, preferences). No location data, biometric data, or behavioural tracking is stored.
+- **Data minimisation** — only the minimum necessary data is collected (mood, tasks, preferences, AI-generated content). No location data, biometric data, or behavioural tracking is stored.
 - **Purpose limitation** — data is used solely for providing mood-aware task recommendations and productivity insights within the Balance application.
 - **Data residency** — Firestore is configured to use the `europe-west2 (London)` region, keeping all data within UK/EU jurisdiction.
 - **User control** — users can delete their account and all associated data at any time via the Settings screen. The delete function removes documents from all three collections.
 - **Access control** — Firestore Security Rules ensure no user can access another user's data. All rules require `request.auth != null` confirming the user is authenticated before any read or write is permitted.
 - **Encryption** — all data is encrypted at rest and in transit by Firebase/Google Cloud by default. No additional encryption configuration is required.
+- **Explicit consent** — users must tick an explicit consent checkbox during registration confirming they agree to the Terms of Service and Privacy Policy before an account is created.
 
 ---
 
 ## Environment variables
 
-The following environment variables must be set in `.env.local` (local development) and in Vercel dashboard (production). These connect the app to the Firebase project.
+The following environment variables must be set in `.env.local` (local development) and in Vercel dashboard (production). These connect the app to the Firebase project and OpenAI API.
 
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY
@@ -358,6 +373,7 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID
+OPENAI_API_KEY
 ```
 
 > ⚠️ Never commit `.env.local` to GitHub. It is listed in `.gitignore` by default.
@@ -377,6 +393,15 @@ The dissertation prototype operates within Firebase's free Spark plan. The follo
 | Authentication | Unlimited | 10–20 users |
 
 Usage is well within free tier limits for the evaluation phase of the dissertation.
+
+---
+
+## Revision history
+
+| Version | Date | Author | Changes |
+|---|---|---|---|
+| 1.0 | April 2026 | Rebeca Boara | Initial version |
+| 1.1 | May 2026 | Rebeca Boara | Added `priority` and `dueTime` fields to tasks; added `aiSpark` and `aiSuggestion` fields to moods; updated `saveMoodEntry` signature; added OPENAI_API_KEY to environment variables; updated data flow diagram; added explicit consent to GDPR section |
 
 ---
 

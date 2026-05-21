@@ -10,7 +10,8 @@ import {
 import { auth, googleProvider } from '@/lib/firebase'
 import { createUserProfile } from '@/lib/db'
 import Spinner from '@/components/ui/Spinner'
-import Logo from '@/components/ui/Logo'
+import AuthLayout from '@/components/layout/AuthLayout'
+import Button from '@/components/ui/Button'
 import { Eye, EyeOff } from 'lucide-react'
 
 export default function LoginPage() {
@@ -27,7 +28,13 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      const cred = await signInWithEmailAndPassword(auth, email, password)
+      const idToken = await cred.user.getIdToken()
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
       router.push('/app/mood')
     } catch (err: any) {
       const msg = getFriendlyError(err.code)
@@ -45,8 +52,15 @@ export default function LoginPage() {
     try {
       const cred = await signInWithPopup(auth, googleProvider)
       await createUserProfile(cred.user.uid, cred.user.email!, cred.user.displayName || undefined)
+      const idToken = await cred.user.getIdToken()
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
       router.push('/app/mood')
     } catch (err: any) {
+      if (err.code === 'auth/cancelled-popup-request' || err.code === 'auth/popup-closed-by-user') return
       const msg = getFriendlyError(err.code)
       if (msg === 'Something went wrong. Please try again.') console.error('[Auth] Google login failed:', err.code)
       setError(msg)
@@ -68,16 +82,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 flex flex-col">
-
-      {/* ── Top bar ── */}
-      <div className="p-6">
-        <Logo size="md" />
-      </div>
-
-      {/* ── Card ── */}
-      <div className="flex-1 flex items-center justify-center px-6 pb-12">
-        <div className="w-full max-w-sm">
+    <AuthLayout>
 
           {/* Heading */}
           <div className="mb-8">
@@ -154,10 +159,11 @@ export default function LoginPage() {
             </div>
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2 mt-2"
+              fullWidth
+              className="mt-2"
             >
               {loading ? (
                 <>
@@ -165,7 +171,7 @@ export default function LoginPage() {
                   Signing in...
                 </>
               ) : 'Sign in'}
-            </button>
+            </Button>
 
           </form>
 
@@ -177,15 +183,12 @@ export default function LoginPage() {
           </div>
 
           {/* Google */}
-          <button
+          <Button
             onClick={handleGoogleLogin}
+            variant="secondary"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg
-                       border border-sage-500/15 dark:border-ocean-600
-                       bg-white dark:bg-ocean-700
-                       text-sage-800 dark:text-white text-sm font-medium
-                       hover:bg-sage-50 dark:hover:bg-ocean-600
-                       transition-all duration-200 disabled:opacity-50"
+            fullWidth
+            className="gap-3 text-sage-700 dark:text-white"
           >
             {/* Google icon */}
             <svg width="18" height="18" viewBox="0 0 24 24">
@@ -195,7 +198,7 @@ export default function LoginPage() {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             Continue with Google
-          </button>
+          </Button>
 
           {/* Sign up link */}
           <p className="text-center text-sm text-sage-500 dark:text-white/70 mt-6">
@@ -208,8 +211,6 @@ export default function LoginPage() {
             </Link>
           </p>
 
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   )
 }

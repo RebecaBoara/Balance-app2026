@@ -17,7 +17,7 @@ export default function EmptyState({
       <h3 className="font-serif text-xl text-sage-800 dark:text-white mb-2">
         {title}
       </h3>
-      <p className="text-sm text-sage-600 dark:text-white/70 max-w-xs leading-relaxed mb-6">
+      <p className="text-sm text-sage-700 dark:text-white/70 max-w-xs leading-relaxed mb-6">
         {description}
       </p>
       {action}

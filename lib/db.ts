@@ -6,7 +6,7 @@ import {
   getDocs, getDoc, setDoc,  query, where, orderBy
 } from 'firebase/firestore'
 import { db } from './firebase'
-import { Task, MoodEntry, DifficultyType, MoodType, UserProfile } from '@/types'
+import { Task, MoodEntry, DifficultyType, PriorityType, MoodType, RepeatType, UserProfile } from '@/types'
 
 
 //USER PROFILE 
@@ -41,6 +41,7 @@ export async function createUserProfile(
     breakSuggestions: true,
     theme:            'system',
     createdAt:        Date.now(),
+    hasOnboarded:     false,
   })
 }
  
@@ -60,7 +61,9 @@ export async function addTask(
   userId: string,
   title: string,
   difficulty: DifficultyType,
+  priority: PriorityType = 'medium',
   estimatedMin: number,
+  repeat: RepeatType = 'none',
   dueDate?: string,
   dueTime?: string,
   notes?: string,
@@ -69,10 +72,12 @@ export async function addTask(
     userId,
     title,
     difficulty,
+    priority,
     estimatedMin,
+    repeat,
     dueDate:   dueDate || null,
     dueTime:   dueTime || null,
-    notes:    notes || null,
+    notes:     notes   || null,
     completed: false,
     createdAt: Date.now(),
   })
@@ -81,15 +86,17 @@ export async function addTask(
 
 export async function updateTask(
   taskId: string,
-  data: { title: string; difficulty: DifficultyType; estimatedMin: number; dueDate?: string; dueTime?: string; notes?: string }
+  data: { title: string; difficulty: DifficultyType; priority?: PriorityType; estimatedMin: number; repeat?: RepeatType; dueDate?: string; dueTime?: string; notes?: string }
 ): Promise<void> {
   await updateDoc(doc(db, 'tasks', taskId), {
     title:        data.title,
     difficulty:   data.difficulty,
+    priority:     data.priority ?? 'medium',
     estimatedMin: data.estimatedMin,
-    dueDate:      data.dueDate  || null,
-    dueTime:      data.dueTime  || null,
-    notes:        data.notes    || null,
+    repeat:       data.repeat  || 'none',
+    dueDate:      data.dueDate || null,
+    dueTime:      data.dueTime || null,
+    notes:        data.notes   || null,
   })
 }
 
@@ -109,11 +116,12 @@ export async function deleteTask(taskId: string): Promise<void> {
 export async function saveMoodEntry(
   userId: string,
   mood: MoodType,
-  note?: string
+  note?: string,
+  aiSpark?: string,
+  aiSuggestion?: string,
 ): Promise<string> {
   const today = new Date().toISOString().split('T')[0]
 
-  // Check if entry already exists for today
   const q = query(
     collection(db, 'moods'),
     where('userId', '==', userId),
@@ -122,19 +130,24 @@ export async function saveMoodEntry(
   const existing = await getDocs(q)
 
   if (!existing.empty) {
-    // Update existing entry
     const docId = existing.docs[0].id
-    await updateDoc(doc(db, 'moods', docId), { mood, note: note || '' })
+    await updateDoc(doc(db, 'moods', docId), {
+      mood,
+      note: note || '',
+      ...(aiSpark       && { aiSpark }),
+      ...(aiSuggestion  && { aiSuggestion }),
+    })
     return docId
   }
 
-  // Create new entry
   const ref = await addDoc(collection(db, 'moods'), {
     userId,
     mood,
     note:      note || '',
     date:      today,
     createdAt: Date.now(),
+    ...(aiSpark       && { aiSpark }),
+    ...(aiSuggestion  && { aiSuggestion }),
   })
   return ref.id
 }

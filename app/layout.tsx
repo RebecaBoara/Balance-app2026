@@ -6,7 +6,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title:       'Balance — Productivity & Wellbeing',
   description: 'An emotion-aware task planner that recommends the right tasks based on how you feel.',
-  icons: { icon: '/favicon.ico' },
+  icons: { icon: '/lotus.PNG' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

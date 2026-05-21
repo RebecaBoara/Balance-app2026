@@ -10,11 +10,12 @@ import MoodBadge from '@/components/ui/MoodBadge'
 import { Sparkles } from 'lucide-react'
 
 interface MoodSuggestionBannerProps {
-  mood:        MoodType | null
-  showBreaks?: boolean
+  mood:           MoodType | null
+  showBreaks?:    boolean
+  aiSuggestion?:  string
 }
 
-export default function MoodSuggestionBanner({ mood, showBreaks = true }: MoodSuggestionBannerProps) {
+export default function MoodSuggestionBanner({ mood, showBreaks = true, aiSuggestion }: MoodSuggestionBannerProps) {
 
   // No mood checked in
   if (!mood) {
@@ -46,7 +47,7 @@ export default function MoodSuggestionBanner({ mood, showBreaks = true }: MoodSu
                     border border-sage-500/15 dark:border-ocean-600
                     shadow-raised animate-fade-in">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-semibold text-sage-900 dark:text-teal-400
+        <p className="text-sm font-semibold text-sage-700 dark:text-teal-400
                       uppercase tracking-wider flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
           Balance suggests
@@ -54,9 +55,9 @@ export default function MoodSuggestionBanner({ mood, showBreaks = true }: MoodSu
         <MoodBadge mood={mood} />
       </div>
       <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
-        {config.suggestion}
+        {aiSuggestion ?? config.suggestion}
       </p>
-      {showBreaks && config.breakSuggestion && (
+      {!aiSuggestion && showBreaks && config.breakSuggestion && (
         <p className="text-sm text-sage-700 dark:text-white/70 mt-3 leading-relaxed">
           {config.breakSuggestion}
         </p>

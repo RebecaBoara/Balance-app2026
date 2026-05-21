@@ -2,14 +2,18 @@
 
 export type MoodType = 'exhausted' | 'stressed' | 'neutral' | 'good' | 'energised'
 export type DifficultyType = 'easy' | 'medium' | 'hard'
+export type PriorityType = 'high' | 'medium' | 'low'
+export type RepeatType = 'none' | 'daily' | 'weekly' | 'monthly'
 
 export interface MoodEntry {
-  id:        string
-  userId:    string
-  mood:      MoodType
-  note?:     string
-  date:      string   // ISO date string YYYY-MM-DD
-  createdAt: number  // timestamp
+  id:           string
+  userId:       string
+  mood:         MoodType
+  note?:        string
+  date:         string   // ISO date string YYYY-MM-DD
+  createdAt:    number   // timestamp
+  aiSpark?:     string   // AI-generated daily spark quote
+  aiSuggestion?: string  // AI-generated balance suggests message
 }
 
 export interface Task {
@@ -18,6 +22,8 @@ export interface Task {
   title:       string
   difficulty:  DifficultyType
   estimatedMin: number
+  priority?:   PriorityType
+  repeat?:     RepeatType
   completed:   boolean
   dueDate?:    string  // optional ISO date YYYY-MM-DD
   dueTime?:    string  // optional ISO time HH:mm
@@ -31,8 +37,6 @@ export interface MoodRecommendation {
   emoji:          string
   label:          string
   colour:         string // Tailwind class
-  maxTasks:       number
-  allowedDifficulty: DifficultyType[]
   suggestion:     string
   breakSuggestion: string
   sparkMessage:   string
@@ -57,4 +61,10 @@ export interface UserProfile {
   theme:            'light' | 'dark' | 'system'
   createdAt:        number
   isAdmin?:         boolean
+  hasOnboarded?:    boolean
+}
+
+export interface DailyAIMessage {
+  spark:      string
+  suggestion: string
 }
