@@ -42,7 +42,7 @@ function Navbar() {
             </Button>
           ) : (
             <Button href="/auth/signup" size="sm" className="px-4 py-2">
-              Get started free
+              Sign up
             </Button>
           )}
           <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'}
@@ -57,7 +57,7 @@ function Navbar() {
                      dark:border-ocean-700 px-6 py-4 space-y-3">
           <Link href="/" onClick={() => setOpen(false)} className="block text-sm text-sage-600 dark:text-white/80 py-2">Home</Link>
           <Button href="/auth/signup" onClick={() => setOpen(false)} fullWidth className="py-2.5">
-            Get started free
+            Sign up
           </Button>
         </nav>
       )}
@@ -90,7 +90,7 @@ export default function TermsPage() {
       <main className="max-w-3xl mx-auto px-6 pt-12 pb-12">
 
         {/* Back */}
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-500 hover:text-sage-700 mb-8 transition-colors">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-500 hover:text-sage-700 mb-8 transition-colors dark:text-white/70 dark:hover:text-white">
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Back to home
         </Link>
@@ -102,18 +102,18 @@ export default function TermsPage() {
           </div>
           <div>
             <h1 className="font-serif text-4xl text-sage-900 dark:text-white mb-1">Terms of Service</h1>
-            <p className="text-sm text-sage-400 dark:text-ocean-300">Last updated: April 2026 · Balance — Productivity & Wellbeing</p>
+            <p className="text-sm text-sage-600 dark:text-white/80">Last updated: April 2026 · Balance — Productivity & Wellbeing</p>
           </div>
         </div>
 
         {/* Intro banner */}
         <div className="p-4 rounded-sm bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
-          <p className="text-sm text-sage-700 dark:text-sage-300 leading-relaxed">
+          <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
             Please read these terms carefully before using Balance. By creating an account you agree to these terms. Balance is an academic research prototype — these terms reflect its nature as a university dissertation project.
           </p>
         </div>
 
-        <div className="space-y-8 text-sm text-sage-600 dark:text-ocean-300 leading-relaxed">
+        <div className="space-y-8 text-sm text-sage-600 dark:text-white/80 leading-relaxed">
 
           {/* 1 */}
           <section>
@@ -223,9 +223,9 @@ export default function TermsPage() {
         <div className="mt-10 p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-sage-700 dark:text-white">Also read our Privacy Policy</p>
-            <p className="text-xs text-sage-500 dark:text-ocean-300 mt-0.5">Learn how we handle your data and your GDPR rights</p>
+            <p className="text-xs text-sage-500 dark:text-white/80 mt-0.5">Learn how we handle your data and your GDPR rights</p>
           </div>
-          <Button href="/privacy" variant="secondary" className="px-5 py-2.5 flex-shrink-0 text-sage-600 dark:text-ocean-200">
+          <Button href="/privacy" variant="secondary" className="px-5 py-2.5 flex-shrink-0 text-sage-600 dark:text-white/80">
             Privacy Policy <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>

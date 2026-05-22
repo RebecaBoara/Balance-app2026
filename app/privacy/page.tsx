@@ -37,12 +37,12 @@ function Navbar() {
             <ThemeIcon size={17} aria-hidden="true" />
           </button>
           {user ? (
-            <Button href="/app/mood" size="sm" className="px-4 py-2">
+            <Button href="/app/mood" size="sm" className="px-2 py-2">
               Go to app →
             </Button>
           ) : (
-            <Button href="/auth/signup" size="sm" className="px-4 py-2">
-              Get started free
+            <Button href="/auth/signup" size="sm" className="px-2 py-2">
+              Sign up
             </Button>
           )}
           <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'}
@@ -133,7 +133,7 @@ export default function PrivacyPage() {
       <main className="max-w-3xl mx-auto px-6 pt-12 pb-12">
 
         {/* Back */}
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-500 hover:text-sage-700 mb-8 transition-colors">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-700 hover:text-sage-700 mb-8 transition-colors dark:text-white transition-colors text-sm">
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Back to home
         </Link>
@@ -145,13 +145,13 @@ export default function PrivacyPage() {
           </div>
           <div>
             <h1 className="font-serif text-4xl text-sage-900 dark:text-white mb-1">Privacy Policy</h1>
-            <p className="text-sm text-sage-400 dark:text-ocean-300">Last updated: May 2026 · Balance — Productivity & Wellbeing</p>
+            <p className="text-sm text-sage-700 dark:text-white/80">Last updated: May 2026 · Balance — Productivity & Wellbeing</p>
           </div>
         </div>
 
         {/* Intro banner */}
         <div className="p-4 rounded-sm bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
-          <p className="text-sm text-sage-700 dark:text-sage-300 leading-relaxed">
+          <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
             Balance is an academic research prototype developed as part of a dissertation project at Southampton Solent University. This policy explains what data we collect, how we use it, and your rights under the General Data Protection Regulation (GDPR).
           </p>
         </div>
@@ -169,8 +169,8 @@ export default function PrivacyPage() {
               { right: 'Right to object',          desc: 'Object to how your data is processed by contacting us.' },
             ].map(({ right, desc }) => (
               <div key={right} className="p-4 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
-                <h3 className="text-xs font-semibold text-sage-600 dark:text-teal-400 uppercase tracking-wider mb-1">{right}</h3>
-                <p className="text-xs text-sage-500 dark:text-ocean-300 leading-relaxed">{desc}</p>
+                <h3 className="text-xs font-semibold text-sage-600 dark:text-white uppercase tracking-wider mb-1">{right}</h3>
+                <p className="text-xs text-sage-500 dark:text-white/80 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -183,13 +183,13 @@ export default function PrivacyPage() {
               <h2 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">{title}</h2>
 
               {content && (
-                <p className="text-sm text-sage-600 dark:text-ocean-300 leading-relaxed mb-3">{content}</p>
+                <p className="text-sm text-sage-600 dark:text-white/80 leading-relaxed mb-3">{content}</p>
               )}
 
               {bullets && (
                 <ul className="space-y-2">
                   {bullets.map(item => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-sage-600 dark:text-ocean-300">
+                    <li key={item} className="flex items-start gap-2 text-sm text-sage-600 dark:text-white/80">
                       <span className="text-coral-app mt-0.5 flex-shrink-0">✗</span>
                       {item}
                     </li>
@@ -202,7 +202,7 @@ export default function PrivacyPage() {
                   {cards.map(({ title: ct, text }) => (
                     <div key={ct} className="p-4 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
                       <h3 className="text-sm font-semibold text-sage-800 dark:text-white mb-1">{ct}</h3>
-                      <p className="text-sm text-sage-500 dark:text-ocean-300 leading-relaxed">{text}</p>
+                      <p className="text-sm text-sage-500 dark:text-white/80 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -210,13 +210,13 @@ export default function PrivacyPage() {
 
               {contact && (
                 <div className="p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
-                  <p className="text-sm text-sage-600 dark:text-ocean-300 leading-relaxed mb-3">
+                  <p className="text-sm text-sage-600 dark:text-white/80 leading-relaxed mb-3">
                     If you have any questions about this privacy policy or how your data is handled, please contact:
                   </p>
                   <div className="space-y-1 text-sm">
                     
                     <p><span className="font-semibold text-sage-800 dark:text-white">Email:</span>{' '}
-                      <a href="mailto:balancedtasks.mood@gmail.com" className="text-sage-600 dark:text-ocean-300 hover:underline">
+                      <a href="mailto:balancedtasks.mood@gmail.com" className="text-sage-600 dark:text-white/80 hover:underline">
                         balancedtasks.mood@gmail.com
                       </a>
                     </p>
@@ -231,7 +231,7 @@ export default function PrivacyPage() {
        
         {/* Also see terms */}
         <div className="mt-4 text-center">
-          <Link href="/terms" className="text-sm text-sage-400 hover:text-sage-600 dark:hover:text-ocean-200 transition-colors">
+          <Link href="/terms" className="text-sm text-sage-400 hover:text-sage-600 dark:text-white/60 dark:hover:text-white/80 transition-colors">
             Also read our Terms of Service →
           </Link>
         </div>
