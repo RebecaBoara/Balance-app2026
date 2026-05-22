@@ -284,7 +284,7 @@ export default function MoodPage() {
               Saving...
             </>
           ) : (
-            alreadyCheckedIn ? 'Update my mood →' : 'See my recommended tasks →'
+            alreadyCheckedIn ? 'Update my mood →' : 'Go to my tasks →'
           )}
         </Button>
         <Button

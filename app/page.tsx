@@ -62,7 +62,8 @@ function Navbar() {
                 Log in
               </Link>
               <Button href="/auth/signup" size="sm" className="px-4 py-2">
-                Get started free
+                <span className="hidden md:inline">Get started free</span>
+                <span className="md:hidden">Sign up</span>
               </Button>
             </>
           )}
@@ -140,8 +141,7 @@ const FAQS = [
 //Page
 
 export default function LandingPage() {
-  const { user }                         = useAuth()
-  const [openFaq,      setOpenFaq]       = useState<number | null>(null)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
     <>
