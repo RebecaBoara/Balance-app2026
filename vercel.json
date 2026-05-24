@@ -1,5 +1,4 @@
 
-//tells Vercel to run the cron job automatically every hourWithout it the email reminders will never fire.
 
 {
   "crons": [
