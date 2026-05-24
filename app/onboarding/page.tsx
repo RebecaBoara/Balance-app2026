@@ -29,9 +29,9 @@ const HOW_IT_WORKS = [
 export default function OnboardingPage() {
   const { user, loading }                     = useAuth()
   const router                                = useRouter()
-  const [step,         setStep]               = useState(0)
-  const [reminderTime, setReminderTime]       = useState('08:00')
-  const [saving,       setSaving]             = useState(false)
+  const [step,           setStep]             = useState(0)
+  const [emailReminders, setEmailReminders]   = useState(true)
+  const [saving,         setSaving]           = useState(false)
 
   useEffect(() => {
     if (!loading && !user) router.replace('/auth/login')
@@ -55,7 +55,7 @@ export default function OnboardingPage() {
   async function handleComplete() {
     setSaving(true)
     try {
-      await saveUserProfile(user!.uid, { hasOnboarded: true, reminderTime })
+      await saveUserProfile(user!.uid, { hasOnboarded: true, emailReminders })
       router.push('/app/mood')
     } catch {
       setSaving(false)
@@ -160,24 +160,32 @@ export default function OnboardingPage() {
                 <Clock className="w-7 h-7 text-sage-500 dark:text-teal-400" aria-hidden="true" />
               </div>
               <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
-                Set your reminder
+                Daily reminders
               </h1>
               <p className="text-sm text-sage-500 dark:text-white/60 mb-8 leading-relaxed max-w-xs mx-auto">
-                Choose a daily time for your mood check-in. You can change this anytime in Settings.
+                Would you like a daily email reminder to check in with your mood each morning?
+                You can change this anytime in Settings.
               </p>
 
-              <div className="bg-white dark:bg-ocean-800 border border-sage-100 dark:border-ocean-600
-                              rounded-xl p-6 mb-4 shadow-raised text-left">
-                <label className="block text-xs font-semibold text-sage-400 dark:text-white/40
-                                  uppercase tracking-wider mb-3">
-                  Daily reminder time
-                </label>
-                <input
-                  type="time"
-                  value={reminderTime}
-                  onChange={e => setReminderTime(e.target.value)}
-                  className="input text-center text-lg font-medium"
-                />
+              <div className="flex flex-col gap-3 mb-8">
+                <button
+                  onClick={() => setEmailReminders(true)}
+                  className={`w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
+                    ${emailReminders
+                      ? 'bg-sage-500 dark:bg-teal-600 text-white border-sage-500 dark:border-teal-600'
+                      : 'bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80 border-sage-200 dark:border-ocean-600 hover:bg-sage-50 dark:hover:bg-ocean-700'
+                    }`}>
+                  Yes, send me daily reminders
+                </button>
+                <button
+                  onClick={() => setEmailReminders(false)}
+                  className={`w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
+                    ${!emailReminders
+                      ? 'bg-sage-500 dark:bg-teal-600 text-white border-sage-500 dark:border-teal-600'
+                      : 'bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80 border-sage-200 dark:border-ocean-600 hover:bg-sage-50 dark:hover:bg-ocean-700'
+                    }`}>
+                  No thanks, I'll check in on my own
+                </button>
               </div>
 
               <div className="flex gap-3">

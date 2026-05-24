@@ -10,17 +10,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const now         = new Date()
-  const currentHour = now.getUTCHours().toString().padStart(2, '0')
-
   const snap = await admin.firestore().collection('users').get()
 
-  const targets = snap.docs.filter(doc => {
-    const data         = doc.data()
-    if (data.emailReminders === false) return false
-    const reminderHour = (data.reminderTime as string | undefined)?.split(':')[0] ?? '08'
-    return reminderHour === currentHour
-  })
+  const targets = snap.docs.filter(doc => doc.data().emailReminders !== false)
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL
     ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')

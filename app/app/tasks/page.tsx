@@ -13,6 +13,7 @@ import EmptyState           from '@/components/ui/EmptyState'
 import PageHeader   from '@/components/ui/PageHeader'
 import Spinner      from '@/components/ui/Spinner'
 import Button       from '@/components/ui/Button'
+import { useToast } from '@/components/ui/Toaster'
 import { Plus, CheckCircle2, Sparkles, AlertCircle, List, CalendarDays, ChevronDown } from 'lucide-react'
 
 type FilterType = 'all' | 'today' | 'upcoming'
@@ -71,6 +72,7 @@ function isCompletedRecently(task: Task): boolean {
 
 export default function TasksPage() {
   const { user }                     = useAuth()
+  const { toast }                    = useToast()
   const [tasks,      setTasks]       = useState<Task[]>([])
   const [todaysMood, setTodaysMood]  = useState<MoodType | null>(null)
   const [loading,    setLoading]     = useState(true)
@@ -128,33 +130,37 @@ export default function TasksPage() {
 
 async function handleAddTask(data: NewTask) {
     if (!user) return
-    const id = await addTask(
-      user.uid,
-      data.title.trim(),
-      data.difficulty,
-      data.priority,
-      data.estimatedMin,
-      data.repeat,
-      data.dueDate || undefined,
-      data.dueTime || undefined,
-      data.notes   || undefined,
-    )
-    const created: Task = {
-      id,
-      userId:       user.uid,
-      title:        data.title.trim(),
-      difficulty:   data.difficulty,
-      priority:     data.priority,
-      estimatedMin: data.estimatedMin,
-      repeat:       data.repeat,
-      completed:    false,
-      dueDate:      data.dueDate || undefined,
-      dueTime:      data.dueTime || undefined,
-      notes:        data.notes   || undefined,
-      createdAt:    Date.now(),
+    try {
+      const id = await addTask(
+        user.uid,
+        data.title.trim(),
+        data.difficulty,
+        data.priority,
+        data.estimatedMin,
+        data.repeat,
+        data.dueDate || undefined,
+        data.dueTime || undefined,
+        data.notes   || undefined,
+      )
+      const created: Task = {
+        id,
+        userId:       user.uid,
+        title:        data.title.trim(),
+        difficulty:   data.difficulty,
+        priority:     data.priority,
+        estimatedMin: data.estimatedMin,
+        repeat:       data.repeat,
+        completed:    false,
+        dueDate:      data.dueDate || undefined,
+        dueTime:      data.dueTime || undefined,
+        notes:        data.notes   || undefined,
+        createdAt:    Date.now(),
+      }
+      setTasks(prev => [created, ...prev])
+      setShowModal(false)
+    } catch {
+      toast.error('Could not save task. Please try again.')
     }
-    setTasks(prev => [created, ...prev])
-    setShowModal(false)
   }
 
   async function handleToggle(task: Task) {
@@ -243,8 +249,8 @@ async function handleAddTask(data: NewTask) {
     try {
       await deleteTask(taskId)
       setTasks(prev => prev.filter(t => t.id !== taskId))
-    } catch (e) {
-      console.error(e)
+    } catch {
+      toast.error('Could not delete task. Please try again.')
     } finally {
       setDeleting(null)
     }
