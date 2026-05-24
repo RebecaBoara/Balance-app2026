@@ -197,22 +197,8 @@ async function handleAddTask(data: NewTask) {
             task.notes,
           )
 
-          const nextTask: Task = {
-            id: nextId,
-            userId: user.uid,
-            title: task.title,
-            difficulty: task.difficulty,
-            priority: task.priority ?? 'medium',
-            estimatedMin: task.estimatedMin,
-            repeat: task.repeat,
-            completed: false,
-            dueDate: nextDate,
-            dueTime: task.dueTime,
-            notes: task.notes,
-            createdAt: Date.now(),
-          }
-
-          setTasks(prev => [nextTask, ...prev])
+          // Next occurrence is saved to Firestore but not added to local state —
+          // it has a future date and would appear to revert the completed task.
         }
       }
     } catch {

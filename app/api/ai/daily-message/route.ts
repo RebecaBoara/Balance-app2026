@@ -112,7 +112,7 @@ async function callOpenAIWithRetry(
   '"One step at a time is still forward."\n' +
   '"Small things done consistently matter more than big things done rarely."\n' +
   '"Showing up is already half the work."\n' +
-  '"You don\'t need to do everything — just the next thing."\n' +
+ 
   'Bad examples (never write like this): "Believe in yourself!", "You\'ve got this!", "Make today count!", "You are enough!", "Your presence matters!", "You are exactly where you need to be.", "Embrace the journey!"\n' +
   'Bad style = spiritual/poster slogans, affirmations about existence or worth, anything that sounds like a motivational Instagram post.\n' +
   'Good style = practical and grounded — about the work ahead, how to approach the day, or a gentle honest truth.\n\n' +

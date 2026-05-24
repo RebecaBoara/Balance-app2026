@@ -58,6 +58,7 @@ export interface UserProfile {
   reminderTime:     string
   reminders:        boolean
   breakSuggestions: boolean
+  emailReminders:   boolean
   theme:            'light' | 'dark' | 'system'
   createdAt:        number
   isAdmin?:         boolean

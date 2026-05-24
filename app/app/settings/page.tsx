@@ -132,6 +132,8 @@ export default function SettingsPage() {
   const [deleteError,      setDeleteErr]       = useState('')
   const [deleting,         setDeleting]        = useState(false)
   const [breakSuggestions, setBreakSuggestions] = useState(true)
+  const [emailReminders,   setEmailReminders]   = useState(true)
+  const [reminderTime,     setReminderTime]     = useState('08:00')
 
   // Profile editing
   const [isEditingName, setIsEditingName] = useState(false)
@@ -139,8 +141,31 @@ export default function SettingsPage() {
   const [savingName,    setSavingName]    = useState(false)
   const [nameError,     setNameError]     = useState('')
 
-  const isGoogleUser = user?.providerData.some(p => p.providerId === 'google.com') ?? false
+  // Reminder time editing
+  const [isEditingTime, setIsEditingTime] = useState(false)
+  const [editTime,      setEditTime]      = useState('08:00')
+  const [savingTime,    setSavingTime]    = useState(false)
 
+  function startEditTime() {
+    setEditTime(reminderTime)
+    setIsEditingTime(true)
+  }
+
+  async function handleSaveTime() {
+    if (!user) return
+    setSavingTime(true)
+    try {
+      await saveUserProfile(user.uid, { reminderTime: editTime })
+      setReminderTime(editTime)
+      setIsEditingTime(false)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setSavingTime(false)
+    }
+  }
+
+  const isGoogleUser = user?.providerData.some(p => p.providerId === 'google.com') ?? false
   useEffect(() => {
     if (!user) return
     async function load() {
@@ -148,6 +173,8 @@ export default function SettingsPage() {
         const profile = await getUserProfile(user!.uid)
         if (profile) {
           setBreakSuggestions(profile.breakSuggestions ?? true)
+          setEmailReminders(profile.emailReminders ?? true)
+          setReminderTime(profile.reminderTime ?? '08:00')
         }
       } catch (e) {
         console.error(e)
@@ -157,6 +184,17 @@ export default function SettingsPage() {
     }
     load()
   }, [user])
+
+  async function handleToggleEmailReminders(value: boolean) {
+    setEmailReminders(value)
+    if (!user) return
+    try {
+      await saveUserProfile(user.uid, { emailReminders: value })
+    } catch (e) {
+      console.error(e)
+      setEmailReminders(!value)
+    }
+  }
 
   async function handleToggleBreaks(value: boolean) {
     setBreakSuggestions(value)
@@ -313,11 +351,62 @@ export default function SettingsPage() {
             <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Preferences</p>
           </div>
           <ToggleRow
+            label="Email reminders"
+            description="Daily check-in reminder sent to your email"
+            value={emailReminders}
+            onChange={handleToggleEmailReminders}
+          />
+          <ToggleRow
             label="Break suggestions"
             description="Suggests short breaks when you're exhausted or stressed"
             value={breakSuggestions}
             onChange={handleToggleBreaks}
           />
+          <div className="px-4 py-3">
+            {isEditingTime ? (
+              <div>
+                <p className="text-sm font-medium text-sage-800 dark:text-white mb-2">Reminder time</p>
+                <input
+                  type="time"
+                  value={editTime}
+                  onChange={e => setEditTime(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') handleSaveTime(); if (e.key === 'Escape') setIsEditingTime(false) }}
+                  className="input text-sm mb-2"
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveTime} disabled={savingTime} size="sm" className="gap-1 px-3 py-1">
+                    {savingTime ? <Spinner size="sm" /> : <Check className="w-3 h-3" />}
+                    Save
+                  </Button>
+                  <Button onClick={() => setIsEditingTime(false)} variant="secondary" size="sm" className="gap-1 px-3 py-1 text-sage-500 dark:text-white/60">
+                    <X className="w-3 h-3" /> Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1 pr-2">
+                  <p className="text-sm leading-relaxed">
+                    <span className="font-medium text-sage-800 dark:text-white">Reminder time</span>
+                    <span className="text-sage-500 dark:text-white/40"> — Daily check-in notification at {reminderTime}</span>
+                  </p>
+                </div>
+                <button
+                  onClick={startEditTime}
+                  aria-label="Edit reminder time"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md
+                             text-sage-500 dark:text-white/60 text-xs font-medium
+                             hover:text-sage-700 dark:hover:text-white/80
+                             hover:bg-sage-50 dark:hover:bg-ocean-600
+                             transition-colors flex-shrink-0">
+                  <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0 pr-4">

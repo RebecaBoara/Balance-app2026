@@ -27,11 +27,11 @@ const HOW_IT_WORKS = [
 ]
 
 export default function OnboardingPage() {
-  const { user, loading } = useAuth()
-  const router            = useRouter()
-  const [step,         setStep]         = useState(0)
-  const [reminderTime, setReminderTime] = useState('08:00')
-  const [saving,       setSaving]       = useState(false)
+  const { user, loading }                     = useAuth()
+  const router                                = useRouter()
+  const [step,         setStep]               = useState(0)
+  const [reminderTime, setReminderTime]       = useState('08:00')
+  const [saving,       setSaving]             = useState(false)
 
   useEffect(() => {
     if (!loading && !user) router.replace('/auth/login')
@@ -167,7 +167,7 @@ export default function OnboardingPage() {
               </p>
 
               <div className="bg-white dark:bg-ocean-800 border border-sage-100 dark:border-ocean-600
-                              rounded-xl p-6 mb-8 shadow-raised text-left">
+                              rounded-xl p-6 mb-4 shadow-raised text-left">
                 <label className="block text-xs font-semibold text-sage-400 dark:text-white/40
                                   uppercase tracking-wider mb-3">
                   Daily reminder time

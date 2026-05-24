@@ -15,7 +15,7 @@ import { Smile, CheckSquare, LayoutDashboard, Settings, LogOut } from 'lucide-re
 import type { LucideIcon } from 'lucide-react'
 
 const NAV_ITEMS: { href: string; label: string; Icon: LucideIcon }[] = [
-  { href: '/app/mood',      label: 'Check in daily mood',  Icon: Smile},
+  { href: '/app/mood',      label: 'Check in',  Icon: Smile},
   { href: '/app/tasks',     label: 'Tasks',     Icon: CheckSquare},
   { href: '/app/dashboard', label: 'Dashboard', Icon: LayoutDashboard },
   { href: '/app/settings',  label: 'Settings',  Icon: Settings },
