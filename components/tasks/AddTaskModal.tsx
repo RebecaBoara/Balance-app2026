@@ -161,8 +161,8 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                 </p>
               </div>
 
-              {/* Est. time + Due date + Time */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {/* Est. time + Due date */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="task-time" className="label text-sage-500 dark:text-white/70">
                     <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />
@@ -203,19 +203,21 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                     className="input"
                   />
                 </div>
-                <div className="col-span-2 md:col-span-1">
-                  <label htmlFor="task-time-of-day" className="label text-sage-500 dark:text-white/70">
-                    <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />
-                    Time (optional)
-                  </label>
-                  <input
-                    id="task-time-of-day"
-                    type="time"
-                    value={newTask.dueTime}
-                    onChange={e => setNewTask(p => ({ ...p, dueTime: e.target.value }))}
-                    className="input"
-                  />
-                </div>
+              </div>
+
+              {/* Time (optional) */}
+              <div>
+                <label htmlFor="task-time-of-day" className="label text-sage-500 dark:text-white/70">
+                  <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />
+                  Time (optional)
+                </label>
+                <input
+                  id="task-time-of-day"
+                  type="time"
+                  value={newTask.dueTime}
+                  onChange={e => setNewTask(p => ({ ...p, dueTime: e.target.value }))}
+                  className="input"
+                />
               </div>
 
               {!isEditing && (
