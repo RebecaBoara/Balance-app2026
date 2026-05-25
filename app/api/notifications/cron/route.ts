@@ -17,20 +17,26 @@ export async function GET(req: Request) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL
     ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
-  const results = await Promise.allSettled(
-    targets.map(async doc => {
-      const userRecord = await admin.auth().getUser(doc.id)
-      if (!userRecord.email) throw new Error('No email')
+  const results: PromiseSettledResult<void>[] = []
+  for (const doc of targets) {
+    results.push(await (async (): Promise<PromiseFulfilledResult<void> | PromiseRejectedResult> => {
+      try {
+        const userRecord = await admin.auth().getUser(doc.id)
+        if (!userRecord.email) throw new Error('No email')
 
-      const { error } = await resend.emails.send({
-        from:    'Balance <hello@balance-mood.co.uk>',
-        to:      userRecord.email,
-        subject: 'Time for your daily mood check-in',
-        html:    emailHtml(userRecord.displayName?.split(' ')[0] ?? 'there', appUrl),
-      })
-      if (error) throw new Error(error.message)
-    })
-  )
+        const { error } = await resend.emails.send({
+          from:    'Balance <hello@balance-mood.co.uk>',
+          to:      userRecord.email,
+          subject: 'Time for your daily mood check-in',
+          html:    emailHtml(userRecord.displayName?.split(' ')[0] ?? 'there', appUrl),
+        })
+        if (error) throw new Error(error.message)
+        return { status: 'fulfilled', value: undefined }
+      } catch (e) {
+        return { status: 'rejected', reason: e }
+      }
+    })())
+  }
 
   const sent   = results.filter(r => r.status === 'fulfilled').length
   const errors = results
