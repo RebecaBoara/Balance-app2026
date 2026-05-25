@@ -8,7 +8,8 @@ import { NextResponse } from 'next/server'
 import admin from '@/lib/firebase-admin'
 
 type DailyMessageRequest = {
-  mood?: string | null
+  mood?:       string | null
+  showBreaks?: boolean
 }
 
 type MoodFallback = {

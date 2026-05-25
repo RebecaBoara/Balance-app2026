@@ -1,6 +1,6 @@
 
 // Core emotion-aware recommendation logic for Balance
-import { MoodType, DifficultyType, PriorityType, MoodRecommendation, Task } from '@/types'
+import { MoodType, DifficultyType, MoodRecommendation, Task } from '@/types'
 
 
 export const MOOD_CONFIG: Record<MoodType, MoodRecommendation> = {
@@ -11,7 +11,6 @@ export const MOOD_CONFIG: Record<MoodType, MoodRecommendation> = {
     colour:          'purple',
     suggestion:      "You're doing enough. Start with just one small task to build momentum — even one thing crossed off makes the day count. Be kind to yourself.",
     breakSuggestion: "Try 15 minutes on, 10 minutes off. Protect your energy while still moving forward.",
-    sparkMessage:    "It's okay to take it slow today. One step at a time is still forward.",
   },
   stressed: {
     mood:            'stressed',
@@ -20,7 +19,6 @@ export const MOOD_CONFIG: Record<MoodType, MoodRecommendation> = {
     colour:          'coral',
     suggestion:      "Take a breath. Pick one task, give it your full attention, then move to the next. You've handled hard days before — this one is no different.",
     breakSuggestion: "Short breaks between tasks reset your focus. Even 2–3 minutes helps.",
-    sparkMessage:    "Stress is temporary. Focus on one thing at a time and keep moving.",
   },
   neutral: {
     mood:            'neutral',
@@ -29,7 +27,6 @@ export const MOOD_CONFIG: Record<MoodType, MoodRecommendation> = {
     colour:          'amber',
     suggestion:      "A steady day ahead. A balanced mix of easy and medium tasks will keep things moving.",
     breakSuggestion: "Take a short break after every two tasks to maintain focus.",
-    sparkMessage:    "Steady progress is still progress. Keep going.",
   },
   good: {
     mood:            'good',
@@ -38,7 +35,6 @@ export const MOOD_CONFIG: Record<MoodType, MoodRecommendation> = {
     colour:          'sage',
     suggestion:      "You're in a good place today. Your full task list is unlocked — tackle something meaningful.",
     breakSuggestion: "You're flowing well. Take a break when you feel it, not on a timer.",
-    sparkMessage:    "Great days like this are when the best work happens. Make the most of it.",
   },
   energised: {
     mood:            'energised',
@@ -47,7 +43,6 @@ export const MOOD_CONFIG: Record<MoodType, MoodRecommendation> = {
     colour:          'sky',
     suggestion:      "You're at your peak! Hard and ambitious tasks are surfaced first — this is your moment.",
     breakSuggestion: "You're in flow. Short breaks every 90 minutes will sustain this energy.",
-    sparkMessage:    "You've got everything you need today. Go make something remarkable.",
   },
 }
 
@@ -63,15 +58,17 @@ export function getRecommendedTasks(mood: MoodType, tasks: Task[]): {
   const isUrgent = (t: Task) =>
     t.dueDate && (t.dueDate <= today)
 
-  const effectivePriority = (t: Task): number => {
-    const p = t.priority ?? 'medium'
-    return p === 'high' ? 0 : p === 'medium' ? 1 : 2
-  }
+  // Support both old string values ('high') and new boolean (true)
+  const isHighPriority = (t: Task) =>
+    t.priority === true || (t.priority as unknown) === 'high'
+
+  const effectivePriority = (t: Task): number =>
+    isHighPriority(t) ? 0 : 1
 
   if (mood === 'exhausted' || mood === 'stressed') {
-    // Bucket 1: high-priority or due today/overdue (any difficulty) — must-do first
+    // Bucket 1: high-priority or due today/overdue  must-do first
     const mustDo  = incomplete.filter(t =>
-      t.priority === 'high' || isUrgent(t)
+      isHighPriority(t) || isUrgent(t)
     )
     // Bucket 2: easy tasks that aren't already in mustDo
     const mustIds = new Set(mustDo.map(t => t.id))
@@ -94,10 +91,14 @@ export function getRecommendedTasks(mood: MoodType, tasks: Task[]): {
   }
 
   if (mood === 'neutral') {
-    // Easy + medium shown, hard deferred — no reordering, natural creation order
-    const allowed  = incomplete.filter(t => t.difficulty !== 'hard')
-    const deferred = incomplete.filter(t => t.difficulty === 'hard')
-    return { recommended: allowed, deferred }
+    // High-priority or due today/overdue always recommended regardless of difficulty
+    const mustDo   = incomplete.filter(t => isHighPriority(t) || isUrgent(t))
+    const mustIds  = new Set(mustDo.map(t => t.id))
+    // Easy + medium tasks not already in mustDo
+    const allowed  = incomplete.filter(t => !mustIds.has(t.id) && t.difficulty !== 'hard')
+    // Hard tasks that aren't urgent or high-priority are saved for a better day
+    const deferred = incomplete.filter(t => !mustIds.has(t.id) && t.difficulty === 'hard')
+    return { recommended: [...mustDo, ...allowed], deferred }
   }
 
   // good / energised — all tasks shown, hard + high-priority first
@@ -197,10 +198,22 @@ const GENERAL_SPARKS = [
   "The way you start your day shapes everything that follows.",
   "You have everything you need to make today a good one.",
   "Gentle beginnings lead to great endings.",
-  "Take a breath. You're exactly where you need to be.",
-  "Whatever today holds, you are more capable than you feel.",
   "Good things take time. Keep going.",
-]
+  "The fact that you showed up today already matters.",
+  "Progress lives in the space between effort and patience.",
+  "One kind thought about yourself can change the whole day.",
+  "Every difficult day has taught you something the easy ones couldn't.",
+  "Not every day needs to be productive to be meaningful.",
+  "Kindness toward yourself is the foundation everything else is built on.",
+  "There is real courage in simply continuing.",
+  "Even slow progress is movement in the right direction.",
+  "Your wellbeing is not a reward for finishing your tasks. It comes first.",
+  "Every good habit you have was once a single small choice.",
+  "You are building something — even on the days it doesn't feel like it.",
+  "You are worthy of the same patience you would give a good friend.",
+];
+
+
 
 export function getDailyGeneralSpark(): string {
   const dayOfYear = Math.floor(Date.now() / 86400000)

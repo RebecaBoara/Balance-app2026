@@ -131,7 +131,6 @@ export default function SettingsPage() {
   const [deletePassword,   setDeletePass]      = useState('')
   const [deleteError,      setDeleteErr]       = useState('')
   const [deleting,         setDeleting]        = useState(false)
-  const [breakSuggestions, setBreakSuggestions] = useState(true)
   const [emailReminders,   setEmailReminders]   = useState(true)
   // Profile editing
   const [isEditingName, setIsEditingName] = useState(false)
@@ -146,7 +145,6 @@ export default function SettingsPage() {
       try {
         const profile = await getUserProfile(user!.uid)
         if (profile) {
-          setBreakSuggestions(profile.breakSuggestions ?? true)
           setEmailReminders(profile.emailReminders ?? true)
         }
       } catch (e) {
@@ -169,18 +167,7 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleToggleBreaks(value: boolean) {
-    setBreakSuggestions(value)
-    if (!user) return
-    try {
-      await saveUserProfile(user.uid, { breakSuggestions: value })
-    } catch (e) {
-      console.error(e)
-      setBreakSuggestions(!value) // revert on failure
-    }
-  }
-
-  function startEditName() {
+function startEditName() {
     setEditName(user?.displayName || '')
     setNameError('')
     setIsEditingName(true)
@@ -325,17 +312,11 @@ export default function SettingsPage() {
           </div>
           <ToggleRow
             label="Email reminders"
-            description="Daily check-in reminder sent to your email at 9 AM"
+            description="Daily check-in reminder sent to your email at 7 AM"
             value={emailReminders}
             onChange={handleToggleEmailReminders}
           />
-          <ToggleRow
-            label="Break suggestions"
-            description="Suggests short breaks when you're exhausted or stressed"
-            value={breakSuggestions}
-            onChange={handleToggleBreaks}
-          />
-          <div className="px-4 py-3">
+<div className="px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0 pr-4">
                 <p className="text-sm leading-relaxed">

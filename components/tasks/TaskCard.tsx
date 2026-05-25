@@ -120,13 +120,10 @@ export default function TaskCard({
 
           <div className="flex items-center gap-3 flex-wrap">
             <DifficultyBadge difficulty={task.difficulty} />
-            {task.priority && task.priority !== 'medium' && (
-              <span className={`text-xs font-medium px-1.5 py-0.5 rounded
-                               ${task.priority === 'high'
-                                 ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
-                                 : 'text-sage-400 dark:text-white/40 bg-sage-50 dark:bg-ocean-700'
-                               }`}>
-                {task.priority === 'high' ? '🔴 High' : '🟢 Low'}
+            {(task.priority === true || (task.priority as unknown) === 'high') && (
+              <span className="text-xs font-medium px-1.5 py-0.5 rounded
+                               text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20">
+                Priority
               </span>
             )}
 

@@ -10,12 +10,11 @@ import MoodBadge from '@/components/ui/MoodBadge'
 import { Sparkles } from 'lucide-react'
 
 interface MoodSuggestionBannerProps {
-  mood:           MoodType | null
-  showBreaks?:    boolean
-  aiSuggestion?:  string
+  mood:          MoodType | null
+  aiSuggestion?: string
 }
 
-export default function MoodSuggestionBanner({ mood, showBreaks = true, aiSuggestion }: MoodSuggestionBannerProps) {
+export default function MoodSuggestionBanner({ mood, aiSuggestion }: MoodSuggestionBannerProps) {
 
   // No mood checked in
   if (!mood) {
@@ -57,7 +56,7 @@ export default function MoodSuggestionBanner({ mood, showBreaks = true, aiSugges
       <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
         {aiSuggestion ?? config.suggestion}
       </p>
-      {!aiSuggestion && showBreaks && config.breakSuggestion && (
+      {!aiSuggestion && config.breakSuggestion && (
         <p className="text-sm text-sage-700 dark:text-white/70 mt-3 leading-relaxed">
           {config.breakSuggestion}
         </p>

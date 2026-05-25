@@ -3,7 +3,7 @@
 // Fields: title, difficulty, estimated time, due date, notes
 
 import { useState, useRef, useEffect } from 'react'
-import { DifficultyType, PriorityType, RepeatType } from '@/types'
+import { DifficultyType, RepeatType } from '@/types'
 import Spinner from '@/components/ui/Spinner'
 import Button from '@/components/ui/Button'
 import { Plus, X, Clock, Calendar, Pencil } from 'lucide-react'
@@ -12,7 +12,7 @@ import { Plus, X, Clock, Calendar, Pencil } from 'lucide-react'
 export interface NewTask {
   title:        string
   difficulty:   DifficultyType
-  priority:     PriorityType
+  priority:     boolean
   estimatedMin: number
   repeat:       RepeatType
   dueDate:      string
@@ -23,7 +23,7 @@ export interface NewTask {
 const EMPTY_TASK: NewTask = {
   title:        '',
   difficulty:   'medium',
-  priority:     'medium',
+  priority:     false,
   estimatedMin: 30,
   repeat:       'none',
   dueDate:      '',
@@ -37,11 +37,6 @@ const DIFFICULTY_OPTIONS: { value: DifficultyType; label: string; desc: string }
   { value: 'hard',   label: 'Hard',   desc: '60+ min, high focus needed' },
 ]
 
-const PRIORITY_OPTIONS: { value: PriorityType; label: string; desc: string }[] = [
-  { value: 'high',   label: '🔴 High',   desc: 'Must do — urgent or important'   },
-  { value: 'medium', label: '🟡 Medium', desc: 'Should do — normal priority'     },
-  { value: 'low',    label: '🟢 Low',    desc: 'Nice to do — can wait'           },
-]
 
 
 interface AddTaskModalProps {
@@ -287,25 +282,33 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
               </div>
 
               <div>
-                <label className="label text-sage-500 dark:text-white/70">Priority *</label>
-                <div className="grid grid-cols-3 md:grid-cols-1 gap-2">
-                  {PRIORITY_OPTIONS.map(({ value, label, desc }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setNewTask(p => ({ ...p, priority: value }))}
-                      aria-pressed={newTask.priority === value}
-                      className={`p-3 rounded-lg border-2 text-left transition-all duration-200
-                                  ${newTask.priority === value
-                                    ? 'border-sage-500 bg-sage-50 dark:bg-sage-900/20'
-                                    : 'border-sage-500/15 dark:border-ocean-600 hover:border-sage-300'
-                                  }`}
-                    >
-                      <p className="text-xs font-semibold text-sage-800 dark:text-white mb-0.5">{label}</p>
-                      <p className="text-xs text-sage-400 dark:text-white/70 leading-tight">{desc}</p>
-                    </button>
-                  ))}
-                </div>
+                <label className="label text-sage-500 dark:text-white/70">Priority</label>
+                <button
+                  type="button"
+                  onClick={() => setNewTask(p => ({ ...p, priority: !p.priority }))}
+                  aria-pressed={newTask.priority}
+                  className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200
+                              ${newTask.priority
+                                ? 'border-red-400 bg-red-50 dark:bg-red-900/20'
+                                : 'border-sage-500/15 dark:border-ocean-600 hover:border-sage-300'
+                              }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-semibold text-sage-800 dark:text-white mb-0.5">
+                        {newTask.priority ? 'Priority task' : 'No priority'}
+                      </p>
+                      <p className="text-xs text-sage-400 dark:text-white/70 leading-tight">
+                        {newTask.priority ? 'Always shown first on low-energy days' : 'Scheduled based on mood and difficulty'}
+                      </p>
+                    </div>
+                    <div className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 flex-shrink-0
+                                    ${newTask.priority ? 'bg-red-400' : 'bg-sage-200 dark:bg-ocean-600'}`}>
+                      <div className={`w-4 h-4 rounded-full bg-white transition-transform
+                                      ${newTask.priority ? 'translate-x-4' : 'translate-x-0'}`} />
+                    </div>
+                  </div>
+                </button>
               </div>
 
             </div>

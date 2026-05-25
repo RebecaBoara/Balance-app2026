@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { getTasks, addTask, updateTask, toggleTask, deleteTask, getTodaysMood, getUserProfile } from '@/lib/db'
+import { getTasks, addTask, updateTask, toggleTask, deleteTask, getTodaysMood } from '@/lib/db'
 import { getRecommendedTasks } from '@/lib/mood'
 import { Task, MoodType, RepeatType } from '@/types'
 import TaskCard     from '@/components/tasks/TaskCard'
@@ -77,13 +77,12 @@ export default function TasksPage() {
   const [todaysMood, setTodaysMood]  = useState<MoodType | null>(null)
   const [loading,    setLoading]     = useState(true)
   const [loadError,  setLoadError]   = useState(false)
-  const [filter,     setFilter]      = useState<FilterType>('today')
+  const [filter,     setFilter]      = useState<FilterType>('all')
   const [view,       setView]        = useState<ViewType>('list')
   const [showModal,   setShowModal]   = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [celebrated,  setCelebrated]  = useState<Set<string>>(new Set())
   const [deleting,       setDeleting]       = useState<string | null>(null)
-  const [showBreaks,     setShowBreaks]     = useState(true)
   const [overdueOpen, setOverdueOpen] = useState(true)
   const [aiSuggestion,      setAiSuggestion]      = useState<string | undefined>(undefined)
 
@@ -91,15 +90,13 @@ export default function TasksPage() {
     if (!user) return
     async function load() {
       try {
-        const [fetchedTasks, moodEntry, profile] = await Promise.all([
+        const [fetchedTasks, moodEntry] = await Promise.all([
           getTasks(user!.uid),
           getTodaysMood(user!.uid),
-          getUserProfile(user!.uid),
         ])
         setTasks(fetchedTasks)
         setTodaysMood(moodEntry?.mood ?? null)
         setAiSuggestion(moodEntry?.aiSuggestion)
-        setShowBreaks(profile?.breakSuggestions ?? true)
       } catch (e) {
         console.error(e)
         setLoadError(true)
@@ -195,7 +192,7 @@ async function handleAddTask(data: NewTask) {
             user.uid,
             task.title,
             task.difficulty,
-            task.priority ?? 'medium',
+            task.priority ?? false,
             task.estimatedMin,
             task.repeat,
             nextDate,
@@ -232,7 +229,7 @@ async function handleAddTask(data: NewTask) {
       await updateTask(task.id, {
         title: task.title,
         difficulty: task.difficulty,
-        priority: task.priority ?? 'medium',
+        priority: task.priority ?? false,
         estimatedMin: task.estimatedMin,
         repeat,
         dueDate: task.dueDate || '',
@@ -292,7 +289,7 @@ async function handleAddTask(data: NewTask) {
           </div>
         )}
 
-        <MoodSuggestionBanner mood={todaysMood} showBreaks={showBreaks} aiSuggestion={aiSuggestion} />
+        <MoodSuggestionBanner mood={todaysMood} aiSuggestion={aiSuggestion} />
 
 
         {/* Filter tabs + view toggle */}
@@ -300,7 +297,7 @@ async function handleAddTask(data: NewTask) {
           <div role="tablist" aria-label="Task filter"
             className="flex gap-1 p-1 rounded-sm bg-sage-500/10 dark:bg-ocean-800
                        border border-sage-500/15 dark:border-ocean-600">
-            {(['today', 'upcoming', 'all'] as FilterType[]).map(f => (
+            {(['all', 'today', 'upcoming'] as FilterType[]).map(f => (
               <button key={f} role="tab" aria-selected={filter === f}
                 onClick={() => { setFilter(f); setView('list') }}
                 className={`px-3 py-1.5 rounded-sm text-sm font-medium
@@ -506,7 +503,7 @@ async function handleAddTask(data: NewTask) {
             id:           editingTask.id,
             title:        editingTask.title,
             difficulty:   editingTask.difficulty,
-            priority:     editingTask.priority  ?? 'medium',
+            priority:     editingTask.priority ?? false,
             estimatedMin: editingTask.estimatedMin,
             repeat:       editingTask.repeat || 'none',
             dueDate:      editingTask.dueDate  || '',
