@@ -2,9 +2,9 @@
 
 An emotion-aware task management web application that recommends tasks based on the user's daily mood.
 
-**Built for:** QHO656 Dissertation Project — Southampton Solent University 2025 - 26  
+**Built for:** Dissertation Project — Southampton Solent University 2025 - 2026  
 **Student:** Rebeca Boara  
-**Supervisor:** Chathurika Goonawardane
+
 
 ---
 
@@ -21,7 +21,7 @@ This approach is grounded in affective computing research demonstrating that emo
 
 ## Live app
 
-🌐 [balance-app.vercel.app](https://balance-app.vercel.app)
+🌐 https://balance-app2026.vercel.app/
 
 ---
 
@@ -148,4 +148,4 @@ This project has received ethical clearance through the Southampton Solent Unive
 
 ## Licence
 
-This project was created for academic purposes as part of QHO656 at Southampton Solent University. All rights reserved © 2026 Rebeca Boara.
+This project was created for academic purposes at Southampton Solent University. All rights reserved © 2026 Rebeca Boara.

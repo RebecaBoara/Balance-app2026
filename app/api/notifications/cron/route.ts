@@ -23,7 +23,7 @@ export async function GET(req: Request) {
       if (!userRecord.email) throw new Error('No email')
 
       const { error } = await resend.emails.send({
-        from:    'Balance <onboarding@resend.dev>',
+        from:    'Balance <hello@balance-mood.co.uk>',
         to:      userRecord.email,
         subject: 'Time for your daily mood check-in',
         html:    emailHtml(userRecord.displayName?.split(' ')[0] ?? 'there', appUrl),
