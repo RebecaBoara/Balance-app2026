@@ -169,35 +169,28 @@ export default function OnboardingPage() {
 
               <div className="flex flex-col gap-3 mb-8">
                 <button
-                  onClick={() => setEmailReminders(true)}
-                  className={`w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
-                    ${emailReminders
-                      ? 'bg-sage-500 dark:bg-teal-600 text-white border-sage-500 dark:border-teal-600'
-                      : 'bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80 border-sage-200 dark:border-ocean-600 hover:bg-sage-50 dark:hover:bg-ocean-700'
-                    }`}>
+                  onClick={() => { setEmailReminders(true); setStep(3) }}
+                  className="w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
+                             bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80
+                             border-sage-200 dark:border-ocean-600
+                             hover:bg-sage-50 dark:hover:bg-ocean-700">
                   Yes, send me daily reminders
                 </button>
                 <button
-                  onClick={() => setEmailReminders(false)}
-                  className={`w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
-                    ${!emailReminders
-                      ? 'bg-sage-500 dark:bg-teal-600 text-white border-sage-500 dark:border-teal-600'
-                      : 'bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80 border-sage-200 dark:border-ocean-600 hover:bg-sage-50 dark:hover:bg-ocean-700'
-                    }`}>
+                  onClick={() => { setEmailReminders(false); setStep(3) }}
+                  className="w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
+                             bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80
+                             border-sage-200 dark:border-ocean-600
+                             hover:bg-sage-50 dark:hover:bg-ocean-700">
                   No thanks, I'll check in on my own
                 </button>
               </div>
 
-              <div className="flex gap-3">
-                <button onClick={() => setStep(1)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm
-                             text-sage-500 dark:text-white/60 hover:text-sage-700 transition-colors">
-                  <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Back
-                </button>
-                <button onClick={() => setStep(3)} className="btn-primary flex-1 flex items-center justify-center gap-2">
-                  Next <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </button>
-              </div>
+              <button onClick={() => setStep(1)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm mx-auto
+                           text-sage-500 dark:text-white/60 hover:text-sage-700 transition-colors">
+                <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Back
+              </button>
             </div>
           )}
 

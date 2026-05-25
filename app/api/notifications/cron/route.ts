@@ -19,7 +19,7 @@ export async function GET(req: Request) {
 
   const results: PromiseSettledResult<void>[] = []
   for (const doc of targets) {
-    results.push(await (async (): Promise<PromiseFulfilledResult<void> | PromiseRejectedResult> => {
+    const result = await (async (): Promise<PromiseFulfilledResult<void> | PromiseRejectedResult> => {
       try {
         const userRecord = await admin.auth().getUser(doc.id)
         if (!userRecord.email) throw new Error('No email')
@@ -35,7 +35,9 @@ export async function GET(req: Request) {
       } catch (e) {
         return { status: 'rejected', reason: e }
       }
-    })())
+    })()
+    results.push(result)
+    await new Promise(r => setTimeout(r, 300))
   }
 
   const sent   = results.filter(r => r.status === 'fulfilled').length
