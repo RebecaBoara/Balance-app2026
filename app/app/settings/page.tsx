@@ -325,7 +325,7 @@ export default function SettingsPage() {
           </div>
           <ToggleRow
             label="Email reminders"
-            description="Daily check-in reminder sent to your email"
+            description="Daily check-in reminder sent to your email at 9 AM"
             value={emailReminders}
             onChange={handleToggleEmailReminders}
           />

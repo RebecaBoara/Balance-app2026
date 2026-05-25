@@ -33,9 +33,11 @@ export async function GET(req: Request) {
   )
 
   const sent   = results.filter(r => r.status === 'fulfilled').length
-  const failed = results.filter(r => r.status === 'rejected').length
+  const errors = results
+    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+    .map(r => r.reason?.message ?? String(r.reason))
 
-  return NextResponse.json({ sent, failed })
+  return NextResponse.json({ sent, failed: errors.length, errors })
 }
 
 function emailHtml(firstName: string, appUrl: string): string {

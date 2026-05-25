@@ -164,13 +164,21 @@ export default function AdminPage() {
       // Delete user profile
       await deleteDoc(doc(db, 'users', uid))
 
+      // Delete Firebase Auth account so the email can be reused
+      const res = await fetch('/api/admin/delete-user', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid }),
+      })
+      if (!res.ok) throw new Error('Auth delete failed')
+
       // Remove from local state
       setStats(prev => prev ? {
         users: prev.users.filter(u => u.uid !== uid),
         moods: prev.moods.filter(m => m.userId !== uid),
         tasks: prev.tasks.filter(t => t.userId !== uid),
       } : null)
-      toast.success('Participant data deleted successfully.')
+      toast.success('Participant deleted successfully.')
     } catch (e) {
       console.error(e)
       toast.error('Failed to delete. Check your connection and try again.')
