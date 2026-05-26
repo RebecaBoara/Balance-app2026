@@ -8,7 +8,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-warm-100 dark:bg-ocean-900">
 
-      
+      {/* Sidebar — visible md and above */}
       <Sidebar />
 
       {/* Mobile top bar — logo links back to landing */}

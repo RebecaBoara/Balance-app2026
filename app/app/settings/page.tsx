@@ -193,7 +193,7 @@ function startEditName() {
   async function handleSignOut() {
     await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
-    router.push('/')
+    window.location.href = '/'
   }
 
   async function handleDeleteAccount() {

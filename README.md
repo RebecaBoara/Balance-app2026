@@ -22,6 +22,7 @@ This approach is grounded in affective computing research demonstrating that emo
 ## Live app
 
 🌐 https://balance-app2026.vercel.app/
+https://www.balance-mood.co.uk/
 
 ---
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Settings, LogOut, ShieldCheck } from 'lucide-react'
 import { signOut } from 'firebase/auth'
@@ -11,8 +10,7 @@ import { getUserProfile } from '@/lib/db'
 
 export default function UserAvatarMenu() {
   const { user }              = useAuth()
-  const router                = useRouter()
-  const [open, setOpen]       = useState(false)
+const [open, setOpen]       = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const dropdownRef           = useRef<HTMLDivElement>(null)
 
@@ -37,7 +35,7 @@ export default function UserAvatarMenu() {
   async function handleSignOut() {
     await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
-    router.push('/')
+    window.location.href = '/'
   }
 
   return (

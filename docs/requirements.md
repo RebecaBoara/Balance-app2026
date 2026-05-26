@@ -3,7 +3,7 @@
 **Project:** Balance — Productivity & Wellbeing  
 **Author:** Rebeca Boara  
 **University:** Southampton Solent University  
-**Module:** QHO656 Dissertation Project 2025-26  
+**Module:** Dissertation Project 2025-26  
 **Version:** 1.1  
 **Last updated:** May 2026
 
@@ -56,8 +56,8 @@ The application must directly address the following research questions:
 | Stakeholder | Role | Interest |
 |---|---|---|
 | Rebeca Boara | Developer / Researcher | Build and evaluate the artefact |
-| Chathurika Goonawardane | Dissertation Supervisor | Ensure academic quality and research integrity |
-| COM629 Markers | Assessors | Evaluate technical implementation and documentation |
+| Lecturer| Dissertation Supervisor | Ensure academic quality and research integrity |
+| Markers | Assessors | Evaluate technical implementation and documentation |
 | Usability test participants (10–20) | End users | Test the application during evaluation phase |
 | Southampton Solent University | Institution | Ensure ethical and academic compliance |
 
@@ -501,4 +501,4 @@ The following were considered but explicitly excluded from this version of the a
 
 ---
 
-*This document was created as part of the Balance dissertation project (QHO656) at Southampton Solent University, 2025-26.*
+*This document was created as part of the Balance dissertation project at Southampton Solent University, 2025-26.*

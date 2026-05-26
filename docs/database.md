@@ -3,7 +3,7 @@
 **Project:** Balance — Productivity & Wellbeing  
 **Author:** Rebeca Boara  
 **University:** Southampton Solent University  
-**Module:** QHO656 Dissertation Project 2025–26 
+**Module:** Dissertation Project 2025–26 
 **Last updated:** May 2026
 
 ---
@@ -405,4 +405,4 @@ Usage is well within free tier limits for the evaluation phase of the dissertati
 
 ---
 
-*This document was created as part of the dissertation project (QHO656) at Southampton Solent University, 2025–26.*
+*This document was created as part of the dissertation project at Southampton Solent University, 2025–26.*

@@ -1,5 +1,5 @@
 'use client'
-// Three-way toggle: Light / Dark
+//  toggle: Light / Dark
 // Used in sidebar and settings screen
 
 import { useTheme } from '@/components/layout/ThemeProvider'

@@ -5,7 +5,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import ThemeToggle from '@/components/ui/Themetoggle'
@@ -23,14 +23,12 @@ const NAV_ITEMS: { href: string; label: string; Icon: LucideIcon }[] = [
 
 export default function Sidebar() {
   const pathname  = usePathname()
-  const router    = useRouter()
-
-  const [confirmSignOut, setConfirmSignOut] = useState(false)
+const [confirmSignOut, setConfirmSignOut] = useState(false)
 
   async function handleSignOut() {
     await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
-    router.push('/')
+    window.location.href = '/'
   }
 
   return (

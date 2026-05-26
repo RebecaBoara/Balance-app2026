@@ -643,7 +643,7 @@ Next.js build runs (npm run build)
 Vercel deploys to edge network
         │
         ▼
-Live at: https://balance-app.vercel.app
+Live at: https://www.balance-mood.co.uk/
 ```
 
 ### Environment variables
