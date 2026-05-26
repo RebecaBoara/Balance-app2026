@@ -225,7 +225,7 @@ export default function LandingPage() {
 
               {/* Trust signals */}
               <div className="flex flex-wrap gap-4 text-sm text-sage-700 dark:text-white/90 justify-center">
-                {['Free forever', 'GDPR compliant', 'No credit card needed', 'Works on all devices'].map(t => (
+                {['Free', 'GDPR compliant', 'Works on all devices'].map(t => (
                   <span key={t} className="flex items-center gap-1">
                     <Check className="w-3 h-3 text-sage-500" aria-hidden="true" />
                     {t}
