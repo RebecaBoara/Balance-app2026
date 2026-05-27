@@ -31,6 +31,7 @@ export default function OnboardingPage() {
   const router                                = useRouter()
   const [step,           setStep]             = useState(0)
   const [emailReminders, setEmailReminders]   = useState(true)
+  const [reminderTime,   setReminderTime]     = useState('08:00')
   const [saving,         setSaving]           = useState(false)
 
   useEffect(() => {
@@ -55,7 +56,11 @@ export default function OnboardingPage() {
   async function handleComplete() {
     setSaving(true)
     try {
-      await saveUserProfile(user!.uid, { hasOnboarded: true, emailReminders })
+      await saveUserProfile(user!.uid, {
+        hasOnboarded: true,
+        emailReminders,
+        ...(emailReminders && { reminderTime }),
+      })
       router.push('/app/mood')
     } catch {
       setSaving(false)
@@ -163,19 +168,40 @@ export default function OnboardingPage() {
                 Daily reminders
               </h1>
               <p className="text-sm text-sage-500 dark:text-white/60 mb-8 leading-relaxed max-w-xs mx-auto">
-                Would you like a daily email reminder to check in with your mood each morning?
+                Would you like a daily email reminder to check in with your mood?
                 You can change this anytime in Settings.
               </p>
 
               <div className="flex flex-col gap-3 mb-8">
                 <button
                   onClick={() => { setEmailReminders(true); setStep(3) }}
-                  className="w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
-                             bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80
-                             border-sage-200 dark:border-ocean-600
-                             hover:bg-sage-50 dark:hover:bg-ocean-700">
+                  className={`w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
+                             ${emailReminders
+                               ? 'bg-sage-50 dark:bg-ocean-700 border-sage-400 dark:border-teal-500 text-sage-800 dark:text-white'
+                               : 'bg-white dark:bg-ocean-800 text-sage-700 dark:text-white/80 border-sage-200 dark:border-ocean-600 hover:bg-sage-50 dark:hover:bg-ocean-700'
+                             }`}>
                   Yes, send me daily reminders
                 </button>
+
+                {/* Time picker — shown when reminders are on */}
+                {emailReminders && (
+                  <div className="px-4 py-3 rounded-xl border border-sage-200 dark:border-ocean-600
+                                  bg-white dark:bg-ocean-800 text-left">
+                    <label className="text-xs font-medium text-sage-500 dark:text-white/50 uppercase tracking-wider block mb-2">
+                      Reminder time
+                    </label>
+                    <input
+                      type="time"
+                      value={reminderTime}
+                      onChange={e => setReminderTime(e.target.value)}
+                      className="input text-sm w-full"
+                    />
+                    <p className="text-xs text-sage-400 dark:text-white/40 mt-1.5">
+                      Time is in UTC — UK (BST) is UTC+1
+                    </p>
+                  </div>
+                )}
+
                 <button
                   onClick={() => { setEmailReminders(false); setStep(3) }}
                   className="w-full px-5 py-4 rounded-xl border text-sm font-medium transition-all
