@@ -1,22 +1,18 @@
 import { NextResponse } from 'next/server'
 import admin from '@/lib/firebase-admin'
-import { getUserProfile } from '@/lib/db'
 
 export async function DELETE(req: Request) {
   try {
-    // Verify the caller is an authenticated admin
-    const sessionCookie = req.headers.get('cookie')
-      ?.split(';')
-      .find(c => c.trim().startsWith('__session='))
-      ?.split('=')[1]
+    const authHeader = req.headers.get('authorization') ?? ''
+    const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+    if (!idToken) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    if (!sessionCookie) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Verify caller and check isAdmin via Firebase custom claims or Admin SDK
+    const decoded = await admin.auth().verifyIdToken(idToken)
 
-    const decoded = await admin.auth().verifySessionCookie(sessionCookie, true)
-    const callerProfile = await getUserProfile(decoded.uid)
-    if (!callerProfile?.isAdmin) {
+    // Read isAdmin from Firestore using Admin SDK (bypasses client-side rules)
+    const profileSnap = await admin.firestore().collection('users').doc(decoded.uid).get()
+    if (!profileSnap.exists || !profileSnap.data()?.isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

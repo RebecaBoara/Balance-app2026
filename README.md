@@ -106,6 +106,8 @@ See `docs/architecture.md` for full details.
 | [`docs/database.md`](docs/database.md) | Database schema, security rules, GDPR compliance |
 | [`docs/architecture.md`](docs/architecture.md) | System architecture, components, design system |
 | [`docs/mood.logic.md`](docs/mood.logic.md) | Emotion-aware recommendation algorithm |
+| [`docs/testing.md`](docs/testing.md) | Testing strategy (unit, integration, UAT, edge cases) |
+| [`docs/test-results.md`](docs/test-results.md) | Pass/fail logs, defect tracking, and evidence register |
 
 ---
 

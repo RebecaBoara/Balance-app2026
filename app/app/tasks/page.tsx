@@ -155,6 +155,7 @@ async function handleAddTask(data: NewTask) {
       }
       setTasks(prev => [created, ...prev])
       setShowModal(false)
+      toast.success('Task added successfully')
     } catch {
       toast.error('Could not save task. Please try again.')
     }
@@ -216,8 +217,10 @@ async function handleAddTask(data: NewTask) {
     setEditingTask(null)
     try {
       await updateTask(editingTask.id, data)
+      toast.success('Task updated')
     } catch {
       setTasks(prev => prev.map(t => t.id === editingTask.id ? editingTask : t))
+      toast.error('Could not update task. Please try again.')
     }
   }
 
@@ -246,6 +249,7 @@ async function handleAddTask(data: NewTask) {
     try {
       await deleteTask(taskId)
       setTasks(prev => prev.filter(t => t.id !== taskId))
+      toast.success('Task deleted')
     } catch {
       toast.error('Could not delete task. Please try again.')
     } finally {

@@ -9,7 +9,7 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import { auth, googleProvider } from '@/lib/firebase'
-import { createUserProfile } from '@/lib/db'
+import { createUserProfile, getUserProfile } from '@/lib/db'
 import Spinner from '@/components/ui/Spinner'
 import AuthLayout from '@/components/layout/AuthLayout'
 import Button from '@/components/ui/Button'
@@ -93,7 +93,8 @@ export default function SignupPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
       })
-      router.push('/onboarding')
+      const profile = await getUserProfile(cred.user.uid)
+      router.push(profile?.hasOnboarded ? '/app/mood' : '/onboarding')
     } catch (err: any) {
       if (err.code === 'auth/cancelled-popup-request' || err.code === 'auth/popup-closed-by-user') return
       setError(getFriendlyError(err.code))
@@ -183,7 +184,7 @@ export default function SignupPage() {
                   type={showPass ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder="At least 8 characters"
                   required
                   autoComplete="new-password"
                   className="input pr-12"

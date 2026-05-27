@@ -10,7 +10,7 @@ import { useTheme } from '@/components/layout/ThemeProvider'
 import { useAuth  } from '@/hooks/useAuth'
 import Logo from '@/components/ui/Logo'
 import Button from '@/components/ui/Button'
-const LP_CONTAINER = 'w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8'
+const LP_CONTAINER = 'w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10'
 
 // Navbar
 
@@ -196,60 +196,100 @@ export default function LandingPage() {
           </div>
         </section> */}
 
-        {/* ── HERO + STATS grouped ── */}
-        <section className="pt-12 pb-8 md:pt-14 md:pb-10 bg-white dark:bg-ocean-900 min-h-[calc(88svh-4rem)] lg:min-h-[calc(82svh-4rem)] flex items-center">
-          <div className={LP_CONTAINER}>
+        {/* ── HERO ── */}
+        <section className="pt-10 pb-10 md:pt-14 md:pb-16 bg-white dark:bg-ocean-900">
+          <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
 
-            <div className="mb-8 text-center max-w-2xl mx-auto">
+            {/* Two columns */}
+            <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
 
-              <h1 className="font-serif text-5xl text-sage-800 dark:text-white leading-tight mb-4">
-                Productivity, in tune with{' '}
-                <em className="text-sage-600 dark:text-teal-400 not-italic">how you feel</em>
-              </h1>
+              {/* Text */}
+              <div className="flex-1 text-center lg:text-left">
 
-              <p className="text-lg text-sage-700 dark:text-white/90 leading-relaxed mb-6">
-                Balance combines smart task management with mood awareness — helping you stay productive and well, no matter what the day throws at you.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 mb-6 justify-center">
-                <Button href="/auth/signup">
-                  Get started free
-                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </Button>
-                <Button
-                  onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                  variant="secondary">
-                  See how it works
-                </Button>
-              </div>
-
-              {/* Trust signals */}
-              <div className="flex flex-wrap gap-4 text-sm text-sage-700 dark:text-white/90 justify-center">
-                {['Free', 'GDPR compliant', 'Works on all devices'].map(t => (
-                  <span key={t} className="flex items-center gap-1">
-                    <Check className="w-3 h-3 text-sage-500" aria-hidden="true" />
-                    {t}
+                {/* Badge — aligns with heading */}
+                <div className="flex justify-center lg:justify-start mb-6">
+                  <span className="inline-flex items-center gap-2 px-5 py-1 rounded-sm
+                                   bg-[var(--lp-badge-bg)] border border-[var(--lp-badge-b)]
+                                   text-sm font-bold lp-accent uppercase tracking-widest">
+                    🌿 Emotion-aware productivity
                   </span>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            
+                <h1 className="font-serif text-5xl md:text-5xl lg:text-6xl text-sage-800 dark:text-white leading-tight mb-2">
+                  Productivity, in tune with{' '}
+                  <em className="text-sage-600 dark:text-teal-400 not-italic">how you feel</em>
+                </h1>
+
+                <p className="text-base text-sage-700 dark:text-white/80 leading-relaxed mb-3 max-w-lg lg:mx-0 mx-auto">
+                  Balance combines smart task management with mood awareness — helping you stay productive and well, no matter what the day throws at you.
+                </p>
+
+                {/* Screenshot — tablet & mobile only (between text and buttons) */}
+                <div className="lg:hidden w-full max-w-sm mx-auto mb-8">
+                  <img
+                    src="/light check-in.png"
+                    alt="Balance mood check-in screen"
+                    className="w-full rounded-sm shadow-2xl border border-sage-100 dark:hidden"
+                  />
+                  <img
+                    src="/dark-checkin-mood.png"
+                    alt="Balance mood check-in screen"
+                    className="w-full rounded-sm shadow-2xl border border-ocean-700 hidden dark:block"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-6 mb-6 justify-center lg:justify-start">
+                  <Button href="/auth/signup">
+                    Get started free
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  </Button>
+                  <Button
+                    onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                    variant="secondary">
+                    See how it works
+                  </Button>
+                </div>
+
+                <div className="flex flex-wrap gap-6 text-sm text-sage-600 dark:text-white/70 justify-center lg:justify-start">
+                  {['Free', 'GDPR compliant', 'Works on all devices'].map(t => (
+                    <span key={t} className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 text-sage-500" aria-hidden="true" />
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* App screenshot — desktop only (right column) */}
+              <div className="hidden lg:block flex-[1.2] w-full lg:pt-1">
+                <img
+                  src="/light check-in.png"
+                  alt="Balance mood check-in screen"
+                  className="w-full rounded-sm shadow-2xl border border-sage-100 dark:hidden"
+                />
+                <img
+                  src="/dark-checkin-mood.png"
+                  alt="Balance mood check-in screen"
+                  className="w-full rounded-sm shadow-2xl border border-ocean-700 hidden dark:block"
+                />
+              </div>
+
+            </div>
           </div>
         </section>
 
 
 
         {/*How it works*/}
-        <section id="how-it-works" className="lp-bg-2 py-10 md:py-12 scroll-mt-16">
+        <section id="how-it-works" className="lp-bg-2 py-10 md:py-14 scroll-mt-12">
           <div className={`${LP_CONTAINER} text-center`}>
             <p className="text-sm font-semibold lp-accent uppercase tracking-widest mb-3">
               How it works
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl lp-text mb-3">
+            <h2 className="font-serif text-3xl md:text-5xl lp-text mb-3">
               Three simple steps to better productivity
             </h2>
-            <p className="text-sm lp-text-90 max-w-lg mx-auto mb-6 leading-relaxed">
+            <p className="text-base lp-text-90 max-w-lg mx-auto mb-6 leading-relaxed">
               Balance makes emotion-aware productivity effortless with a simple daily routine
             </p>
 
@@ -275,9 +315,8 @@ export default function LandingPage() {
                   <span className="text-sm font-semibold lp-accent uppercase tracking-widest block mb-4">
                     {step}
                   </span>
-                  
-                  <h3 className="font-semibold lp-text text-base mb-1">{title}</h3>
-                  <p className="text-sm lp-text-60 leading-relaxed">{body}</p>
+                  <h3 className="font-semibold lp-text text-lg mb-1">{title}</h3>
+                  <p className="text-base lp-text-60 leading-relaxed">{body}</p>
                 </div>
               ))}
             </div>
@@ -285,15 +324,15 @@ export default function LandingPage() {
         </section>
 
         {/*Features */}
-        <section id="features" className="lp-bg-1 py-10 md:py-12 scroll-mt-16">
+        <section id="features" className="lp-bg-1 py-10 md:py-14 scroll-mt-14">
           <div className={`${LP_CONTAINER} text-center`}>
             <p className="text-sm font-semibold lp-accent uppercase tracking-widest mb-3">
               Features
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl lp-text mb-3">
+            <h2 className="font-serif text-3xl md:text-5xl lp-text mb-3">
               Everything you need to thrive
             </h2>
-            <p className="text-sm lp-text-80 max-w-lg mx-auto mb-6 leading-relaxed">
+            <p className="text-base lp-text-80 max-w-lg mx-auto mb-10 leading-relaxed">
               Tools that adapt to your energy, protect your focus, and support your well-being every day.
             </p>
 
@@ -325,14 +364,14 @@ export default function LandingPage() {
                 },
               ].map(({ icon: Icon, title, body }) => (
                 <div key={title}
-                  className="bg-white dark:bg-ocean-700 border lp-border lp-card-shadow p-6
+                  className="bg-white dark:bg-ocean-700 border lp-border lp-card-shadow p-7
                              hover:border-[var(--lp-accent)] transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-[var(--lp-badge-bg)] flex items-center
-                                  justify-center mb-4">
-                    <Icon size={20} className="lp-accent" aria-hidden="true" />
+                  <div className="w-11 h-11 rounded-xl bg-[var(--lp-badge-bg)] flex items-center
+                                  justify-center mb-5">
+                    <Icon size={22} className="lp-accent" aria-hidden="true" />
                   </div>
-                  <h3 className="font-semibold lp-text text-base mb-1">{title}</h3>
-                  <p className="text-sm lp-text-60 leading-relaxed">{body}</p>
+                  <h3 className="font-semibold lp-text text-lg mb-2">{title}</h3>
+                  <p className="text-base lp-text-60 leading-relaxed">{body}</p>
                 </div>
               ))}
             </div>
@@ -341,14 +380,14 @@ export default function LandingPage() {
 
         {/*FAQ  */}
         <section id="faq" className="lp-bg-1 py-10 md:py-12 scroll-mt-16">
-          <div className="w-full max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="w-full max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-sm font-semibold lp-accent uppercase tracking-widest mb-3">
               FAQ
             </p>
-            <h2 className="font-serif text-3xl md:text-4xl lp-text mb-3">
+            <h2 className="font-serif text-3xl md:text-5xl lp-text mb-3">
               Frequently asked questions
             </h2>
-            <p className="text-sm lp-text-80 mb-8">
+            <p className="text-base lp-text-80 mb-10">
               Everything you need to know about Balance
             </p>
 

@@ -16,6 +16,7 @@ import ThemeToggle   from '@/components/ui/Themetoggle'
 import Spinner       from '@/components/ui/Spinner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import Button        from '@/components/ui/Button'
+import { useToast }  from '@/components/ui/Toaster'
 import {
   LogOut, Trash2, ChevronRight, Check, X, Pencil,
 } from 'lucide-react'
@@ -124,6 +125,7 @@ function CopyEmailButton({ email }: { email: string }) {
 export default function SettingsPage() {
   const { user }   = useAuth()
   const router     = useRouter()
+  const { toast }  = useToast()
 
   const [loading,          setLoading]        = useState(true)
   const [showSignOut,      setShowSignOut]     = useState(false)
@@ -132,11 +134,16 @@ export default function SettingsPage() {
   const [deleteError,      setDeleteErr]       = useState('')
   const [deleting,         setDeleting]        = useState(false)
   const [emailReminders,   setEmailReminders]   = useState(true)
+  const [reminderTime,     setReminderTime]     = useState('08:00')
   // Profile editing
   const [isEditingName, setIsEditingName] = useState(false)
   const [editName,      setEditName]      = useState('')
   const [savingName,    setSavingName]    = useState(false)
   const [nameError,     setNameError]     = useState('')
+  // Reminder time editing
+  const [isEditingTime, setIsEditingTime] = useState(false)
+  const [editTime,      setEditTime]      = useState('08:00')
+  const [savingTime,    setSavingTime]    = useState(false)
 
   const isGoogleUser = user?.providerData.some(p => p.providerId === 'google.com') ?? false
   useEffect(() => {
@@ -146,6 +153,7 @@ export default function SettingsPage() {
         const profile = await getUserProfile(user!.uid)
         if (profile) {
           setEmailReminders(profile.emailReminders ?? true)
+          setReminderTime(profile.reminderTime ?? '08:00')
         }
       } catch (e) {
         console.error(e)
@@ -161,9 +169,32 @@ export default function SettingsPage() {
     if (!user) return
     try {
       await saveUserProfile(user.uid, { emailReminders: value })
+      toast.success(value ? 'Email reminders enabled' : 'Email reminders disabled')
     } catch (e) {
       console.error(e)
       setEmailReminders(!value)
+      toast.error('Could not update email reminders. Please try again.')
+    }
+  }
+
+  function startEditTime() {
+    setEditTime(reminderTime)
+    setIsEditingTime(true)
+  }
+
+  async function handleSaveTime() {
+    if (!user) return
+    setSavingTime(true)
+    try {
+      await saveUserProfile(user.uid, { reminderTime: editTime })
+      setReminderTime(editTime)
+      setIsEditingTime(false)
+      toast.success(`Reminder time updated to ${editTime}`)
+    } catch (e) {
+      console.error(e)
+      toast.error('Could not save reminder time. Please try again.')
+    } finally {
+      setSavingTime(false)
     }
   }
 
@@ -183,8 +214,10 @@ function startEditName() {
       await updateProfile(user, { displayName: trimmed })
       await saveUserProfile(user.uid, { displayName: trimmed })
       setIsEditingName(false)
+      toast.success('Name updated successfully')
     } catch (e) {
       setNameError('Could not save. Please try again.')
+      toast.error('Could not update name. Please try again.')
     } finally {
       setSavingName(false)
     }
@@ -209,14 +242,18 @@ function startEditName() {
         await reauthenticateWithCredential(user, credential)
       }
       await deleteUser(user)
+      toast.success('Account deleted. Goodbye!')
       router.push('/')
     } catch (err: any) {
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         setDeleteErr('Incorrect password. Please try again.')
+        toast.error('Incorrect password. Please try again.')
       } else if (err.code === 'auth/popup-closed-by-user') {
         setDeleteErr('Sign-in window closed. Please try again.')
+        toast.error('Sign-in window closed. Please try again.')
       } else {
         setDeleteErr('Something went wrong. Please try again.')
+        toast.error('Could not delete account. Please try again.')
       }
     } finally {
       setDeleting(false)
@@ -312,11 +349,55 @@ function startEditName() {
           </div>
           <ToggleRow
             label="Email reminders"
-            description="Daily check-in reminder sent to your email at 7 AM"
+            description="Daily check-in reminder sent to your email"
             value={emailReminders}
             onChange={handleToggleEmailReminders}
           />
-<div className="px-4 py-3">
+          <div className="px-4 py-3">
+            {isEditingTime ? (
+              <div>
+                <p className="text-sm font-medium text-sage-800 dark:text-white mb-2">Reminder time</p>
+                <input
+                  type="time"
+                  value={editTime}
+                  onChange={e => setEditTime(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') handleSaveTime(); if (e.key === 'Escape') setIsEditingTime(false) }}
+                  className="input text-sm mb-2"
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveTime} disabled={savingTime} size="sm" className="gap-1 px-3 py-1">
+                    {savingTime ? <Spinner size="sm" /> : <Check className="w-3 h-3" />}
+                    Save
+                  </Button>
+                  <Button onClick={() => setIsEditingTime(false)} variant="secondary" size="sm" className="gap-1 px-3 py-1 text-sage-500 dark:text-white/60">
+                    <X className="w-3 h-3" /> Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1 pr-2">
+                  <p className="text-sm leading-relaxed">
+                    <span className="font-medium text-sage-800 dark:text-white">Reminder time</span>
+                    <span className="text-sage-500 dark:text-white/40"> — Daily check-in notification at {reminderTime}</span>
+                  </p>
+                </div>
+                <button
+                  onClick={startEditTime}
+                  aria-label="Edit reminder time"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md
+                             text-sage-500 dark:text-white/60 text-xs font-medium
+                             hover:text-sage-700 dark:hover:text-white/80
+                             hover:bg-sage-50 dark:hover:bg-ocean-600
+                             transition-colors flex-shrink-0">
+                  <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0 pr-4">
                 <p className="text-sm leading-relaxed">

@@ -153,6 +153,20 @@ export default function AdminPage() {
     setDeleting(uid)
     setConfirmUid(null)
     try {
+      // Get ID token first — before any Firestore deletions (profile must still exist for admin check)
+      const idToken = await user!.getIdToken()
+
+      // Delete Firebase Auth account via server route (verified before Firestore deletions)
+      const res = await fetch('/api/admin/delete-user', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ uid }),
+      })
+      if (!res.ok) throw new Error('Auth delete failed')
+
       // Delete all tasks
       const tasksQ = await getDocs(query(collection(db, 'tasks'), where('userId', '==', uid)))
       await Promise.all(tasksQ.docs.map(d => deleteDoc(doc(db, 'tasks', d.id))))
@@ -163,14 +177,6 @@ export default function AdminPage() {
 
       // Delete user profile
       await deleteDoc(doc(db, 'users', uid))
-
-      // Delete Firebase Auth account so the email can be reused
-      const res = await fetch('/api/admin/delete-user', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uid }),
-      })
-      if (!res.ok) throw new Error('Auth delete failed')
 
       // Remove from local state
       setStats(prev => prev ? {
