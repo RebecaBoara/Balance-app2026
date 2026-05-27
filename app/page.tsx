@@ -61,9 +61,11 @@ function Navbar() {
                 className="hidden md:block text-sm text-sage-600 dark:text-white/80 hover:text-sage-900 dark:hover:text-white transition-colors">
                 Log in
               </Link>
-              <Button href="/auth/signup" size="sm" className="px-4 py-2">
-                <span className="hidden md:inline">Get started free</span>
-                <span className="md:hidden">Sign up</span>
+              <Button href="/auth/login" size="sm" className="px-4 py-2 md:hidden">
+                Log in
+              </Button>
+              <Button href="/auth/signup" size="sm" className="px-4 py-2 hidden md:inline-flex">
+                Get started free
               </Button>
             </>
           )}

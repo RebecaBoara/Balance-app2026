@@ -38,9 +38,18 @@ export default function AuthProvider({
     )
   }
 
-  // Not authenticated 
+  // Not authenticated — show spinner while redirect processes (prevents black screen)
   if (!user) {
-    return null // redirect handled by useEffect above
+    return (
+      <div className="min-h-screen bg-warm-100 dark:bg-ocean-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <span className="font-script text-4xl text-sage-500 dark:text-teal-400">
+            Balance
+          </span>
+          <Spinner size="md" />
+        </div>
+      </div>
+    )
   }
 
   // Authenticated
