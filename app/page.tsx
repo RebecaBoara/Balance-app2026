@@ -57,15 +57,8 @@ function Navbar() {
             </Button>
           ) : (
             <>
-              <Link href="/auth/login"
-                className="hidden md:block text-sm text-sage-600 dark:text-white/80 hover:text-sage-900 dark:hover:text-white transition-colors">
+              <Button href="/auth/login" size="sm" className="px-4 py-2">
                 Log in
-              </Link>
-              <Button href="/auth/login" size="sm" className="px-4 py-2 md:hidden">
-                Log in
-              </Button>
-              <Button href="/auth/signup" size="sm" className="px-4 py-2 hidden md:inline-flex">
-                Get started free
               </Button>
             </>
           )}
