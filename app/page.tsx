@@ -57,9 +57,23 @@ function Navbar() {
             </Button>
           ) : (
             <>
-              <Button href="/auth/login" size="sm" className="px-4 py-2">
-                Log in
-              </Button>
+              {/* Desktop: Log in + Get started */}
+              <span className="hidden lg:contents">
+                <Link href="/auth/login"
+                  className="text-sm font-medium text-sage-600 dark:text-white/80
+                             hover:text-sage-900 dark:hover:text-white transition-colors px-2">
+                  Log in
+                </Link>
+                <Button href="/auth/signup" size="sm" className="px-4 py-2">
+                  Get started free
+                </Button>
+              </span>
+              {/* Mobile/tablet: Log in only */}
+              <span className="lg:hidden">
+                <Button href="/auth/login" size="sm" className="px-4 py-2">
+                  Log in
+                </Button>
+              </span>
             </>
           )}
           <button onClick={() => setOpen(!open)}
