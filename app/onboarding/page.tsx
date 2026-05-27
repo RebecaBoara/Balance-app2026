@@ -193,15 +193,17 @@ export default function OnboardingPage() {
                     <label className="text-xs font-medium text-sage-500 dark:text-white/50 uppercase tracking-wider block mb-2">
                       Reminder time
                     </label>
-                    <input
-                      type="time"
+                    <select
                       value={reminderTime}
                       onChange={e => setReminderTime(e.target.value)}
                       className="input text-sm w-full"
-                    />
-                    <p className="text-xs text-sage-400 dark:text-white/40 mt-1.5">
-                      Time is in UTC — UK (BST) is UTC+1
-                    </p>
+                    >
+                      {Array.from({ length: 17 }, (_, i) => i + 6).map(h => {
+                        const value = `${String(h).padStart(2, '0')}:00`
+                        const label = h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`
+                        return <option key={value} value={value}>{label}</option>
+                      })}
+                    </select>
                   </div>
                 )}
 

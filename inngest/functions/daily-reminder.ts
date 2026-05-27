@@ -24,21 +24,27 @@ export const dailyReminder = inngest.createFunction(
         .filter(d => {
           const data = d.data()
           if (data.emailReminders === false) return false
-          // Convert UTC to the user's local timezone (defaults to Europe/London)
           const tz          = (data.timezone as string | undefined) ?? 'Europe/London'
-          const localHour   = new Date(now.toLocaleString('en-GB', { timeZone: tz }))
-                                .getHours().toString().padStart(2, '0')
+          const localHour   = String(parseInt(
+            new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', hour12: false }).format(now)
+          )).padStart(2, '0')
           const reminderHour = (data.reminderTime as string | undefined)?.split(':')[0] ?? '08'
           return reminderHour === localHour
         })
-        .map(d => d.id)
+        .map(d => {
+          const tz        = (d.data().timezone as string | undefined) ?? 'Europe/London'
+          const localHour = parseInt(
+            new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', hour12: false }).format(now)
+          )
+          return { uid: d.id, localHour }
+        })
     })
 
     let sent   = 0
     let failed = 0
 
     // Step 2: send one email per user — each is its own retryable step
-    for (const uid of users) {
+    for (const { uid, localHour } of users) {
       await step.run(`send-email-${uid}`, async () => {
         const userRecord = await admin.auth().getUser(uid)
         if (!userRecord.email) throw new Error('No email for user ' + uid)
@@ -49,7 +55,7 @@ export const dailyReminder = inngest.createFunction(
           from:    'Balance <hello@balance-mood.co.uk>',
           to:      userRecord.email,
           subject: 'Time for your daily mood check-in',
-          html:    emailHtml(firstName, appUrl),
+          html:    emailHtml(firstName, appUrl, localHour),
         })
 
         if (error) throw new Error(error.message)
@@ -60,7 +66,13 @@ export const dailyReminder = inngest.createFunction(
   }
 )
 
-function emailHtml(firstName: string, url: string): string {
+function greeting(hour: number): string {
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
+function emailHtml(firstName: string, url: string, localHour: number): string {
   return `
 <!DOCTYPE html>
 <html>
@@ -68,7 +80,7 @@ function emailHtml(firstName: string, url: string): string {
   <div style="max-width:480px;margin:0 auto;padding:40px 24px;">
 
     <p style="font-size:22px;color:#2d4a35;margin:0 0 4px;font-weight:normal;">
-      Good morning, ${firstName}
+      ${greeting(localHour)}, ${firstName}
     </p>
     <p style="font-size:13px;color:#9aada0;margin:0 0 28px;font-family:sans-serif;letter-spacing:0.05em;">
       BALANCE · DAILY CHECK-IN

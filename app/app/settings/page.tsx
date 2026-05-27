@@ -360,14 +360,18 @@ function startEditName() {
             {isEditingTime ? (
               <div>
                 <p className="text-sm font-medium text-sage-800 dark:text-white mb-2">Reminder time</p>
-                <input
-                  type="time"
+                <select
                   value={editTime}
                   onChange={e => setEditTime(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') handleSaveTime(); if (e.key === 'Escape') setIsEditingTime(false) }}
                   className="input text-sm mb-2"
                   autoFocus
-                />
+                >
+                  {Array.from({ length: 17 }, (_, i) => i + 6).map(h => {
+                    const value = `${String(h).padStart(2, '0')}:00`
+                    const label = h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`
+                    return <option key={value} value={value}>{label}</option>
+                  })}
+                </select>
                 <div className="flex gap-2">
                   <Button onClick={handleSaveTime} disabled={savingTime} size="sm" className="gap-1 px-3 py-1">
                     {savingTime ? <Spinner size="sm" /> : <Check className="w-3 h-3" />}
@@ -383,7 +387,7 @@ function startEditName() {
                 <div className="min-w-0 flex-1 pr-2">
                   <p className="text-sm leading-relaxed">
                     <span className="font-medium text-sage-800 dark:text-white">Reminder time</span>
-                    <span className="text-sage-500 dark:text-white/40"> — Daily check-in notification at {reminderTime}</span>
+                    <span className="text-sage-500 dark:text-white/40"> — Daily check-in notification at {(() => { const h = parseInt(reminderTime); return h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM` })()}</span>
                   </p>
                 </div>
                 <button
