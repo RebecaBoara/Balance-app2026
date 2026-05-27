@@ -15,19 +15,21 @@ export const dailyReminder = inngest.createFunction(
     triggers: [{ cron: '0 * * * *' }],
   },
   async ({ step }) => {
-    const now         = new Date()
-    const currentHour = now.getUTCHours().toString().padStart(2, '0')
+    const now = new Date()
 
-    // Step 1: fetch users whose reminder hour matches now
+    // Step 1: fetch users whose reminder hour matches their local time
     const users = await step.run('fetch-users', async () => {
       const snap = await admin.firestore().collection('users').get()
       return snap.docs
         .filter(d => {
           const data = d.data()
           if (data.emailReminders === false) return false
-          // Default: 08 UTC = 9 AM BST
+          // Convert UTC to the user's local timezone (defaults to Europe/London)
+          const tz          = (data.timezone as string | undefined) ?? 'Europe/London'
+          const localHour   = new Date(now.toLocaleString('en-GB', { timeZone: tz }))
+                                .getHours().toString().padStart(2, '0')
           const reminderHour = (data.reminderTime as string | undefined)?.split(':')[0] ?? '08'
-          return reminderHour === currentHour
+          return reminderHour === localHour
         })
         .map(d => d.id)
     })

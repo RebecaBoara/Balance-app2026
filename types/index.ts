@@ -54,6 +54,7 @@ export interface UserProfile {
   email:            string
   displayName?:     string
   reminderTime:     string
+  timezone?:        string
   reminders:        boolean
   breakSuggestions: boolean
   emailReminders:   boolean

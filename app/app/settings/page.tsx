@@ -186,7 +186,10 @@ export default function SettingsPage() {
     if (!user) return
     setSavingTime(true)
     try {
-      await saveUserProfile(user.uid, { reminderTime: editTime })
+      await saveUserProfile(user.uid, {
+        reminderTime: editTime,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
       setReminderTime(editTime)
       setIsEditingTime(false)
       toast.success(`Reminder time updated to ${editTime}`)

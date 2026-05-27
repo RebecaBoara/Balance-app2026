@@ -59,7 +59,10 @@ export default function OnboardingPage() {
       await saveUserProfile(user!.uid, {
         hasOnboarded: true,
         emailReminders,
-        ...(emailReminders && { reminderTime }),
+        ...(emailReminders && {
+          reminderTime,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }),
       })
       router.push('/app/mood')
     } catch {
