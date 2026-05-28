@@ -375,7 +375,7 @@ export default function DashboardPage() {
                   Recent reflections
                 </h3>
               </div>
-              <ul className="divide-y divide-sage-500/10 dark:divide-ocean-600">
+              <ul className="divide-y divide-sage-500/10 dark:divide-ocean-600 max-h-64 overflow-y-auto">
                 {stats.moodHistory.map(({ date, mood, note }) => (
                   <li key={date} className="px-5 py-3 flex items-start gap-3">
                     <span className="text-xl flex-shrink-0 mt-0.5" aria-hidden="true">

@@ -35,9 +35,9 @@ function isOverdue(dateStr?: string): boolean {
 }
 
 function addDays(dateStr: string, days: number): string {
-  const d = new Date(dateStr + 'T00:00:00')
-  d.setDate(d.getDate() + days)
-  return d.toISOString().split('T')[0]
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const date = new Date(Date.UTC(y, m - 1, d + days))
+  return date.toISOString().split('T')[0]
 }
 
 function addWeeks(dateStr: string, weeks: number): string {
@@ -45,13 +45,11 @@ function addWeeks(dateStr: string, weeks: number): string {
 }
 
 function addMonths(dateStr: string, months: number): string {
-  const d = new Date(dateStr + 'T00:00:00')
-  const day = d.getDate()
-  d.setDate(1)
-  d.setMonth(d.getMonth() + months)
-  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-  d.setDate(Math.min(day, lastDay))
-  return d.toISOString().split('T')[0]
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const date = new Date(Date.UTC(y, m - 1 + months, 1))
+  const lastDay = new Date(Date.UTC(y, m + months, 0)).getUTCDate()
+  date.setUTCDate(Math.min(d, lastDay))
+  return date.toISOString().split('T')[0]
 }
 
 function nextDateForRepeat(baseDate: string, repeat: Task['repeat']): string {
@@ -61,7 +59,7 @@ function nextDateForRepeat(baseDate: string, repeat: Task['repeat']): string {
   return baseDate
 }
 
-const COMPLETED_DAYS = 20
+const COMPLETED_DAYS = 1
 
 function isCompletedRecently(task: Task): boolean {
   if (!task.completed || !task.completedAt) return false
