@@ -111,6 +111,19 @@ export async function deleteTask(taskId: string): Promise<void> {
   await deleteDoc(doc(db, 'tasks', taskId))
 }
 
+export async function deleteUserData(userId: string): Promise<void> {
+  // Delete user profile
+  await deleteDoc(doc(db, 'users', userId))
+
+  // Delete all tasks
+  const tasks = await getDocs(query(collection(db, 'tasks'), where('userId', '==', userId)))
+  await Promise.all(tasks.docs.map(d => deleteDoc(d.ref)))
+
+  // Delete all mood entries
+  const moods = await getDocs(query(collection(db, 'moods'), where('userId', '==', userId)))
+  await Promise.all(moods.docs.map(d => deleteDoc(d.ref)))
+}
+
 //  MOOD ENTRIES
 
 export async function saveMoodEntry(

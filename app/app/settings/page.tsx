@@ -1,9 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-import { getUserProfile, saveUserProfile } from '@/lib/db'
+import { getUserProfile, saveUserProfile, deleteUserData } from '@/lib/db'
 
 import {
   signOut, deleteUser, updateProfile,
@@ -124,7 +123,6 @@ function CopyEmailButton({ email }: { email: string }) {
 
 export default function SettingsPage() {
   const { user }   = useAuth()
-  const router     = useRouter()
   const { toast }  = useToast()
 
   const [loading,          setLoading]        = useState(true)
@@ -244,9 +242,9 @@ function startEditName() {
         const credential = EmailAuthProvider.credential(user.email, deletePassword)
         await reauthenticateWithCredential(user, credential)
       }
+      await deleteUserData(user.uid)
       await deleteUser(user)
-      toast.success('Account deleted. Goodbye!')
-      router.push('/')
+      window.location.href = '/'
     } catch (err: any) {
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         setDeleteErr('Incorrect password. Please try again.')

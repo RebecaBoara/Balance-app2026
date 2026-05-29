@@ -20,7 +20,10 @@ export default function ResetPasswordPage() {
     setError('')
     setLoading(true)
     try {
-      await sendPasswordResetEmail(auth, email)
+      await sendPasswordResetEmail(auth, email, {
+        url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.balance-mood.co.uk'}/auth/login`,
+        handleCodeInApp: false,
+      })
       setSent(true)
     } catch (err: any) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-email') {
