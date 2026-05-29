@@ -21,8 +21,8 @@ export default function ResetPasswordPage() {
     setLoading(true)
     try {
       await sendPasswordResetEmail(auth, email, {
-        url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.balance-mood.co.uk'}/auth/login`,
-        handleCodeInApp: false,
+        url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.balance-mood.co.uk'}/auth/reset-confirm`,
+        handleCodeInApp: true,
       })
       setSent(true)
     } catch (err: any) {
