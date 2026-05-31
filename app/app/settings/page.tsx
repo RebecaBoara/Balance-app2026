@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { getUserProfile, saveUserProfile, deleteUserData } from '@/lib/db'
 
@@ -122,6 +123,7 @@ function CopyEmailButton({ email }: { email: string }) {
 }
 
 export default function SettingsPage() {
+  const router     = useRouter()
   const { user }   = useAuth()
   const { toast }  = useToast()
 
@@ -227,7 +229,8 @@ function startEditName() {
   async function handleSignOut() {
     await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
-    window.location.href = '/'
+    router.push('/')
+    router.refresh()
   }
 
   async function handleDeleteAccount() {
@@ -244,7 +247,8 @@ function startEditName() {
       }
       await deleteUserData(user.uid)
       await deleteUser(user)
-      window.location.href = '/'
+      router.push('/')
+      router.refresh()
     } catch (err: any) {
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         setDeleteErr('Incorrect password. Please try again.')

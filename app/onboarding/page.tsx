@@ -51,6 +51,7 @@ export default function OnboardingPage() {
   async function handleSkip() {
     await saveUserProfile(user!.uid, { hasOnboarded: true })
     router.push('/app/mood')
+    router.refresh()
   }
 
   async function handleComplete() {
@@ -65,6 +66,7 @@ export default function OnboardingPage() {
         }),
       })
       router.push('/app/mood')
+      router.refresh()
     } catch {
       setSaving(false)
     }

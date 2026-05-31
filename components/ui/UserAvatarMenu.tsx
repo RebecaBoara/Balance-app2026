@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Settings, LogOut, ShieldCheck } from 'lucide-react'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
@@ -9,8 +10,9 @@ import { useAuth } from '@/hooks/useAuth'
 import { getUserProfile } from '@/lib/db'
 
 export default function UserAvatarMenu() {
+  const router                = useRouter()
   const { user }              = useAuth()
-const [open, setOpen]       = useState(false)
+  const [open, setOpen]       = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const dropdownRef           = useRef<HTMLDivElement>(null)
 
@@ -35,7 +37,8 @@ const [open, setOpen]       = useState(false)
   async function handleSignOut() {
     await fetch('/api/auth/session', { method: 'DELETE' })
     await signOut(auth)
-    window.location.href = '/'
+    router.push('/')
+    router.refresh()
   }
 
   return (
