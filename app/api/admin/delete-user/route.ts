@@ -19,6 +19,17 @@ export async function DELETE(req: Request) {
     const { uid } = (await req.json()) as { uid: string }
     if (!uid) return NextResponse.json({ error: 'Missing uid' }, { status: 400 })
 
+    // Delete Firestore data (Admin SDK bypasses security rules)
+    const [tasks, moods] = await Promise.all([
+      admin.firestore().collection('tasks').where('userId', '==', uid).get(),
+      admin.firestore().collection('moods').where('userId', '==', uid).get(),
+    ])
+    await Promise.all([
+      ...tasks.docs.map(d => d.ref.delete()),
+      ...moods.docs.map(d => d.ref.delete()),
+      admin.firestore().collection('users').doc(uid).delete(),
+    ])
+
     await admin.auth().deleteUser(uid)
     return NextResponse.json({ ok: true })
   } catch (e) {

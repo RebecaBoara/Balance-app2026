@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { collection, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/hooks/useAuth'
 import { getUserProfile } from '@/lib/db'
@@ -166,17 +166,6 @@ export default function AdminPage() {
         body: JSON.stringify({ uid }),
       })
       if (!res.ok) throw new Error('Auth delete failed')
-
-      // Delete all tasks
-      const tasksQ = await getDocs(query(collection(db, 'tasks'), where('userId', '==', uid)))
-      await Promise.all(tasksQ.docs.map(d => deleteDoc(doc(db, 'tasks', d.id))))
-
-      // Delete all moods
-      const moodsQ = await getDocs(query(collection(db, 'moods'), where('userId', '==', uid)))
-      await Promise.all(moodsQ.docs.map(d => deleteDoc(doc(db, 'moods', d.id))))
-
-      // Delete user profile
-      await deleteDoc(doc(db, 'users', uid))
 
       // Remove from local state
       setStats(prev => prev ? {
