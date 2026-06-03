@@ -127,7 +127,7 @@ export default function TaskCard({
               </span>
             )}
 
-            <span className="text-xs text-sage-500 dark:text-white/50 flex items-center gap-1">
+            <span className="text-xs text-sage-600 dark:text-white/70 flex items-center gap-1">
               <Clock className="w-3 h-3" aria-hidden="true" />
               {task.estimatedMin} min
             </span>
@@ -138,7 +138,7 @@ export default function TaskCard({
                                   ? 'text-coral-app dark:text-coral-pale font-medium'
                                   : isToday(task.dueDate)
                                     ? 'text-amber-800 dark:text-amber-400 font-medium'
-                                    : 'text-sage-500 dark:text-white/50'
+                                    : 'text-sage-600 dark:text-white/70'
                                 }`}>
                 <Calendar className="w-3 h-3" aria-hidden="true" />
                 {isOverdue(task.dueDate, task.completed)
@@ -149,14 +149,14 @@ export default function TaskCard({
             )}
 
             {task.dueTime && (
-              <span className="text-xs text-sage-500 dark:text-white/50 flex items-center gap-1">
+              <span className="text-xs text-sage-600 dark:text-white/70 flex items-center gap-1">
                 <Clock className="w-3 h-3" aria-hidden="true" />
                 {formatTime(task.dueTime)}
               </span>
             )}
 
             {deferred && (
-              <span className="text-xs text-sage-500 dark:text-white/40 italic">
+              <span className="text-xs text-sage-600 dark:text-white/70 italic">
                 Saved for better energy
               </span>
             )}
@@ -164,8 +164,8 @@ export default function TaskCard({
             {task.notes && (
               <button
                 onClick={() => setShowNotes(p => !p)}
-                className="text-xs text-sage-400 dark:text-white/40
-                           hover:text-sage-600 underline transition-colors"
+                className="text-xs text-sage-600 dark:text-white/70
+                           hover:text-sage-800 underline transition-colors"
               >
                 {showNotes ? 'Hide notes' : 'Notes'}
               </button>
@@ -194,7 +194,7 @@ export default function TaskCard({
                 className={`flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xs transition-all duration-200
                            ${task.repeat && task.repeat !== 'none'
                              ? 'text-sage-700 bg-sage-50 dark:text-teal-300 dark:bg-teal-900/20'
-                             : 'text-sage-500 dark:text-white/50'
+                             : 'text-sage-600 dark:text-white/70'
                            }
                            hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600`}
               >
@@ -234,7 +234,7 @@ export default function TaskCard({
               onClick={() => onEdit(task)}
               aria-label={`Edit task: ${task.title}`}
               className="flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xs
-                         text-sage-500 dark:text-white/50
+                         text-sage-600 dark:text-white/70
                          hover:text-sage-700 hover:bg-sage-50 dark:hover:bg-ocean-600
                          transition-all duration-200"
             >
@@ -246,7 +246,7 @@ export default function TaskCard({
             onClick={() => setConfirmDelete(true)}
             aria-label={`Delete task: ${task.title}`}
             className="flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xs
-                       text-sage-500 dark:text-white/50
+                       text-sage-600 dark:text-white/70
                        hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20
                        transition-all duration-200"
           >

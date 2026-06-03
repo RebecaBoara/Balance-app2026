@@ -154,7 +154,7 @@ export default function MoodPage() {
       {/* Header */}
       <div className="px-6 md:px-0 pt-4 pb-4 flex justify-between items-start">
         <div>
-          <h1 className="font-serif text-2xl text-sage-800 dark:text-white leading-tight">
+          <h1 className="font-serif font-bold text-2xl text-sage-800 dark:text-white leading-tight">
             {greeting}, <span className="text-sage-800 dark:text-white">{firstName}</span> 🌿
           </h1>
           <p className="text-sm text-sage-600 dark:text-white/70 mt-1">{dateStr}</p>
@@ -218,12 +218,12 @@ export default function MoodPage() {
                           bg-white dark:bg-ocean-800
                           border border-sage-500/15 dark:border-ocean-600
                           animate-fade-in shadow-raised">
-            <p className="text-sm font-semibold text-sage-700 dark:text-teal-400
+            <p className="text-sm font-bold text-sage-700 dark:text-teal-400
                           uppercase tracking-wider mb-2 flex items-center gap-1.5">
               <span aria-hidden="true">✦</span> Balance suggests
             </p>
             {aiLoading ? (
-              <p className="text-sm text-sage-500 dark:text-white/50 italic">Personalising suggestion…</p>
+              <p className="text-sm text-sage-600 dark:text-white/70 italic">Personalising suggestion…</p>
             ) : (
               <>
                 <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
@@ -256,7 +256,7 @@ export default function MoodPage() {
             className="input resize-none"
             maxLength={300}
           />
-          <p className="text-sm text-sage-300 dark:text-white/70 text-right mt-1">
+          <p className="text-sm text-sage-600 dark:text-white/70 text-right mt-1">
             {note.length}/300
           </p>
         </div>

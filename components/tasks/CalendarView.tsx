@@ -89,7 +89,7 @@ export default function CalendarView({
       {/* Day-of-week headers */}
       <div className="grid grid-cols-7 mb-1">
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
-          <p key={d} className="text-center text-xs font-medium text-sage-400 dark:text-white/40 py-1">
+          <p key={d} className="text-center text-xs font-medium text-sage-600 dark:text-white/70 py-1">
             {d}
           </p>
         ))}
@@ -150,7 +150,7 @@ export default function CalendarView({
                   </span>
                 ))}
                 {overflow > 0 && (
-                  <span className="text-xs text-sage-400 dark:text-white/40 pl-1">
+                  <span className="text-xs text-sage-600 dark:text-white/70 pl-1">
                     +{overflow} more
                   </span>
                 )}
@@ -170,7 +170,7 @@ export default function CalendarView({
             <p className="text-xs font-semibold text-sage-600 dark:text-white/50 uppercase tracking-wider">
               No due date · {undatedTasks.length} task{undatedTasks.length > 1 ? 's' : ''}
             </p>
-            <ChevronDown className={`w-4 h-4 text-sage-400 dark:text-white/40 transition-transform duration-200
+            <ChevronDown className={`w-4 h-4 text-sage-600 dark:text-white/70 transition-transform duration-200
                                      ${undatedOpen ? 'rotate-180' : ''}`} />
           </button>
           {undatedOpen && (
@@ -219,7 +219,7 @@ export default function CalendarView({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-sage-400 dark:text-white/40 text-center py-8">
+            <p className="text-sm text-sage-600 dark:text-white/70 text-center py-8">
               No tasks due on this day
             </p>
           )}

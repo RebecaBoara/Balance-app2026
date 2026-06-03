@@ -384,11 +384,11 @@ async function handleAddTask(data: NewTask) {
                     Overdue
                   </p>
                   <span className="text-sm text-coral-app/70 dark:text-coral-pale/70">({overdueTasks.length})</span>
-                  <span className="text-sm text-sage-400 dark:text-white/40 font-medium ml-2">
+                  <span className="text-sm text-sage-600 dark:text-white/70 font-medium ml-2">
                     {overdueOpen ? 'Hide' : 'Show'}
                   </span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-sage-400 dark:text-white/40 transition-transform duration-200 ${overdueOpen ? 'rotate-180' : ''}`}
+                    className={`w-3.5 h-3.5 text-sage-600 dark:text-white/70 transition-transform duration-200 ${overdueOpen ? 'rotate-180' : ''}`}
                     aria-hidden="true"
                   />
                 </button>
@@ -411,7 +411,7 @@ async function handleAddTask(data: NewTask) {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-3 h-3 text-sage-700 dark:text-white/70" aria-hidden="true" />
-                  <p className="text-sm font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
+                  <p className="text-sm font-bold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                     Recommended first
                   </p>
                   <span className="text-sm text-sage-700 dark:text-white/50">({recommended.length})</span>
@@ -432,7 +432,7 @@ async function handleAddTask(data: NewTask) {
             {deferred.length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <p className="text-sm font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
+                  <p className="text-sm font-bold text-sage-700 dark:text-white/70 uppercase tracking-wider">
                     Saved for later
                   </p>
                   <span className="text-sm text-sage-700 dark:text-white/50">({deferred.length})</span>

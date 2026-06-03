@@ -94,7 +94,7 @@ export default function OnboardingPage() {
         </div>
 
         <button onClick={handleSkip}
-          className="text-xs text-sage-400 hover:text-sage-600 dark:hover:text-white/60 transition-colors">
+          className="text-xs text-sage-600 hover:text-sage-600 dark:hover:text-white/60 transition-colors">
           Skip
         </button>
       </div>
@@ -127,7 +127,7 @@ export default function OnboardingPage() {
                 <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
                   Here's how it works
                 </h1>
-                <p className="text-sm text-sage-500 dark:text-white/60">
+                <p className="text-sm text-sage-700 dark:text-white/70">
                   Three simple steps to better productivity
                 </p>
               </div>
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
                     <span className="text-2xl flex-shrink-0 mt-0.5">{emoji}</span>
                     <div>
                       <p className="font-medium text-sage-800 dark:text-white text-sm mb-1">{title}</p>
-                      <p className="text-xs text-sage-500 dark:text-ocean-300 leading-relaxed">{desc}</p>
+                      <p className="text-xs text-sage-700 dark:text-ocean-300 leading-relaxed">{desc}</p>
                     </div>
                   </div>
                 ))}
@@ -151,7 +151,7 @@ export default function OnboardingPage() {
               <div className="flex gap-3">
                 <button onClick={() => setStep(0)}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm
-                             text-sage-500 dark:text-white/60 hover:text-sage-700 transition-colors">
+                             text-sage-700 dark:text-white/70 hover:text-sage-700 transition-colors">
                   <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Back
                 </button>
                 <button onClick={() => setStep(2)} className="btn-primary flex-1 flex items-center justify-center gap-2">
@@ -172,7 +172,7 @@ export default function OnboardingPage() {
               <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
                 Daily reminders
               </h1>
-              <p className="text-sm text-sage-500 dark:text-white/60 mb-8 leading-relaxed max-w-xs mx-auto">
+              <p className="text-sm text-sage-700 dark:text-white/70 mb-8 leading-relaxed max-w-xs mx-auto">
                 Would you like a daily email reminder to check in with your mood?
                 You can change this anytime in Settings.
               </p>
@@ -192,7 +192,7 @@ export default function OnboardingPage() {
                 {emailReminders && (
                   <div className="px-4 py-3 rounded-xl border border-sage-200 dark:border-ocean-600
                                   bg-white dark:bg-ocean-800 text-left">
-                    <label className="text-xs font-medium text-sage-500 dark:text-white/50 uppercase tracking-wider block mb-2">
+                    <label className="text-xs font-medium text-sage-700 dark:text-white/70 uppercase tracking-wider block mb-2">
                       Reminder time
                     </label>
                     <select
@@ -221,7 +221,7 @@ export default function OnboardingPage() {
 
               <button onClick={() => setStep(1)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-md text-sm mx-auto
-                           text-sage-500 dark:text-white/60 hover:text-sage-700 transition-colors">
+                           text-sage-700 dark:text-white/70 hover:text-sage-700 transition-colors">
                 <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Back
               </button>
             </div>
@@ -248,7 +248,7 @@ export default function OnboardingPage() {
               </button>
 
               <button onClick={() => setStep(2)}
-                className="block text-xs text-sage-400 hover:text-sage-600 transition-colors mx-auto">
+                className="block text-xs text-sage-600 hover:text-sage-600 transition-colors mx-auto">
                 ← Back
               </button>
             </div>

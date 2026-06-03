@@ -86,10 +86,10 @@ export default function LoginPage() {
 
           {/* Heading */}
           <div className="mb-8">
-            <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
+            <h1 className="font-serif font-bold text-3xl text-sage-900 dark:text-white mb-2">
               Welcome back
             </h1>
-            <p className="text-sm text-sage-500 dark:text-white/70">
+            <p className="text-sm text-sage-700 dark:text-white/70">
               Sign in to your Balance account
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
 
             {/* Email */}
             <div>
-              <label className="label text-sage-500 dark:text-white/70">
+              <label className="label text-sage-700 dark:text-white/70">
                 Email
               </label>
               <input
@@ -123,12 +123,12 @@ export default function LoginPage() {
             {/* Password */}
             <div>
               <div className="flex justify-between items-center mb-1.5">
-                <label className="label text-sage-500 dark:text-white/70 mb-0">
+                <label className="label text-sage-700 dark:text-white/70 mb-0">
                   Password
                 </label>
                 <Link
                   href="/auth/reset-password"
-                  className="text-xs text-sage-500 hover:text-sage-700 dark:text-teal-400 transition-colors"
+                  className="text-xs text-sage-600 hover:text-sage-800 dark:text-teal-400 transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -146,7 +146,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600 dark:text-white/70 transition-colors text-sm"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-600 hover:text-sage-800 dark:text-white/70 transition-colors text-sm"
                   aria-label={showPass ? 'Hide password' : 'Show password'}
                 >
                   {showPass 
@@ -178,7 +178,7 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-sage-500/15 dark:bg-ocean-600" />
-            <span className="text-xs text-sage-400 dark:text-white/70">or continue with</span>
+            <span className="text-xs text-sage-600 dark:text-white/70">or continue with</span>
             <div className="flex-1 h-px bg-sage-500/15 dark:bg-ocean-600" />
           </div>
 
@@ -201,7 +201,7 @@ export default function LoginPage() {
           </Button>
 
           {/* Sign up link */}
-          <p className="text-center text-sm text-sage-500 dark:text-white/70 mt-6">
+          <p className="text-center text-sm text-sage-700 dark:text-white/70 mt-6">
             Don't have an account?{' '}
             <Link
               href="/auth/signup"

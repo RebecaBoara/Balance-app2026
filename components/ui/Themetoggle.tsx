@@ -17,7 +17,7 @@ export default function ThemeToggle() {
       role="group"
       aria-label="Theme selection"
       className="flex items-center gap-1 p-1 rounded-lg
-                 bg-warm-200 dark:bg-ocean-700
+                 bg-warm-100 dark:bg-ocean-700
                  border border-sage-500/15 dark:border-ocean-600"
     >
       {OPTIONS.map(({ value, label, Icon }) => (

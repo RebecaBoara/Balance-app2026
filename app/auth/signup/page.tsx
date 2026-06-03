@@ -122,10 +122,10 @@ export default function SignupPage() {
 
           {/* Heading */}
           <div className="mb-8">
-            <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
+            <h1 className="font-serif font-bold text-3xl text-sage-900 dark:text-white mb-2">
               Create your account
             </h1>
-            <p className="text-sm text-sage-500 dark:text-white/70">
+            <p className="text-sm text-sage-700 dark:text-white/70">
               Start your journey to balanced productivity
             </p>
           </div>
@@ -144,7 +144,7 @@ export default function SignupPage() {
 
             {/* Name */}
             <div>
-              <label className="label text-sage-500 dark:text-white/70">
+              <label className="label text-sage-700 dark:text-white/70">
                 Your name
               </label>
               <input
@@ -160,7 +160,7 @@ export default function SignupPage() {
 
             {/* Email */}
             <div>
-              <label className="label text-sage-500 dark:text-white/70">
+              <label className="label text-sage-700 dark:text-white/70">
                 Email
               </label>
               <input
@@ -176,7 +176,7 @@ export default function SignupPage() {
 
             {/* Password */}
             <div>
-              <label className="label text-sage-500 dark:text-white/70">
+              <label className="label text-sage-700 dark:text-white/70">
                 Password
               </label>
               <div className="relative">
@@ -192,8 +192,8 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400
-                             hover:text-sage-600 dark:text-white/70 transition-colors text-sm"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-600
+                             hover:text-sage-800 dark:text-white/70 transition-colors text-sm"
                   aria-label={showPass ? 'Hide password' : 'Show password'}
                 >
                   {showPass ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
@@ -215,7 +215,7 @@ export default function SignupPage() {
                       />
                     ))}
                   </div>
-                  <p className="text-xs text-sage-400 dark:text-white/70">
+                  <p className="text-xs text-sage-600 dark:text-white/70">
                     {strength.label}
                   </p>
                 </div>
@@ -224,7 +224,7 @@ export default function SignupPage() {
 
             {/* Confirm password */}
             <div>
-              <label className="label text-sage-500 dark:text-white/70">
+              <label className="label text-sage-700 dark:text-white/70">
                 Confirm password
               </label>
               <input
@@ -246,7 +246,7 @@ export default function SignupPage() {
                 <p className="text-xs text-coral-app mt-1">Passwords do not match</p>
               )}
               {confirm.length > 0 && confirm === password && (
-                <p className="text-xs text-sage-500 mt-1">✓ Passwords match</p>
+                <p className="text-xs text-sage-700 mt-1">✓ Passwords match</p>
               )}
             </div>
 
@@ -258,7 +258,7 @@ export default function SignupPage() {
                 onChange={e => setAgreed(e.target.checked)}
                 className="mt-0.5 w-4 h-4 rounded accent-sage-500 flex-shrink-0 cursor-pointer"
               />
-              <span className="text-xs text-sage-500 dark:text-white/70 leading-relaxed">
+              <span className="text-xs text-sage-700 dark:text-white/70 leading-relaxed">
                 I agree to the{' '}
                 <Link href="/terms" target="_blank" className="underline hover:text-sage-700 dark:hover:text-white">
                   Terms of Service
@@ -290,7 +290,7 @@ export default function SignupPage() {
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-sage-100 dark:bg-ocean-600" />
-            <span className="text-xs text-sage-400 dark:text-white/70">or</span>
+            <span className="text-xs text-sage-600 dark:text-white/70">or</span>
             <div className="flex-1 h-px bg-sage-100 dark:bg-ocean-600" />
           </div>
 
@@ -312,7 +312,7 @@ export default function SignupPage() {
           </Button>
 
           {/* Sign in link */}
-          <p className="text-center text-sm text-sage-500 dark:text-white/70 mt-6">
+          <p className="text-center text-sm text-sage-700 dark:text-white/70 mt-6">
             Already have an account?{' '}
             <Link
               href="/auth/login"

@@ -28,7 +28,7 @@ function Card({ children, title }: { children: React.ReactNode; title?: string }
                     border border-sage-500/15 dark:border-ocean-600 overflow-hidden">
       {title && (
         <div className="px-4 py-3 border-b border-sage-500/10 dark:border-ocean-600">
-          <p className="text-sm font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">
+          <p className="text-sm font-semibold text-sage-600 dark:text-white/70 uppercase tracking-widest">
             {title}
           </p>
         </div>
@@ -52,7 +52,7 @@ function ToggleRow({ label, description, value, onChange }: {
         <p className="text-sm leading-relaxed">
           <span className="font-medium text-sage-800 dark:text-white">{label}</span>
           {description && (
-            <span className="text-sage-500 dark:text-white/40"> — {description}</span>
+            <span className="text-sage-600 dark:text-white/70"> — {description}</span>
           )}
         </p>
       </div>
@@ -89,11 +89,11 @@ function LinkRow({ label, description, href, danger = false }: {
           : 'text-sage-700 dark:text-white/80'}`}>
           <span className="font-medium">{label}</span>
           {description && (
-            <span className="text-sage-500 dark:text-white/40"> — {description}</span>
+            <span className="text-sage-600 dark:text-white/70"> — {description}</span>
           )}
         </p>
       </div>
-      <ChevronRight className="w-4 h-4 text-sage-300 dark:text-white/20
+      <ChevronRight className="w-4 h-4 text-sage-500 dark:text-white/50
                                group-hover:text-sage-500 transition-colors" aria-hidden="true" />
     </a>
   )
@@ -111,7 +111,7 @@ function CopyEmailButton({ email }: { email: string }) {
     <button
       onClick={handleCopy}
       aria-label="Copy email address"
-      className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+      className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
                  transition-colors duration-150
                  bg-sage-50 dark:bg-ocean-600
                  text-sage-600 dark:text-white/70
@@ -291,8 +291,9 @@ function startEditName() {
         <Card>
 
           {/* Account */}
-          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
-            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Account</p>
+          <div className="px-4 py-2.5 border-b border-sage-200 dark:border-ocean-600 bg-sage-50 dark:bg-ocean-800/60">
+         
+            <p className="text-sm font-semibold text-sage-600 dark:text-white/70 uppercase tracking-widest">Account</p>
           </div>
           <div className="flex items-center gap-4 px-4 py-3.5">
             <div className="w-12 h-12 rounded-full bg-sage-500 dark:bg-teal-600
@@ -312,7 +313,7 @@ function startEditName() {
                     placeholder="Your name"
                     maxLength={50}
                   />
-                  {nameError && <p className="text-xs text-red-500 mb-1">{nameError}</p>}
+                  {nameError && <p className="text-sm text-red-500 mb-1">{nameError}</p>}
                   <div className="flex gap-2">
                     <Button onClick={handleSaveName} disabled={savingName} size="sm" className="gap-1 px-3 py-1">
                       {savingName ? <Spinner size="sm" /> : <Check className="w-3 h-3" />}
@@ -327,7 +328,7 @@ function startEditName() {
                 <div className="flex items-center justify-between gap-2 w-full">
                   <div className="min-w-0 flex-1 pr-2">
                     <p className="text-sm font-semibold text-sage-800 dark:text-white truncate">{displayName}</p>
-                    <p className="text-sm text-sage-400 dark:text-white/40 truncate">
+                    <p className="text-sm text-sage-600 dark:text-white/70 truncate">
                       {user?.email}
                       {isGoogleUser && <span className="ml-1 text-sage-400 dark:text-white/30">· Google</span>}
                     </p>
@@ -335,9 +336,12 @@ function startEditName() {
                   <button
                     onClick={startEditName}
                     aria-label="Edit name"
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md
-                               text-sage-500 dark:text-white/60 text-xs font-medium
-                               hover:text-sage-700 dark:hover:text-white/80
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md
+                               text-sage-600 dark:text-white/70 text-sm font-medium
+                               border border-sage-200 dark:border-ocean-600
+                               bg-white dark:bg-ocean-700
+                               hover:text-sage-800 dark:hover:text-white
+                               hover:border-sage-400 dark:hover:border-ocean-400
                                hover:bg-sage-50 dark:hover:bg-ocean-600
                                transition-colors flex-shrink-0">
                     <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
@@ -349,8 +353,8 @@ function startEditName() {
           </div>
 
           {/* Preferences */}
-          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
-            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Preferences</p>
+          <div className="px-4 py-2.5 border-b border-sage-200 dark:border-ocean-600 bg-sage-50 dark:bg-ocean-800/60">
+            <p className="text-sm font-semibold text-sage-600 dark:text-white/70 uppercase tracking-widest">Preferences</p>
           </div>
           <ToggleRow
             label="Email reminders"
@@ -389,15 +393,18 @@ function startEditName() {
                 <div className="min-w-0 flex-1 pr-2">
                   <p className="text-sm leading-relaxed">
                     <span className="font-medium text-sage-800 dark:text-white">Reminder time</span>
-                    <span className="text-sage-500 dark:text-white/40"> — Daily check-in notification at {(() => { const h = parseInt(reminderTime); return h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM` })()}</span>
+                    <span className="text-sage-600 dark:text-white/70"> — Daily check-in notification at {(() => { const h = parseInt(reminderTime); return h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM` })()}</span>
                   </p>
                 </div>
                 <button
                   onClick={startEditTime}
                   aria-label="Edit reminder time"
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md
-                             text-sage-500 dark:text-white/60 text-xs font-medium
-                             hover:text-sage-700 dark:hover:text-white/80
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md
+                             text-sage-600 dark:text-white/70 text-sm font-medium
+                             border border-sage-200 dark:border-ocean-600
+                             bg-white dark:bg-ocean-700
+                             hover:text-sage-800 dark:hover:text-white
+                             hover:border-sage-400 dark:hover:border-ocean-400
                              hover:bg-sage-50 dark:hover:bg-ocean-600
                              transition-colors flex-shrink-0">
                   <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
@@ -406,12 +413,12 @@ function startEditName() {
               </div>
             )}
           </div>
-          <div className="px-4 py-3">
+          <div className="px-4 py-3 border-b border-sage-200 dark:border-ocean-600 dark:bg-ocean-800/60">
             <div className="flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0 pr-4">
                 <p className="text-sm leading-relaxed">
                   <span className="font-medium text-sage-800 dark:text-white">Theme</span>
-                  <span className="text-sage-500 dark:text-white/40"> — Choose how Balance looks across your app experience</span>
+                  <span className="text-sage-600 dark:text-white/70"> — Choose how Balance looks across your app experience</span>
                 </p>
               </div>
               <div className="flex-shrink-0"><ThemeToggle /></div>
@@ -419,31 +426,31 @@ function startEditName() {
           </div>
 
           {/* Support */}
-          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
-            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Support</p>
+          <div className="px-4 py-2.5 border-b border-sage-200 dark:border-ocean-600 bg-sage-50 dark:bg-ocean-800/60">
+            <p className="text-sm font-semibold text-sage-600 dark:text-white/70 uppercase tracking-widest">Support</p>
           </div>
           <div className="flex items-center gap-3 px-4 py-3">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-sage-800 dark:text-white">Contact support</p>
-              <p className="text-sm text-sage-400 dark:text-white/40 truncate">balancedtasks.mood@gmail.com</p>
+              <p className="text-sm text-sage-600 dark:text-white/70 truncate">balancedtasks.mood@gmail.com</p>
             </div>
             <CopyEmailButton email="balancedtasks.mood@gmail.com" />
           </div>
 
           {/* Privacy & Data */}
-          <div className="px-4 py-2.5 bg-warm-50 dark:bg-ocean-800/60">
-            <p className="text-xs font-semibold text-sage-500 dark:text-white/40 uppercase tracking-widest">Privacy & Data</p>
+          <div className="px-4 py-2.5 border-b border-sage-200 dark:border-ocean-600 bg-sage-50 dark:bg-ocean-800/60">
+            <p className="text-sm font-semibold text-sage-600 dark:text-white/70 uppercase tracking-widest">Privacy & Data</p>
           </div>
           <LinkRow label="Privacy Policy" description="See how your data is stored, used, and protected." href="/privacy" />
           <LinkRow label="Terms of Service" description="Review app rules, account responsibilities, and usage terms." href="/terms" />
-          <div className="flex items-center px-4 py-3">
+          <div className="flex items-center px-4 py-3 border-b border-sage-200 dark:border-ocean-600 dark:bg-ocean-800/60">
             <div className="flex-1 min-w-0">
               <p className="text-sm leading-relaxed">
                 <span className="font-medium text-sage-700 dark:text-white/80">App version</span>
-                <span className="text-sage-500 dark:text-white/40"> — Current installed release used for this research build.</span>
+                <span className="text-sage-600 dark:text-white/70"> — Current installed release used for this research build.</span>
               </p>
             </div>
-            <span className="text-sm text-sage-500 dark:text-white/40 flex-shrink-0">1.0.0</span>
+            <span className="text-sm text-sage-600 dark:text-white/70 flex-shrink-0">1.0.0</span>
           </div>
           <button
             onClick={() => setShowDelete(true)}
@@ -460,9 +467,9 @@ function startEditName() {
             <LogOut className="w-4 h-4 text-red-500 dark:text-red-400 flex-shrink-0" aria-hidden="true" />
             <p className="text-sm leading-relaxed flex-1">
               <span className="font-medium text-red-500 dark:text-red-400">Sign out</span>
-              <span className="text-sage-400 dark:text-white/40"> — Ends your current session on this device.</span>
+              <span className="text-sage-600 dark:text-white/70"> — Ends your current session on this device.</span>
             </p>
-            <ChevronRight className="w-4 h-4 text-sage-300 dark:text-white/20 group-hover:text-sage-400 transition-colors flex-shrink-0" aria-hidden="true" />
+            <ChevronRight className="w-4 h-4 text-sage-500 dark:text-white/50 group-hover:text-sage-400 transition-colors flex-shrink-0" aria-hidden="true" />
           </button>
 
         </Card>
@@ -494,7 +501,7 @@ function startEditName() {
                   className="font-serif text-xl text-sage-900 dark:text-white">
                   Delete your account
                 </h2>
-                <p className="text-xs text-sage-400 dark:text-white/40 mt-1">
+                <p className="text-sm text-sage-600 dark:text-white/70 mt-1">
                   This action is permanent and cannot be undone.
                 </p>
               </div>
@@ -509,7 +516,7 @@ function startEditName() {
 
             <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20
                             border border-red-200 dark:border-red-800 mb-4">
-              <p className="text-xs text-red-600 dark:text-red-300 leading-relaxed">
+              <p className="text-sm text-red-600 dark:text-red-300 leading-relaxed">
                 All your mood entries, tasks, and preferences will be{' '}
                 <strong>permanently deleted</strong>. This cannot be recovered.
               </p>
@@ -523,7 +530,7 @@ function startEditName() {
             ) : (
               <div className="mb-4">
                 <label htmlFor="delete-password"
-                  className="label text-sage-500 dark:text-white/40">
+                  className="label text-sage-600 dark:text-white/70">
                   Confirm your password
                 </label>
                 <input
@@ -539,7 +546,7 @@ function startEditName() {
             )}
 
             {deleteError && (
-              <p className="text-xs text-red-500 mb-3">{deleteError}</p>
+              <p className="text-sm text-red-500 mb-3">{deleteError}</p>
             )}
 
             <div className="flex gap-3">

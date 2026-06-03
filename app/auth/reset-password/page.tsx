@@ -40,7 +40,7 @@ export default function ResetPasswordPage() {
     <AuthLayout>
 
           <Link href="/auth/login"
-            className="inline-flex items-center gap-1.5 text-sm text-sage-500
+            className="inline-flex items-center gap-1.5 text-sm text-sage-700
                        dark:text-white/70 hover:text-sage-700 transition-colors mb-8">
             <ArrowLeft size={14} aria-hidden="true" />
             Back to sign in
@@ -49,10 +49,10 @@ export default function ResetPasswordPage() {
           {sent ? (
             <div className="text-center">
              
-              <h1 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">
+              <h1 className="font-serif font-bold text-2xl text-sage-900 dark:text-white mb-3">
                 Check your inbox
               </h1>
-              <p className="text-sm text-sage-500 dark:text-white/70 leading-relaxed mb-6">
+              <p className="text-sm text-sage-700 dark:text-white/70 leading-relaxed mb-6">
                 We've sent a password reset link to <strong className="text-sage-700 dark:text-white">{email}</strong>.
                 Check your spam folder if it doesn't arrive within a few minutes.
               </p>
@@ -63,10 +63,10 @@ export default function ResetPasswordPage() {
           ) : (
             <>
               <div className="mb-8">
-                <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
+                <h1 className="font-serif font-bold text-3xl text-sage-900 dark:text-white mb-2">
                   Reset your password
                 </h1>
-                <p className="text-sm text-sage-500 dark:text-white/70">
+                <p className="text-sm text-sage-700 dark:text-white/70">
                   Enter your email and we'll send you a link to reset your password.
                 </p>
               </div>
@@ -81,7 +81,7 @@ export default function ResetPasswordPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="label text-sage-500 dark:text-white/70">
+                  <label htmlFor="email" className="label text-sage-700 dark:text-white/70">
                     Email address
                   </label>
                   <input

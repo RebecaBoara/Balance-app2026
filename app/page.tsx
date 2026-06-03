@@ -165,7 +165,7 @@ export default function LandingPage() {
             <span className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full
                              bg-[var(--lp-badge-bg)] border border-[var(--lp-badge-b)]
                              text-sm font-semibold lp-accent uppercase tracking-widest">
-              🌿 Emotion-aware productivity
+             Emotion-aware productivity
             </span>
 
             <h1 className="font-serif text-5xl md:text-6xl lp-text leading-tight mb-6">
@@ -210,21 +210,21 @@ export default function LandingPage() {
           <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
 
             {/* Two columns */}
-            <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-20">
+            <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
 
               {/* Text */}
               <div className="flex-1 text-center lg:text-left">
 
                 {/* Badge — aligns with heading */}
-                <div className="flex justify-center lg:justify-start mb-6">
+                <div className="flex justify-center lg:justify-start mb-4">
                   <span className="inline-flex items-center gap-2 px-5 py-1 rounded-sm
                                    bg-[var(--lp-badge-bg)] border border-[var(--lp-badge-b)]
                                    text-sm font-bold lp-accent uppercase tracking-widest">
-                    🌿 Emotion-aware productivity
+                    Emotion-aware productivity
                   </span>
                 </div>
 
-                <h1 className="font-serif text-5xl md:text-5xl lg:text-6xl text-sage-800 dark:text-white leading-tight mb-2">
+                <h1 className="font-serif font-bold text-5xl md:text-5xl lg:text-6xl text-sage-800 dark:text-white leading-tight mb-2">
                   Productivity, in tune with{' '}
                   <em className="text-sage-600 dark:text-teal-400 not-italic">how you feel</em>
                 </h1>
@@ -270,7 +270,7 @@ export default function LandingPage() {
               </div>
 
               {/* App screenshot — desktop only (right column) */}
-              <div className="hidden lg:block flex-[1.2] w-full lg:pt-1">
+              <div className="hidden lg:block flex-1 w-full lg:pt-6">
                 <img
                   src="/light check-in.png"
                   alt="Balance mood check-in screen"
@@ -295,7 +295,7 @@ export default function LandingPage() {
             <p className="text-sm font-semibold lp-accent uppercase tracking-widest mb-3">
               How it works
             </p>
-            <h2 className="font-serif text-3xl md:text-5xl lp-text mb-3">
+            <h2 className="font-serif font-bold text-2xl md:text-4xl lp-text mb-3">
               Three simple steps to better productivity
             </h2>
             <p className="text-base lp-text-90 max-w-lg mx-auto mb-6 leading-relaxed">
@@ -335,10 +335,10 @@ export default function LandingPage() {
         {/*Features */}
         <section id="features" className="lp-bg-1 py-10 md:py-14 scroll-mt-14">
           <div className={`${LP_CONTAINER} text-center`}>
-            <p className="text-sm font-semibold lp-accent uppercase tracking-widest mb-3">
+            <p className="text-sm font-bold lp-accent uppercase tracking-widest mb-3">
               Features
             </p>
-            <h2 className="font-serif text-3xl md:text-5xl lp-text mb-3">
+            <h2 className="font-serif font-bold text-2xl md:text-4xl lp-text mb-3">
               Everything you need to thrive
             </h2>
             <p className="text-base lp-text-80 max-w-lg mx-auto mb-10 leading-relaxed">
@@ -390,10 +390,10 @@ export default function LandingPage() {
         {/*FAQ  */}
         <section id="faq" className="lp-bg-1 py-10 md:py-12 scroll-mt-16">
           <div className="w-full max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-sm font-semibold lp-accent uppercase tracking-widest mb-3">
+            <p className="text-sm font-bold lp-accent uppercase tracking-widest mb-3">
               FAQ
             </p>
-            <h2 className="font-serif text-3xl md:text-5xl lp-text mb-3">
+            <h2 className="font-serif font-bold text-2xl md:text-4xl lp-text mb-3">
               Frequently asked questions
             </h2>
             <p className="text-base lp-text-80 mb-10">

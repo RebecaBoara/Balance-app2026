@@ -33,7 +33,7 @@ function Navbar() {
             </Link>
           </nav>
           <button onClick={cycleTheme} aria-label="Toggle theme"
-            className="p-2 text-sage-500 dark:text-white/80 hover:text-sage-900 dark:hover:text-white transition-colors">
+            className="p-2 text-sage-700 dark:text-white/80 hover:text-sage-900 dark:hover:text-white transition-colors">
             <ThemeIcon size={17} aria-hidden="true" />
           </button>
           {user ? (
@@ -71,7 +71,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-3">
           <div className="dark"><Logo size="sm" /></div>
-          <p className="text-xs text-white/55">© 2026 Balance — Rebeca Boara. All rights reserved.</p>
+          <p className="text-xs text-white/55">© 2026 Balance — All rights reserved.</p>
           <div className="flex gap-5">
             <Link href="/privacy" className="text-xs text-white/70 hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms"   className="text-xs text-white/70 hover:text-white transition-colors">Terms of Service</Link>
@@ -90,7 +90,7 @@ export default function TermsPage() {
       <main className="max-w-3xl mx-auto px-6 pt-12 pb-12">
 
         {/* Back */}
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-500 hover:text-sage-700 mb-8 transition-colors dark:text-white/70 dark:hover:text-white">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-sage-700 hover:text-sage-700 mb-8 transition-colors dark:text-white/70 dark:hover:text-white">
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Back to home
         </Link>
@@ -98,7 +98,7 @@ export default function TermsPage() {
         {/* Header */}
         <div className="flex items-start gap-4 mb-8">
           <div className="w-12 h-12 rounded-sm bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center flex-shrink-0">
-            <FileText className="w-6 h-6 text-sage-500 dark:text-teal-400" aria-hidden="true" />
+            <FileText className="w-6 h-6 text-sage-700 dark:text-teal-400" aria-hidden="true" />
           </div>
           <div>
             <h1 className="font-serif text-4xl text-sage-900 dark:text-white mb-1">Terms of Service</h1>
@@ -107,7 +107,7 @@ export default function TermsPage() {
         </div>
 
         {/* Intro banner */}
-        <div className="p-4 rounded-sm bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
+        <div className="p-4 rounded-sm dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700 mb-10">
           <p className="text-sm text-sage-700 dark:text-white/80 leading-relaxed">
             Please read these terms carefully before using Balance. By creating an account you agree to these terms. Balance is an academic research prototype — these terms reflect its nature as a university dissertation project.
           </p>
@@ -135,7 +135,7 @@ export default function TermsPage() {
                 'Be at least 16 years old (GDPR age of digital consent in the UK)',
               ].map(item => (
                 <li key={item} className="flex items-start gap-2">
-                  <span className="text-sage-400 mt-0.5 flex-shrink-0">•</span>
+                  <span className="text-sage-600 mt-0.5 flex-shrink-0">•</span>
                   {item}
                 </li>
               ))}
@@ -161,7 +161,7 @@ export default function TermsPage() {
                 'Ethical clearance has been obtained from Southampton Solent University',
               ].map(item => (
                 <li key={item} className="flex items-start gap-2">
-                  <span className="text-sage-400 mt-0.5 flex-shrink-0">•</span>
+                  <span className="text-sage-600 mt-0.5 flex-shrink-0">•</span>
                   {item}
                 </li>
               ))}
@@ -171,11 +171,11 @@ export default function TermsPage() {
           {/* 5 — Disclaimer in amber box */}
           <section>
             <h2 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">5. Disclaimer of warranties</h2>
-            <div className="p-4 rounded-sm bg-amber-pale dark:bg-amber-900/20 border border-amber-app/40 mb-3">
+           
               <p className="text-amber-700 dark:text-amber-300 text-sm leading-relaxed">
                 Balance is provided <strong>"as is"</strong> without any warranties, express or implied. As an academic prototype, we do not guarantee uninterrupted availability, data accuracy, or any particular purpose beyond the scope of the dissertation research.
               </p>
-            </div>
+            
             <p>The emotion-aware task recommendations provided by Balance are based on a simplified model and should not be taken as professional mental health, medical, or productivity advice. If you are experiencing significant mental health difficulties, please seek support from a qualified professional.</p>
           </section>
 
@@ -207,7 +207,7 @@ export default function TermsPage() {
           {/* 10 */}
           <section>
             <h2 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">10. Contact</h2>
-            <div className="p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
+            <div className="p-5 rounded-sm dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600">
               <p className="mb-3">If you have questions about these terms, please contact:</p>
               <div className="space-y-1">
                 
@@ -220,10 +220,10 @@ export default function TermsPage() {
         </div>
 
         {/* Also see privacy */}
-        <div className="mt-10 p-5 rounded-sm bg-warm-100 dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-10 p-5 rounded-sm  dark:bg-ocean-800 border border-sage-500/15 dark:border-ocean-600 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-medium text-sage-700 dark:text-white">Also read our Privacy Policy</p>
-            <p className="text-xs text-sage-500 dark:text-white/80 mt-0.5">Learn how we handle your data and your GDPR rights</p>
+            <p className="text-md font-medium text-sage-700 dark:text-white">Also read our Privacy Policy</p>
+            <p className="text-sm text-sage-700 dark:text-white/80 mt-0.5">Learn how we handle your data and your GDPR rights</p>
           </div>
           <Button href="/privacy" variant="secondary" className="px-5 py-2.5 flex-shrink-0 text-sage-600 dark:text-white/80">
             Privacy Policy <ArrowRight className="w-4 h-4" aria-hidden="true" />

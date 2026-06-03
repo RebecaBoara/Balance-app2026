@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 /* ── Dark mode via .dark class ── */
@@ -47,7 +47,7 @@
 
   /* Fonts */
   --font-script: 'Dancing Script', cursive;
-  --font-serif:  'DM Serif Display', Georgia, serif;
+  --font-serif:  'DM Sans', system-ui, sans-serif;
   --font-sans:   'DM Sans', system-ui, sans-serif;
 
   /* Border radius */
@@ -84,7 +84,7 @@
   --bg-2:   #EDE6D6;
   --card:   #FFFFFF;
   --ink:    #1E2822;
-  --muted:  #6B7D74;
+  --muted:  #4A6557;
   --border: rgba(92, 122, 106, 0.15);
   --sage:   #5C7A6A;
   --sage-d: #3D5248;
@@ -100,12 +100,16 @@
   --lp-bg-2:      #F5F0E8;
   --lp-card:      #FFFFFF;
   --lp-card-2:    #E8F0EC;
-  --lp-text:      #1E2822;
-  --lp-text-80:   rgba(30,40,34,0.82);
-  --lp-text-60:   rgba(30,40,34,0.62);
-  --lp-text-50:   rgba(30,40,34,0.52);
-  --lp-text-40:   rgba(30,40,34,0.42);
-  --lp-text-30:   rgba(30,40,34,0.32);
+  /* Sage palette (solid) — consistent with the hero and the rest of the app.
+     All shades 500–800 pass WCAG AA (4.5:1) on the light backgrounds used here. */
+  --lp-text:      #2E3E37; /* sage-800 — headings */
+  --lp-text-90:   #3D5248; /* sage-700 */
+  --lp-text-80:   #3D5248; /* sage-700 — body / subtitles (matches hero body) */
+  --lp-text-70:   #4A6557; /* sage-600 */
+  --lp-text-60:   #4A6557; /* sage-600 — card body */
+  --lp-text-50:   #4A6557; /* sage-600 */
+  --lp-text-40:   #5C7A6A; /* sage-500 */
+  --lp-text-30:   #5C7A6A; /* sage-500 */
   --lp-border:    rgba(92,122,106,0.15);
   --lp-accent:    #4c7762;
   --lp-cta-bg:    #5C7A6A;
@@ -148,7 +152,9 @@
   --lp-card:      #1E2A35;
   --lp-card-2:    #161E26;
   --lp-text:      #FFFFFF;
+  --lp-text-90:   rgba(255,255,255,0.92);
   --lp-text-80:   rgba(255,255,255,0.80);
+  --lp-text-70:   rgba(255,255,255,0.78);
   --lp-text-60:   rgba(255,255,255,0.60);
   --lp-text-50:   rgba(255,255,255,0.50);
   --lp-text-40:   rgba(255,255,255,0.40);
@@ -181,7 +187,9 @@
   .lp-card    { background-color: var(--lp-card); }
   .lp-card-2  { background-color: var(--lp-card-2); }
   .lp-text    { color: var(--lp-text); }
+  .lp-text-90 { color: var(--lp-text-90); }
   .lp-text-80 { color: var(--lp-text-80); }
+  .lp-text-70 { color: var(--lp-text-70); }
   .lp-text-60 { color: var(--lp-text-60); }
   .lp-text-50 { color: var(--lp-text-50); }
   .lp-text-40 { color: var(--lp-text-40); }
@@ -291,7 +299,7 @@ body {
   .input {
     @apply w-full px-4 py-3 rounded-md border border-sage-500/15 dark:border-ocean-600
            bg-white dark:bg-ocean-800 text-ink dark:text-white text-sm
-           placeholder-gray-300 dark:placeholder-gray-600
+           placeholder-sage-500 dark:placeholder-white/40
            focus:outline-none focus:border-sage-500 transition-colors;
   }
 
@@ -300,7 +308,7 @@ body {
   }
 
   .section-title {
-    @apply font-serif text-2xl md:text-3xl text-ink dark:text-white leading-tight;
+    @apply font-serif font-semibold text-2xl md:text-3xl text-ink dark:text-white leading-tight;
   }
 
   .mood-pill {

@@ -203,10 +203,10 @@ export default function MoodRecommendations({ mood }: MoodRecommendationsProps) 
               >
                 <span className="text-sm text-sage-700 dark:text-white/70 font-medium">{name}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-sage-500 dark:text-white/40">{source}</span>
+                  <span className="text-xs text-sage-600 dark:text-white/70">{source}</span>
                   <ExternalLink
-                    className="w-3 h-3 text-sage-500 group-hover:text-sage-500
-                               dark:text-white/40 dark:group-hover:text-teal-400 transition-colors"
+                    className="w-3 h-3 text-sage-600 group-hover:text-sage-700
+                               dark:text-white/70 dark:group-hover:text-teal-400 transition-colors"
                     aria-hidden="true"
                   />
                 </div>
@@ -247,7 +247,7 @@ export function MoodSupportCard() {
             >
               <div className="flex-1 min-w-0 pr-3">
                 <p className="text-sm font-semibold text-sage-800 dark:text-white mb-0.5">{name}</p>
-                <p className="text-xs text-sage-500 dark:text-white/70 leading-relaxed">{description}</p>
+                <p className="text-xs text-sage-600 dark:text-white/70 leading-relaxed">{description}</p>
                 {phone && (
                   <p className="text-xs text-sage-600 dark:text-teal-400 font-medium mt-1">📞 {phone}</p>
                 )}
@@ -261,7 +261,7 @@ export function MoodSupportCard() {
             </a>
           ))}
         </div>
-        <p className="text-xs text-sage-500 dark:text-white/40 mt-3 leading-relaxed text-center">
+        <p className="text-xs text-sage-600 dark:text-white/70 mt-3 leading-relaxed text-center">
           Resources listed are UK-based. Outside the UK? Search for a local mental health helpline in your country.
           Balance is not a mental health tool. If you are in crisis, please contact Samaritans on 116 123 (free, 24/7).
         </p>

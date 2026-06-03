@@ -58,8 +58,8 @@ function ResetConfirmForm() {
   if (invalidCode) {
     return (
       <div className="text-center">
-        <h1 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">Link expired</h1>
-        <p className="text-sm text-sage-500 dark:text-white/70 mb-6 leading-relaxed">
+        <h1 className="font-serif font-bold text-2xl text-sage-900 dark:text-white mb-3">Link expired</h1>
+        <p className="text-sm text-sage-700 dark:text-white/70 mb-6 leading-relaxed">
           This password reset link has expired or already been used. Please request a new one.
         </p>
         <Button href="/auth/reset-password" className="px-6">
@@ -73,8 +73,8 @@ function ResetConfirmForm() {
     return (
       <div className="text-center">
         <CheckCircle2 className="w-12 h-12 text-sage-500 dark:text-teal-400 mx-auto mb-4" />
-        <h1 className="font-serif text-2xl text-sage-900 dark:text-white mb-3">Password updated</h1>
-        <p className="text-sm text-sage-500 dark:text-white/70 mb-6">
+        <h1 className="font-serif font-bold text-2xl text-sage-900 dark:text-white mb-3">Password updated</h1>
+        <p className="text-sm text-sage-700 dark:text-white/70 mb-6">
           Your password has been reset. Redirecting you to sign in…
         </p>
         <Button href="/auth/login" className="px-6">
@@ -95,10 +95,10 @@ function ResetConfirmForm() {
         </Link>
 
         <div className="mb-8">
-          <h1 className="font-serif text-3xl text-sage-900 dark:text-white mb-2">
+          <h1 className="font-serif font-bold text-3xl text-sage-900 dark:text-white mb-2">
             Set new password
           </h1>
-          <p className="text-sm text-sage-500 dark:text-white/70">
+          <p className="text-sm text-sage-700 dark:text-white/70">
             Resetting password for{' '}
             <strong className="text-sage-700 dark:text-white">{email}</strong>
           </p>
@@ -114,7 +114,7 @@ function ResetConfirmForm() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="label text-sage-500 dark:text-white/70">New password</label>
+            <label className="label text-sage-700 dark:text-white/70">New password</label>
             <div className="relative">
               <input
                 type={showPass ? 'text' : 'password'}
@@ -128,14 +128,14 @@ function ResetConfirmForm() {
               <button type="button" onClick={() => setShowPass(v => !v)}
                 aria-label={showPass ? 'Hide password' : 'Show password'}
                 className="absolute right-3 top-1/2 -translate-y-1/2
-                           text-sage-400 dark:text-white/40 hover:text-sage-600 transition-colors">
+                           text-sage-600 dark:text-white/70 hover:text-sage-800 transition-colors">
                 {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
           <div>
-            <label className="label text-sage-500 dark:text-white/70">Confirm password</label>
+            <label className="label text-sage-700 dark:text-white/70">Confirm password</label>
             <input
               type={showPass ? 'text' : 'password'}
               value={confirm}

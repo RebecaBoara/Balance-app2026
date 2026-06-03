@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })();
         `}} />
       </head>
-      <body className="min-h-screen bg-warm-100 dark:bg-ocean-900 text-sage-900 dark:text-white antialiased">
+      <body suppressHydrationWarning className="min-h-screen bg-warm-100 dark:bg-ocean-900 text-sage-900 dark:text-white antialiased">
         <ThemeProvider><ToastProvider>{children}</ToastProvider></ThemeProvider>
       </body>
     </html>

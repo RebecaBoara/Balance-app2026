@@ -117,7 +117,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="p-2 rounded-md text-sage-400 dark:text-white/60
+            className="p-2 rounded-md text-sage-600 dark:text-white/70
                        hover:text-sage-600 dark:hover:text-white
                        hover:bg-sage-50 dark:hover:bg-ocean-700
                        transition-all duration-200"
@@ -137,7 +137,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
 
               {/* Title */}
               <div>
-                <label htmlFor="task-title" className="label text-sage-500 dark:text-white/70">
+                <label htmlFor="task-title" className="label text-sage-700 dark:text-white/70">
                   Task title *
                 </label>
                 <input
@@ -151,7 +151,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                   maxLength={100}
                   className="input"
                 />
-                <p className="text-xs text-sage-300 dark:text-white/50 text-right mt-1">
+                <p className="text-xs text-sage-600 dark:text-white/70 text-right mt-1">
                   {newTask.title.length}/100
                 </p>
               </div>
@@ -159,7 +159,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
               {/* Est. time + Due date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="task-time" className="label text-sage-500 dark:text-white/70">
+                  <label htmlFor="task-time" className="label text-sage-700 dark:text-white/70">
                     <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />
                     Est. time (min)
                   </label>
@@ -185,7 +185,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                   />
                 </div>
                 <div>
-                  <label htmlFor="task-due" className="label text-sage-500 dark:text-white/70">
+                  <label htmlFor="task-due" className="label text-sage-700 dark:text-white/70">
                     <Calendar className="w-3 h-3 inline mr-1" aria-hidden="true" />
                     Due date
                   </label>
@@ -202,7 +202,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
 
               {/* Time (optional) */}
               <div>
-                <label htmlFor="task-time-of-day" className="label text-sage-500 dark:text-white/70">
+                <label htmlFor="task-time-of-day" className="label text-sage-700 dark:text-white/70">
                   <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />
                   Time (optional)
                 </label>
@@ -217,7 +217,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
 
               {!isEditing && (
                 <div>
-                  <label htmlFor="task-repeat" className="label text-sage-500 dark:text-white/70">
+                  <label htmlFor="task-repeat" className="label text-sage-700 dark:text-white/70">
                     Repeat
                   </label>
                   <select
@@ -236,7 +236,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
 
               {/* Notes */}
               <div>
-                <label htmlFor="task-notes" className="label text-sage-500 dark:text-white/70">
+                <label htmlFor="task-notes" className="label text-sage-700 dark:text-white/70">
                   Notes (optional)
                 </label>
                 <textarea
@@ -256,7 +256,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
             <div className="mt-4 md:mt-0 space-y-4">
 
               <div>
-                <label className="label text-sage-500 dark:text-white/70">Difficulty *</label>
+                <label className="label text-sage-700 dark:text-white/70">Difficulty *</label>
                 <div className="grid grid-cols-3 md:grid-cols-1 gap-2">
                   {DIFFICULTY_OPTIONS.map(({ value, label, desc }) => (
                     <button
@@ -275,14 +275,14 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                                   }`}
                     >
                       <p className="text-xs font-semibold text-sage-800 dark:text-white mb-0.5">{label}</p>
-                      <p className="text-xs text-sage-400 dark:text-white/70 leading-tight">{desc}</p>
+                      <p className="text-xs text-sage-600 dark:text-white/70 leading-tight">{desc}</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="label text-sage-500 dark:text-white/70">Priority</label>
+                <label className="label text-sage-700 dark:text-white/70">Priority</label>
                 <button
                   type="button"
                   onClick={() => setNewTask(p => ({ ...p, priority: !p.priority }))}
@@ -298,7 +298,7 @@ export default function AddTaskModal({ onClose, onSave, initialTask }: AddTaskMo
                       <p className="text-xs font-semibold text-sage-800 dark:text-white mb-0.5">
                         {newTask.priority ? 'Priority task' : 'No priority'}
                       </p>
-                      <p className="text-xs text-sage-400 dark:text-white/70 leading-tight">
+                      <p className="text-xs text-sage-600 dark:text-white/70 leading-tight">
                         {newTask.priority ? 'Always shown first on low-energy days' : 'Scheduled based on mood and difficulty'}
                       </p>
                     </div>

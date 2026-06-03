@@ -41,7 +41,7 @@ export default function BottomNav() {
                         transition-all duration-200 min-w-[60px]
                         ${isActive
                           ? 'text-sage-700 dark:text-teal-400'
-                          : 'text-sage-500 dark:text-white/60 hover:text-sage-600 dark:hover:text-white/80'
+                          : 'text-sage-600 dark:text-white/70 hover:text-sage-700 dark:hover:text-white/90'
                         }`}
           >
             <Icon

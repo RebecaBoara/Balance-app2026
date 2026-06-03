@@ -233,7 +233,7 @@ export default function DashboardPage() {
                       className={`w-full rounded-t-sm transition-all duration-500 ${today ? 'ring-2 ring-sage-400 ring-offset-1' : ''}`}
                       style={{ height: `${height}px`, backgroundColor: colour }}
                     />
-                    <span className={`text-sm ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-500 dark:text-white/70'}`}>
+                    <span className={`text-sm ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-600 dark:text-white/70'}`}>
                       {getDayLabel(date)}
                     </span>
                   </div>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
               <span className="ml-auto font-serif text-2xl text-sage-900 dark:text-white">
                 {stats.streak}
               </span>
-              <span className="text-sm text-sage-400 dark:text-white">days</span>
+              <span className="text-sm text-sage-600 dark:text-white">days</span>
             </div>
 
             {/* Streak dots */}
@@ -281,12 +281,12 @@ export default function DashboardPage() {
                                     ? 'bg-sage-500 dark:bg-teal-600 text-white'
                                     : today
                                     ? 'bg-sage-50 dark:bg-sage-900/20 border-2 border-sage-300 dark:border-sage-600 text-sage-700 dark:text-white/70'
-                                    : 'bg-warm-200 dark:bg-ocean-800 text-sage-300 dark:text-white/70'
+                                    : 'bg-warm-200 dark:bg-ocean-800 text-sage-600 dark:text-white/70'
                                   }`}
                     >
                       {hasMood ? '\u2713' : ''}
                     </div>
-                    <span className={`text-sm ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-500 dark:text-white/70'}`}>
+                    <span className={`text-sm ${today ? 'text-sage-700 dark:text-teal-400 font-medium' : 'text-sage-600 dark:text-white/70'}`}>
                       {getDayLabel(date)}
                     </span>
                   </div>
@@ -347,7 +347,7 @@ export default function DashboardPage() {
                               {getMoodLabel(mood as MoodType)}
                             </span>
                           </div>
-                          <span className="text-sm text-sage-400 dark:text-white/70">
+                          <span className="text-sm text-sage-600 dark:text-white/70">
                             {count}× ({pct}%)
                           </span>
                         </div>
@@ -386,7 +386,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-semibold text-sage-700 dark:text-white">
                           {getMoodLabel(mood)}
                         </p>
-                        <p className="text-sm text-sage-400 dark:text-white/40">
+                        <p className="text-sm text-sage-600 dark:text-white/70">
                           {new Date(date + 'T00:00:00').toLocaleDateString('en-GB', {
                             weekday: 'short', day: 'numeric', month: 'short'
                           })}
@@ -397,7 +397,7 @@ export default function DashboardPage() {
                           {note}
                         </p>
                       ) : (
-                        <p className="text-sm text-sage-300 dark:text-white/30 italic">
+                        <p className="text-sm text-sage-500 dark:text-white/60 italic">
                           No note written
                         </p>
                       )}
@@ -422,7 +422,7 @@ export default function DashboardPage() {
                 </h3>
               </div>
               <Link href="/app/tasks"
-                className="text-sm text-sage-400 dark:text-white/50 hover:text-sage-600 transition-colors flex items-center gap-1">
+                className="text-sm text-sage-600 dark:text-white/70 hover:text-sage-800 transition-colors flex items-center gap-1">
                 See all <ArrowRight className="w-3 h-3" aria-hidden="true" />
               </Link>
             </div>
@@ -475,7 +475,7 @@ export default function DashboardPage() {
             {visibleFocusTasks.length > 5 && (
               <div className="px-5 py-3 border-t border-sage-500/10 dark:border-ocean-600">
                 <Link href="/app/tasks"
-                  className="text-sm text-sage-400 dark:text-white/50 hover:text-sage-600 transition-colors">
+                  className="text-sm text-sage-600 dark:text-white/70 hover:text-sage-800 transition-colors">
                   +{visibleFocusTasks.length - 5} more tasks
                 </Link>
               </div>
