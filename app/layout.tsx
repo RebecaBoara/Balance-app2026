@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             try {
               var theme = localStorage.getItem('balance-theme');
               var dark  = theme === 'dark' ||
-                (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                ((theme === 'system' || !theme) && window.matchMedia('(prefers-color-scheme: dark)').matches);
               if (dark) document.documentElement.classList.add('dark');
             } catch(e) {}
           })();

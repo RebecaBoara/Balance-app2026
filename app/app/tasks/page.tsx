@@ -380,7 +380,7 @@ async function handleAddTask(data: NewTask) {
                   aria-expanded={overdueOpen}
                 >
                   <AlertCircle className="w-3.5 h-3.5 text-coral-app dark:text-coral-pale flex-shrink-0" aria-hidden="true" />
-                  <p className="text-sm font-semibold text-coral-app dark:text-coral-pale uppercase tracking-wider flex-1">
+                  <p className="text-sm font-bold text-coral-app dark:text-coral-pale uppercase tracking-wider flex-1">
                     Overdue
                   </p>
                   <span className="text-sm text-coral-app/70 dark:text-coral-pale/70">({overdueTasks.length})</span>
@@ -454,8 +454,8 @@ async function handleAddTask(data: NewTask) {
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircle2 className="w-3.5 h-3.5 text-sage-600 dark:text-white/70" aria-hidden="true" />
-                  <p className="text-sm font-semibold text-sage-700 dark:text-white/70 uppercase tracking-wider">
-                Completed recently
+                  <p className="text-sm font-bold text-sage-700 dark:text-white/70 uppercase tracking-wider">
+                    Completed recently
                   </p>
                   <span className="text-sm text-sage-700 dark:text-white/50">({completedToday.length})</span>
                 </div>

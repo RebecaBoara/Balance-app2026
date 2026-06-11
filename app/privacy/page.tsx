@@ -112,7 +112,7 @@ const SECTIONS = [
   },
   {
     title: '6. Third-party services',
-    content: 'Balance uses the following third-party services: Firebase (Google) for authentication and database storage, Vercel for application hosting, Google Fonts for typography, and OpenAI for AI-generated mood suggestions. When you select a mood, that mood label (e.g. "energised") is sent to OpenAI\'s API to generate a personalised suggestion — no personal details, task content, or identifying information is included. Each provider is subject to their own privacy policies. No user data is shared beyond what is technically necessary to operate the service.',
+    content: 'Balance uses the following third-party services: Firebase (Google) for authentication and database storage, Vercel for application hosting, OpenAI for AI-generated mood suggestions, and Resend for transactional email delivery (daily reminder emails). When you select a mood, that mood label (e.g. "energised") is sent to OpenAI\'s API to generate a personalised suggestion — no personal details, task content, or identifying information is included. Your email address is shared with Resend solely to deliver reminder emails you have opted into. Each provider is subject to their own privacy policies. No user data is shared beyond what is technically necessary to operate the service.',
   },
   {
     title: '7. Cookies',
@@ -164,7 +164,7 @@ export default function PrivacyPage() {
               { right: 'Right of access',         desc: 'Request a copy of all data we hold about you.' },
               { right: 'Right to erasure',         desc: 'Delete your account and all data at any time from Settings.' },
               { right: 'Right to rectification',   desc: 'Update your profile information at any time.' },
-              { right: 'Right to portability',     desc: 'Request an export of your data in machine-readable format.' },
+              { right: 'Right to portability',     desc: 'Contact us to request a copy of your data in a portable format.' },
               { right: 'Right to withdraw',        desc: 'Stop using Balance and delete your account at any time.' },
               { right: 'Right to object',          desc: 'Object to how your data is processed by contacting us.' },
             ].map(({ right, desc }) => (

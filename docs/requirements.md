@@ -58,7 +58,7 @@ The application must directly address the following research questions:
 | Rebeca Boara | Developer / Researcher | Build and evaluate the artefact |
 | Lecturer| Dissertation Supervisor | Ensure academic quality and research integrity |
 | Markers | Assessors | Evaluate technical implementation and documentation |
-| Usability test participants (10–20) | End users | Test the application during evaluation phase |
+| Test participants (10–20) | End users | Test the application during evaluation phase |
 | Southampton Solent University | Institution | Ensure ethical and academic compliance |
 
 ---
@@ -317,6 +317,8 @@ Non-functional requirements describe how the system behaves rather than what it 
 - Reminder settings in preferences
 - User profile with name display
 - Celebration animation on task completion
+- Admin dashboard
+
 
 ### Could have — nice to have if time allows
 
@@ -333,7 +335,6 @@ Non-functional requirements describe how the system behaves rather than what it 
 - Calendar integration (Google Calendar, Outlook)
 - Mobile native app (iOS/Android)
 - Paid subscription tiers
-- Admin dashboard
 
 ---
 

@@ -33,6 +33,9 @@ https://www.balance-mood.co.uk/
 - **Tailwind CSS** — styling with custom design tokens
 - **Firebase Auth** — authentication (email + Google)
 - **Firebase Firestore** — database
+- **OpenAI** — AI-powered daily spark and mood suggestions
+- **Resend** — transactional email delivery for daily reminders
+- **Inngest** — background job scheduling for daily reminder functions
 - **Lucide React** — icons
 - **Vercel** — deployment
 
@@ -47,7 +50,7 @@ https://www.balance-mood.co.uk/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOURUSERNAME/balance-app.git
+git clone https://github.com/RebecaBoara/Balance-app2026.git
 cd balance-app
 ```
 
@@ -116,6 +119,7 @@ See `docs/architecture.md` for full details.
 | Screen | Route | Description |
 |---|---|---|
 | Landing page | `/` | Public marketing page |
+| Onboarding | `/onboarding` | First-time setup and reminder preferences |
 | Login | `/auth/login` | Email and Google sign-in |
 | Sign up | `/auth/signup` | Account creation |
 | Mood check-in | `/app/mood` | Daily emotional state selection |

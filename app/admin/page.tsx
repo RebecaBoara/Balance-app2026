@@ -117,7 +117,7 @@ export default function AdminPage() {
   const [tab,        setTab]        = useState<'overview' | 'participants'>('overview')
   const [deleting,   setDeleting]   = useState<string | null>(null)
   const [confirmUid, setConfirmUid] = useState<string | null>(null)
-  const [anonymise,  setAnonymise]  = useState(false)
+  const [anonymise,  setAnonymise]  = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -345,8 +345,8 @@ export default function AdminPage() {
                               ? 'bg-sage-500 border-sage-500 text-white dark:bg-teal-600 dark:border-teal-600'
                               : 'border-sage-200 dark:border-ocean-600 text-sage-500 dark:text-white/50 hover:bg-sage-50 dark:hover:bg-ocean-700'
                             }`}>
-                {anonymise ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                {anonymise ? 'Anonymised' : 'Anonymise'}
+                {anonymise ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                {anonymise ? 'Reveal names' : 'Hide names'}
               </button>
             </div>
 

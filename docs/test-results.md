@@ -34,6 +34,7 @@ Use this document to record each test execution run, pass/fail counts, defects, 
 | TR-001 | IT-08 | Settings changes (display name, email reminder toggle) persist to Firestore and survive a page reload | Profile fields updated via `saveUserProfile` (merge); changes confirmed after reload | Pass | |
 | TR-001 | IT-09 | `POST /api/ai/daily-message` without a valid Firebase ID token returns `401 Unauthorized` | 401 response confirmed when `Authorization: Bearer <invalid>` header is absent or invalid | Pass | |
 | TR-001 | IT-10 | Cron route (`GET /api/notifications/cron`) sends daily check-in emails to all users with `emailReminders !== false`, sequentially with 300 ms delay to respect Resend rate limits | Emails sent successfully; sequential send with delay resolved earlier "Too many requests" errors from Resend | Blocked | DEF-001 |
+| TR-001 | IT-11 | Deleting a participant via the admin panel removes both the Firebase Auth account and the Firestore profile via a secure server-side route (`DELETE /api/admin/delete-user`); email becomes immediately reusable | Both Auth account and Firestore profile deleted; re-registration with same email confirmed | Pass | |
 
 ## UAT Results
 
@@ -57,18 +58,16 @@ Use this document to record each test execution run, pass/fail counts, defects, 
 
 | Evidence Type | Link / Path | Notes |
 |---|---|---|
-| Screenshot | `/docs/evidence/it-01-signup-success.png` | Successful signup + onboarding redirect |
-| Screenshot | `/docs/evidence/it-02-duplicate-email-error.png` | Duplicate email blocked with error message |
-| Screenshot | `/docs/evidence/it-06-mood-to-tasks-flow.png` | Check-in to tasks transition |
+| Screenshot | `/docs/evidence/signup-success.png` | Successful signup + onboarding redirect |
+| Screenshot | `/docs/evidence/check-in-mood.png` | Check-in to tasks transition |
 | Screenshot | `/docs/evidence/domain check.png` | Resend sender domain `balance-mood.co.uk` verified — confirms emails are sent from an authenticated domain |
 | Screenshot | `/docs/evidence/postman-error-emails.png` | Cron route response showing rate limit failure: `{sent: 5, failed: 2, errors: ["Too many requests"]}` — triggered when emails sent in parallel |
 | Screenshot | `/docs/evidence/postman-sent-emails.png` | Cron route response after fix: sequential send with 300 ms delay — all emails delivered successfully |
-| Video | `/docs/evidence/uat-01-checkin-flow.mp4` | End-to-end daily check-in journey |
-| Console logs | `/docs/evidence/api-ai-route-401.txt` | 401 response from AI route with missing/invalid token |
+
+
 
 ## Known Limitations
 
-- **Cron timezone**: All users receive the daily reminder email at the same time (7 AM BST / 6 AM UTC). There is no per-user timezone setting. This is noted as a Future Work item in the dissertation.
+
 - **One-send-per-day guard**: The cron has no deduplication guard — if Vercel retries the cron job, a user could receive two emails on the same day. Acceptable risk for a research prototype.
 - **AI suggestion quality**: GPT-4o-mini is used via a server-side route with a hardcoded fallback. AI output quality is strong but prompt and tone may need iteration based on participant feedback.
-- **Admin user deletion**: Deleting a user via the admin panel now removes both the Firestore profile and the Firebase Auth account via a secure server-side API route (`DELETE /api/admin/delete-user`). The email becomes immediately reusable.

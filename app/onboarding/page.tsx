@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { saveUserProfile } from '@/lib/db'
 import Logo    from '@/components/ui/Logo'
 import Spinner from '@/components/ui/Spinner'
+import Image from 'next/image'
 import { ArrowRight, ArrowLeft, Clock, CheckCircle2 } from 'lucide-react'
 
 const HOW_IT_WORKS = [
@@ -106,7 +107,17 @@ export default function OnboardingPage() {
           {/* Welcome*/}
           {step === 0 && (
             <div className="text-center">
-              <div className="text-6xl mb-6">🌿</div>
+              <div className="mb-6 flex justify-center">
+                <Image
+                  src="/lotus.PNG"
+                  height={0}
+                  width={0}
+                  sizes="20vw"
+                  alt=""
+                  style={{ height: 96, width: 'auto' }}
+                  className="[mix-blend-mode:multiply] [filter:sepia(0.4)_hue-rotate(90deg)_saturate(2)_brightness(0.6)] dark:[mix-blend-mode:screen] dark:[filter:invert(1)_hue-rotate(180deg)_saturate(1.8)_brightness(1.3)]"
+                />
+              </div>
               <h1 className="font-serif text-4xl text-sage-900 dark:text-white mb-4">
                 Welcome, {firstName}
               </h1>

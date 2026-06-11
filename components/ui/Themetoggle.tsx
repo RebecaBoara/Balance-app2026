@@ -3,10 +3,11 @@
 // Used in sidebar and settings screen
 
 import { useTheme } from '@/components/layout/ThemeProvider'
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon, Monitor } from 'lucide-react'
 const OPTIONS = [
   { value: 'light',  label: 'Light',  Icon: Sun },
   { value: 'dark',   label: 'Dark',   Icon: Moon },
+  { value: 'system', label: 'System', Icon: Monitor },
 ] as const
 
 export default function ThemeToggle() {
