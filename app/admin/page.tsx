@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/hooks/useAuth'
-import { getUserProfile } from '@/lib/db'
 import { useToast } from '@/components/ui/Toaster'
 import { getMoodEmoji, getMoodLabel } from '@/lib/mood'
 import Spinner from '@/components/ui/Spinner'
@@ -28,7 +27,7 @@ const MOOD_COLOURS: Record<MoodType, string> = {
 
 interface MoodDoc  { userId: string; mood: MoodType; date: string; note: string; createdAt: number }
 interface TaskDoc  { userId: string; title: string; difficulty: DifficultyType; completed: boolean; createdAt: number }
-interface UserDoc  { uid: string; email: string; displayName: string; createdAt: number; isAdmin?: boolean }
+interface UserDoc  { uid: string; email: string; displayName: string; createdAt: number }
 interface Stats    { users: UserDoc[]; moods: MoodDoc[]; tasks: TaskDoc[] }
 
 function ActivityLineChart({ moods, tasks }: { moods: MoodDoc[]; tasks: TaskDoc[] }) {
@@ -126,8 +125,10 @@ export default function AdminPage() {
 
     async function load() {
       try {
-        const profile = await getUserProfile(user!.uid)
-        if (!profile?.isAdmin) { router.push('/app/mood'); return }
+        // Admin status comes from the custom claim on the login token.
+        // This only hides the page; real protection is in firestore.rules and the API.
+        const tokenResult = await user!.getIdTokenResult()
+        if (tokenResult.claims.admin !== true) { router.push('/app/mood'); return }
 
         const [usersSnap, moodsSnap, tasksSnap] = await Promise.all([
           getDocs(collection(db, 'users')),
@@ -198,8 +199,9 @@ export default function AdminPage() {
     )
   }
 
-  const adminUid  = stats.users.find(u => u.isAdmin)?.uid ?? ''
-  const users     = stats.users.filter(u => !u.isAdmin)
+  // Exclude the signed-in admin's own data from participant stats
+  const adminUid  = user?.uid ?? ''
+  const users     = stats.users.filter(u => u.uid !== adminUid)
   const moods     = stats.moods.filter(m => m.userId !== adminUid)
   const tasks     = stats.tasks.filter(t => t.userId !== adminUid)
 

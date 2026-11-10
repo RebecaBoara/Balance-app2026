@@ -60,7 +60,6 @@ export interface UserProfile {
   emailReminders:   boolean
   theme:            'light' | 'dark' | 'system'
   createdAt:        number
-  isAdmin?:         boolean
   hasOnboarded?:    boolean
 }
 

@@ -7,7 +7,6 @@ import { Settings, LogOut, ShieldCheck } from 'lucide-react'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useAuth } from '@/hooks/useAuth'
-import { getUserProfile } from '@/lib/db'
 
 export default function UserAvatarMenu() {
   const router                = useRouter()
@@ -21,7 +20,10 @@ export default function UserAvatarMenu() {
 
   useEffect(() => {
     if (!user) return
-    getUserProfile(user.uid).then(p => setIsAdmin(p?.isAdmin === true))
+    // Admin status comes from the custom claim on the login token
+    user.getIdTokenResult()
+      .then(r => setIsAdmin(r.claims.admin === true))
+      .catch(() => setIsAdmin(false))
   }, [user])
 
   useEffect(() => {

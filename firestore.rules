@@ -2,9 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Admin status lives in a Firebase custom claim on the login token.
+    // Custom claims can only be set server-side with the Admin SDK
+    // (see scripts/set-admin.mjs), so users cannot grant it to themselves.
     function isAdmin() {
       return request.auth != null
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+        && request.auth.token.admin == true;
     }
 
     match /tasks/{taskId} {
@@ -37,8 +40,14 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if request.auth != null
         && (request.auth.uid == userId || isAdmin());
-      allow write: if request.auth != null
-        && request.auth.uid == userId;
+      // Users may create/update only their own profile, and never the
+      // legacy isAdmin field (admin rights come from the token claim only).
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && !('isAdmin' in request.resource.data);
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin']);
       allow delete: if isAdmin();
     }
 
